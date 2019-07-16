@@ -1,8 +1,17 @@
-
 plugins {
 	// Apply the java-library plugin to add support for Java Library
 	id 'java-library'
+	id 'idea'
+	// id 'eclipse'
 }
+
+group 'com.acrolinx.client'
+
+sourceCompatibility = JavaVersion.VERSION_1_7
+targetCompatibility = JavaVersion.VERSION_1_7
+
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = 'UTF-8'
 
 repositories {
 	// Use jcenter for resolving dependencies.

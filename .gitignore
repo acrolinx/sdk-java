@@ -1,6 +1,13 @@
-# Ignore Gradle project-specific cache directory
 .gradle
+.idea
+.eclipse
 
-# Ignore Gradle build output directory
-build
-./spotless-sdk-java/build/
+/build
+/spotless-sdk-java/**/build/
+
+*.class
+*.jar
+*.war
+*.ear
+*.logs
+*.iml
