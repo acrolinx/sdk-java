@@ -6,7 +6,6 @@
 /spotless-sdk-java/**/build/
 
 *.class
-*.jar
 *.war
 *.ear
 *.logs
