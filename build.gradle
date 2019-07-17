@@ -1,6 +1,7 @@
 plugins {
 	// Apply the java-library plugin to add support for Java Library
 	id 'java-library'
+	id 'jacoco'
 	id 'idea'
 	// id 'eclipse'
 }
@@ -19,6 +20,14 @@ repositories {
 	jcenter()
 }
 
+jacocoTestReport {
+	reports {
+		xml {
+			enabled true
+		}
+	}
+}
+
 dependencies {
 	// This dependency is exported to consumers, that is to say found on their compile classpath.
 	api 'org.apache.commons:commons-math3:3.6.1'
@@ -29,3 +38,5 @@ dependencies {
 	// Use JUnit test framework
 	testImplementation 'junit:junit:4.12'
 }
+
+// vim: sw=4 ts=4 noet
