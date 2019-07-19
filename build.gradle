@@ -12,6 +12,8 @@ plugins {
 	// Apply the java-library plugin to add support for Java Library
 	id 'java-library'
 	id 'jacoco'
+	id 'org.sonarqube' version '2.7.1'
+
 	id 'idea'
 	// id 'eclipse'
 }
@@ -46,6 +48,14 @@ dependencyCheck {
 	cve {
 		urlModified = 'https://dune.dev.acrolinx.com/~nist-data-mirror/nvdcve-1.0-modified.json.gz'
 		urlBase = 'https://dune.dev.acrolinx.com/~nist-data-mirror/nvdcve-1.0-%d.json.gz'
+	}
+}
+
+sonarqube {
+	properties {
+		property 'sonar.projectKey', 'com.acrolinx.client:sdk-java'
+		property 'sonar.dependencyCheck.reportPath', "${project.reportsDir}/dependency-check-report.xml"
+		property 'sonar.dependencyCheck.htmlReportPath', "${project.reportsDir}/dependency-check-report.html"
 	}
 }
 
