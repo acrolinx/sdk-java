@@ -43,8 +43,8 @@ dependencyCheck {
 sonarqube {
 	properties {
 		property 'sonar.projectKey', 'com.acrolinx.client:sdk-java'
-		property 'sonar.dependencyCheck.reportPath', "${project.reportsDir}/dependency-check-report.xml"
-		property 'sonar.dependencyCheck.htmlReportPath', "${project.reportsDir}/dependency-check-report.html"
+		property 'sonar.dependencyCheck.reportPath', "${dependencyCheck.outputDirectory}/dependency-check-report.xml"
+		property 'sonar.dependencyCheck.htmlReportPath', "${dependencyCheck.outputDirectory}/dependency-check-report.html"
 	}
 }
 
