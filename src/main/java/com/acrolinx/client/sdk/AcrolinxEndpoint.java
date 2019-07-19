@@ -6,6 +6,20 @@ package com.acrolinx.client.sdk;
 import com.acrolinx.client.sdk.exceptions.SSOException;
 import com.acrolinx.client.sdk.exceptions.SignInException;
 import com.acrolinx.client.sdk.platform.Capabilities;
+import com.google.gson.Gson;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 public class AcrolinxEndpoint {
 
@@ -13,32 +27,109 @@ public class AcrolinxEndpoint {
     private String clientVersion;
     private String clientLocale;
     private String acrolinxURL;
+    private RequestConfig config;
+
+    private CloseableHttpClient httpClient;
+
+    // Constructor with four params?
+    public AcrolinxEndpoint(String clientSignature, String acrolinxURL, String clientVersion,
+                            String clientLocale) throws URISyntaxException {
+
+        this.clientSignature = clientSignature;
+        this.clientVersion = clientVersion;
+        this.clientLocale = clientLocale;
+        this.acrolinxURL = acrolinxURL;
+
+        // Is the default closeable http client the best choice?
+        // Can it handle forward proxies? In AEM it didn't
+        httpClient = HttpClients.createDefault();
+
+
+        // Do we need this? Right place? Right values?
+        config = RequestConfig
+                .custom()
+                .setConnectTimeout(500)
+                .setConnectionRequestTimeout(500)
+                .setSocketTimeout(500)
+                .build();
+
+    }
 
     // use logger from sidebar-sdk
-    public PlatformInformation getPlatformInformation(){
+    public PlatformInformation getPlatformInformation() throws IOException, URISyntaxException {
         // works without authentication
+        String api = "api/v1";
+        CloseableHttpResponse response = executeGet(api, null);
+        if (!validateResponse(response)) {
+            // throw error, log error
+        }
 
+        HttpEntity responseEntity = response.getEntity();
+        String json = EntityUtils.toString(responseEntity);
+
+        Gson gson = new Gson();
+        PlatformInformation platformInformation = gson.fromJson(json, PlatformInformation.class);
+        return platformInformation;
     }
 
-    public SignInSuccess signInWithSSO(String genericToken, String username) throws SSOException
-    {
-
+    public SignInSuccess signInWithSSO(String genericToken, String username) throws SSOException {
+        return null;
     }
 
-    public SignInSuccess singInInteractive(InteractiveCallback callback) throws SignInException
-    {
+    public SignInSuccess singInInteractive(InteractiveCallback callback) throws SignInException {
         singInInteractive(callback, null);
+        return null;
     }
 
-    public SignInSuccess singInInteractive(InteractiveCallback callback, String accessToken) throws SignInException
-    {
-
+    public SignInSuccess singInInteractive(InteractiveCallback callback, String accessToken) throws SignInException {
+        return null;
     }
 
     public Capabilities getCapabilities(String accessToken) {
+        return null;
+    }
+
+    private boolean validateResponse(CloseableHttpResponse response) {
+
+        int statusCode = response.getStatusLine().getStatusCode();
+        // throws, redirects, server errors, lions and tigers and bears!
+        return statusCode >= 200 && statusCode <= 299;
 
     }
 
+
+    private CloseableHttpResponse executeGet(String api, String accessToken) throws IOException, URISyntaxException {
+
+        // Separate class for Http execution?
+        URI acrolinxUri = new URI(this.acrolinxURL);
+        URI apiUri = new URIBuilder()
+                .setScheme(acrolinxUri.getScheme())
+                .setPort(acrolinxUri.getPort())
+                .setHost(acrolinxUri.getHost())
+                .setPath(api)
+                .build();
+
+        HttpGet request = new HttpGet(apiUri);
+        request = (HttpGet) setCommonHeaders(request, accessToken);
+        request.setConfig(this.config);
+
+        return httpClient.execute(request);
+    }
+
+    // Separate class for modifying http request?
+    private HttpRequestBase setCommonHeaders(HttpRequestBase request, String accessToken) {
+
+        if (accessToken != null && !accessToken.isEmpty()) {
+            request.setHeader("X-Acrolinx-Auth", accessToken);
+
+        }
+        request.setHeader("X-Acrolinx-Base-Url", this.acrolinxURL);
+        request.setHeader("X-Acrolinx-Client-Locale", this.clientLocale);
+        request.setHeader("X-Acrolinx-Client", this.clientSignature + this.clientVersion);
+
+        return request;
+
+    }
 
 
 }

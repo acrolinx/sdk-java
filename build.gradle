@@ -57,6 +57,11 @@ dependencies {
 
 	// Use JUnit test framework
 	testImplementation 'junit:junit:4.12'
+
+	//Apache http dependencies
+	compile 'org.apache.httpcomponents:httpclient:4.5.9'
+	
+	compile 'com.google.code.gson:gson:2.8.5'
 }
 
 // vim: sw=4 ts=4 noet
