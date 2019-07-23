@@ -26,19 +26,19 @@ public class AcrolinxEndpoint {
     private String clientSignature;
     private String clientVersion;
     private String clientLocale;
-    private String acrolinxURL;
+    private String acrolinxUrl;
     private RequestConfig config;
 
     private CloseableHttpClient httpClient;
 
     // Constructor with four params?
     public AcrolinxEndpoint(String clientSignature, String acrolinxURL, String clientVersion,
-                            String clientLocale) throws URISyntaxException {
+                            String clientLocale)  {
 
         this.clientSignature = clientSignature;
         this.clientVersion = clientVersion;
         this.clientLocale = clientLocale;
-        this.acrolinxURL = acrolinxURL;
+        this.acrolinxUrl = acrolinxURL;
 
         // Is the default closeable http client the best choice?
         // Can it handle forward proxies? In AEM it didn't
@@ -59,17 +59,13 @@ public class AcrolinxEndpoint {
     public PlatformInformation getPlatformInformation() throws IOException, URISyntaxException {
         // works without authentication
         String api = "api/v1";
+
         CloseableHttpResponse response = executeGet(api, null);
         if (!validateResponse(response)) {
             // throw error, log error
         }
 
-        HttpEntity responseEntity = response.getEntity();
-        String json = EntityUtils.toString(responseEntity);
-
-        Gson gson = new Gson();
-        PlatformInformation platformInformation = gson.fromJson(json, PlatformInformation.class);
-        return platformInformation;
+        return (PlatformInformation) getObjectfromResponseStream(response, PlatformInformation.class);
     }
 
     public SignInSuccess signInWithSSO(String genericToken, String username) throws SSOException {
@@ -101,7 +97,7 @@ public class AcrolinxEndpoint {
     private CloseableHttpResponse executeGet(String api, String accessToken) throws IOException, URISyntaxException {
 
         // Separate class for Http execution?
-        URI acrolinxUri = new URI(this.acrolinxURL);
+        URI acrolinxUri = new URI(this.acrolinxUrl);
         URI apiUri = new URIBuilder()
                 .setScheme(acrolinxUri.getScheme())
                 .setPort(acrolinxUri.getPort())
@@ -123,11 +119,22 @@ public class AcrolinxEndpoint {
             request.setHeader("X-Acrolinx-Auth", accessToken);
 
         }
-        request.setHeader("X-Acrolinx-Base-Url", this.acrolinxURL);
+        request.setHeader("X-Acrolinx-Base-Url", this.acrolinxUrl);
         request.setHeader("X-Acrolinx-Client-Locale", this.clientLocale);
         request.setHeader("X-Acrolinx-Client", this.clientSignature + this.clientVersion);
 
         return request;
+
+    }
+
+    // Find a new home for helping methods
+    private Object getObjectfromResponseStream(CloseableHttpResponse response, Class c) throws IOException {
+
+        HttpEntity responseEntity = response.getEntity();
+        String json = EntityUtils.toString(responseEntity);
+
+        Gson gson = new Gson();
+        return gson.fromJson(json, c);
 
     }
 

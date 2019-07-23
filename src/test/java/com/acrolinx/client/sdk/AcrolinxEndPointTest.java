@@ -8,17 +8,26 @@ import org.junit.Test;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class AcrolinxEndPointTest {
-    @Test public void testFetchingPlatformInformation() {
-        AcrolinxEndpoint endpoint = null;
+    @Test
+    public void testFetchingPlatformInformation() {
         try {
-            endpoint = new AcrolinxEndpoint("clientSignature", "fetch server from env",
+            AcrolinxEndpoint endpoint = new AcrolinxEndpoint("clientSignature", "fetch from env",
                     "1.0", "en");
 
             PlatformInformation platformInformation = endpoint.getPlatformInformation();
-            assertTrue("testMethod", true );
+
+            assertNotNull(platformInformation);
+            assertNotNull(platformInformation.getData());
+            assertNotNull(platformInformation.getLinks());
+
+            String version = platformInformation.getData().getServer().getVersion();
+            assertTrue("Server version set", !version.isEmpty());
+
+
         } catch (URISyntaxException | IOException e) {
             e.printStackTrace();
         }
@@ -26,18 +35,4 @@ public class AcrolinxEndPointTest {
 
     }
 
-    @Test public void testFetchingPlatformInformationFailure() {
-        AcrolinxEndpoint endpoint = null;
-        try {
-            endpoint = new AcrolinxEndpoint("clientSignature", "fetch server from env",
-                    "1.0", "en");
-
-            PlatformInformation platformInformation = endpoint.getPlatformInformation();
-            assertTrue("testMethod", true );
-        } catch (URISyntaxException | IOException e) {
-            e.printStackTrace();
-        }
-
-
-    }
 }
