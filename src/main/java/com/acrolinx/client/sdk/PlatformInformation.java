@@ -5,8 +5,8 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-
 // This is how its done?
+// Write a common wrapper for links, error and data blob
 public class PlatformInformation {
 
     @SerializedName("links")

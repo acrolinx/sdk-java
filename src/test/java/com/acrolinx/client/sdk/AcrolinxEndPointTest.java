@@ -12,27 +12,24 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class AcrolinxEndPointTest {
-    @Test
-    public void testFetchingPlatformInformation() {
-        try {
-            AcrolinxEndpoint endpoint = new AcrolinxEndpoint("clientSignature", "fetch from env",
-                    "1.0", "en");
+	@Test
+	public void testFetchingPlatformInformation() {
+		try {
+			AcrolinxEndpoint endpoint = new AcrolinxEndpoint("clientSignature", "fetch from env", "1.0", "en");
 
-            PlatformInformation platformInformation = endpoint.getPlatformInformation();
+			PlatformInformation platformInformation = endpoint.getPlatformInformation();
 
-            assertNotNull(platformInformation);
-            assertNotNull(platformInformation.getData());
-            assertNotNull(platformInformation.getLinks());
+			assertNotNull(platformInformation);
+			assertNotNull(platformInformation.getData());
+			assertNotNull(platformInformation.getLinks());
 
-            String version = platformInformation.getData().getServer().getVersion();
-            assertTrue("Server version set", !version.isEmpty());
+			String version = platformInformation.getData().getServer().getVersion();
+			assertTrue("Server version set", !version.isEmpty());
 
+		} catch (URISyntaxException | IOException e) {
+			e.printStackTrace();
+		}
 
-        } catch (URISyntaxException | IOException e) {
-            e.printStackTrace();
-        }
-
-
-    }
+	}
 
 }

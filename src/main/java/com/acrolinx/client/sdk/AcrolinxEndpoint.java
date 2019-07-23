@@ -33,8 +33,7 @@ public class AcrolinxEndpoint {
     private CloseableHttpClient httpClient;
 
     // Constructor with four params?
-    public AcrolinxEndpoint(String clientSignature, String acrolinxURL, String clientVersion,
-                            String clientLocale) {
+    public AcrolinxEndpoint(String clientSignature, String acrolinxURL, String clientVersion, String clientLocale) {
 
         this.apiVersion = "api/v1/";
 
@@ -47,13 +46,8 @@ public class AcrolinxEndpoint {
         // Can it handle forward proxies? In AEM it didn't
         httpClient = HttpClients.createDefault();
 
-
         // Do we need this? Right place? Right values?
-        config = RequestConfig
-                .custom()
-                .setConnectTimeout(500)
-                .setConnectionRequestTimeout(500)
-                .setSocketTimeout(500)
+        config = RequestConfig.custom().setConnectTimeout(500).setConnectionRequestTimeout(500).setSocketTimeout(500)
                 .build();
 
     }
@@ -66,7 +60,7 @@ public class AcrolinxEndpoint {
         httpGet = (HttpGet) setCommonHeaders(httpGet, null);
         CloseableHttpResponse response = httpClient.execute(httpGet);
 
-        if(!validateResponse(response)){
+        if (!validateResponse(response)) {
             // throw exception, log error
         }
 
@@ -89,7 +83,7 @@ public class AcrolinxEndpoint {
         return null;
     }
 
-    public Capabilities getCapabilities(String accessToken) {
+    public Capabilities getCapabilities(AccessToken accessToken) {
         return null;
     }
 
@@ -99,7 +93,6 @@ public class AcrolinxEndpoint {
         return statusCode >= 200 && statusCode <= 299;
 
     }
-
 
     private HttpGet createHttpGet(String api) throws IOException, URISyntaxException {
 
@@ -113,20 +106,15 @@ public class AcrolinxEndpoint {
 
     private URI buildUri(String apiVersion, String api) throws URISyntaxException {
         URI acrolinxUri = new URI(this.acrolinxUrl);
-        return new URIBuilder()
-                .setScheme(acrolinxUri.getScheme())
-                .setPort(acrolinxUri.getPort())
-                .setHost(acrolinxUri.getHost())
-                .setPath(apiVersion + api)
-                .build();
+        return new URIBuilder().setScheme(acrolinxUri.getScheme()).setPort(acrolinxUri.getPort())
+                .setHost(acrolinxUri.getHost()).setPath(apiVersion + api).build();
     }
 
     // Separate class for modifying http request?
-    private HttpRequestBase setCommonHeaders(HttpRequestBase request, String accessToken) {
+    private HttpRequestBase setCommonHeaders(HttpRequestBase request, AccessToken accessToken) {
 
-        if (accessToken != null && !accessToken.isEmpty()) {
-            request.setHeader("X-Acrolinx-Auth", accessToken);
-
+        if (accessToken != null && !accessToken.getAccessToken().isEmpty()) {
+            request.setHeader("X-Acrolinx-Auth", accessToken.getAccessToken());
         }
         request.setHeader("X-Acrolinx-Base-Url", this.acrolinxUrl);
         request.setHeader("X-Acrolinx-Client-Locale", this.clientLocale);
@@ -146,6 +134,5 @@ public class AcrolinxEndpoint {
         return gson.fromJson(json, c);
 
     }
-
 
 }
