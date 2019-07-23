@@ -28,12 +28,15 @@ public class AcrolinxEndpoint {
     private String clientLocale;
     private String acrolinxUrl;
     private RequestConfig config;
+    private String apiVersion;
 
     private CloseableHttpClient httpClient;
 
     // Constructor with four params?
     public AcrolinxEndpoint(String clientSignature, String acrolinxURL, String clientVersion,
-                            String clientLocale)  {
+                            String clientLocale) {
+
+        this.apiVersion = "api/v1/";
 
         this.clientSignature = clientSignature;
         this.clientVersion = clientVersion;
@@ -58,17 +61,22 @@ public class AcrolinxEndpoint {
     // use logger from sidebar-sdk
     public PlatformInformation getPlatformInformation() throws IOException, URISyntaxException {
         // works without authentication
-        String api = "api/v1";
 
-        CloseableHttpResponse response = executeGet(api, null);
-        if (!validateResponse(response)) {
-            // throw error, log error
+        HttpGet httpGet = createHttpGet("");
+        httpGet = (HttpGet) setCommonHeaders(httpGet, null);
+        CloseableHttpResponse response = httpClient.execute(httpGet);
+
+        if(!validateResponse(response)){
+            // throw exception, log error
         }
 
         return (PlatformInformation) getObjectfromResponseStream(response, PlatformInformation.class);
     }
 
     public SignInSuccess signInWithSSO(String genericToken, String username) throws SSOException {
+
+        String api = "api/v1/auth/sign-ins";
+
         return null;
     }
 
@@ -88,28 +96,29 @@ public class AcrolinxEndpoint {
     private boolean validateResponse(CloseableHttpResponse response) {
 
         int statusCode = response.getStatusLine().getStatusCode();
-        // throws, redirects, server errors, lions and tigers and bears!
         return statusCode >= 200 && statusCode <= 299;
 
     }
 
 
-    private CloseableHttpResponse executeGet(String api, String accessToken) throws IOException, URISyntaxException {
+    private HttpGet createHttpGet(String api) throws IOException, URISyntaxException {
 
         // Separate class for Http execution?
+        URI apiUri = buildUri(this.apiVersion, api);
+        HttpGet request = new HttpGet(apiUri);
+        request.setConfig(this.config);
+
+        return request;
+    }
+
+    private URI buildUri(String apiVersion, String api) throws URISyntaxException {
         URI acrolinxUri = new URI(this.acrolinxUrl);
-        URI apiUri = new URIBuilder()
+        return new URIBuilder()
                 .setScheme(acrolinxUri.getScheme())
                 .setPort(acrolinxUri.getPort())
                 .setHost(acrolinxUri.getHost())
-                .setPath(api)
+                .setPath(apiVersion + api)
                 .build();
-
-        HttpGet request = new HttpGet(apiUri);
-        request = (HttpGet) setCommonHeaders(request, accessToken);
-        request.setConfig(this.config);
-
-        return httpClient.execute(request);
     }
 
     // Separate class for modifying http request?
