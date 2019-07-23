@@ -14,7 +14,22 @@ public class AcrolinxEndPointTest {
     @Test public void testFetchingPlatformInformation() {
         AcrolinxEndpoint endpoint = null;
         try {
-            endpoint = new AcrolinxEndpoint("clientSignature", "https://unstable.acrolinx.com",
+            endpoint = new AcrolinxEndpoint("clientSignature", "fetch server from env",
+                    "1.0", "en");
+
+            PlatformInformation platformInformation = endpoint.getPlatformInformation();
+            assertTrue("testMethod", true );
+        } catch (URISyntaxException | IOException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    @Test public void testFetchingPlatformInformationFailure() {
+        AcrolinxEndpoint endpoint = null;
+        try {
+            endpoint = new AcrolinxEndpoint("clientSignature", "fetch server from env",
                     "1.0", "en");
 
             PlatformInformation platformInformation = endpoint.getPlatformInformation();
