@@ -16,6 +16,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 public class AcrolinxEndpoint {
 
@@ -136,12 +138,18 @@ public class AcrolinxEndpoint {
             AccessToken accessToken,
             String body,
             @Nullable Map<String, String> extraHeaders
-    ) throws IOException {
+    ) throws IOException, AcrolinxException {
         HashMap<String, String> headers = getCommonHeaders(accessToken);
         if (extraHeaders != null) {
             headers.putAll(extraHeaders);
         }
-        String jsonString = httpClient.fetch(uri, method, headers, body);
+
+        String jsonString = null;
+        try {
+            jsonString = httpClient.fetch(uri, method, headers, body).get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new AcrolinxException(e);
+        }
         return deserializer.deserialize(jsonString);
     }
 

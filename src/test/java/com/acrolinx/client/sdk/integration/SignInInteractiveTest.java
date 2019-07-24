@@ -40,7 +40,7 @@ public class SignInInteractiveTest {
             fail("It should fail due to timeout.");
         } catch (SignInException e) {
             assertEquals(interactiveUrls.size(), 1);
-            assertTrue(interactiveUrls.get(0).startsWith("http"));
+            assertTrue(interactiveUrls.get(0).startsWith("https"));
         }
 
     }
