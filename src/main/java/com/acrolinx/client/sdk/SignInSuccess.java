@@ -3,13 +3,13 @@ package com.acrolinx.client.sdk;
 import com.acrolinx.client.sdk.platform.configuration.Integration;
 
 public class SignInSuccess {
-    private AccessToken accessToken;
+    private String accessToken;
     private User user;
     private Integration integration;
-    private String authorizationType;
+    private String authorizedUsing;
 
     public AccessToken getAccessToken() {
-        return accessToken;
+        return new AccessToken(accessToken);
     }
 
     public User getUser() {
@@ -21,6 +21,6 @@ public class SignInSuccess {
     }
 
     public String getAuthorizationType() {
-        return authorizationType;
+        return authorizedUsing;
     }
 }

@@ -1,17 +1,14 @@
 package com.acrolinx.client.sdk;
 
-public class User
-{
+public class User {
+    private String id;
     private String username;
-    private String userID;
 
-    public String getUserID()
-    {
-        return userID;
+    public String getId() {
+        return id;
     }
 
-    public String getUsername()
-    {
+    public String getUsername() {
         return username;
     }
 }

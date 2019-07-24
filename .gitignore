@@ -10,3 +10,5 @@
 *.ear
 *.logs
 *.iml
+
+.env

@@ -40,4 +40,8 @@ public class AccessToken {
     public String toString() {
         return "Access token is hidden for security reason";
     }
+
+    public boolean isEmpty() {
+        return this.token == null || this.token.isEmpty();
+    }
 }

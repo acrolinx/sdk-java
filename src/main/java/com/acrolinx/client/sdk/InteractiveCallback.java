@@ -1,6 +1,6 @@
 package com.acrolinx.client.sdk;
 
-public class InteractiveCallback
+public interface InteractiveCallback
 {
-    // timeout? no
+    void onInteractiveUrl(String url);
 }

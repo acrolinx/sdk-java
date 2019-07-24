@@ -1,0 +1,16 @@
+{
+  "data": {
+    "accessToken": "dummyAccessToken",
+    "user": {
+      "id": "a67fd4ab-af1a-4dfb-98ac-8620085e089b",
+      "username": "marco.stahl@acrolinx.com"
+    },
+    "authorizedUsing": "ACROLINX_TOKEN",
+    "integration": {
+      "properties": {
+        "acrolinxAppDeveloperModeEnabled": "true"
+      },
+      "addons": []
+    }
+  }
+}

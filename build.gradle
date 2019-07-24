@@ -55,8 +55,15 @@ dependencies {
 	// This dependency is used internally, and not exposed to consumers on their own compile classpath.
 	implementation 'com.google.guava:guava:27.1-jre'
 
+
+	// https://github.com/julman99/gson-fire
+	implementation 'io.gsonfire:gson-fire:1.8.3'
+
 	// Use JUnit test framework
 	testImplementation 'junit:junit:4.12'
+
+	// https://github.com/cdimascio/java-dotenv
+	testImplementation 'io.github.cdimascio:java-dotenv:5.1.1'
 
 	//Apache http dependencies
 	compile 'org.apache.httpcomponents:httpclient:4.5.9'

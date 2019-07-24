@@ -1,0 +1,9 @@
+{
+  "links": {
+    "interactive": "https://test-next-ssl.acrolinx.com/signin/?ticket_id=2b3db9c6-79e3-4cc0-b760-624fb19802e9",
+    "poll": "https://test-next-ssl.acrolinx.com/api/v1/auth/sign-ins/5f2babd5-04db-4145-9d89-11fa33a9bae7"
+  },
+  "data": {
+    "interactiveLinkTimeout": 900
+  }
+}
