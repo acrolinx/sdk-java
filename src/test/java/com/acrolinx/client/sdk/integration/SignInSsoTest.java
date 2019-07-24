@@ -1,12 +1,14 @@
-package com.acrolinx.client.sdk;
+package com.acrolinx.client.sdk.integration;
 
+import com.acrolinx.client.sdk.AcrolinxEndpoint;
+import com.acrolinx.client.sdk.SignInSuccess;
 import com.acrolinx.client.sdk.exceptions.SSOException;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.net.URISyntaxException;
 
-import static com.acrolinx.client.sdk.CommonTestSetup.*;
+import static com.acrolinx.client.sdk.integration.CommonTestSetup.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assume.assumeTrue;
 

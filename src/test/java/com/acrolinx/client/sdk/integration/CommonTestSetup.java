@@ -1,5 +1,7 @@
-package com.acrolinx.client.sdk;
+package com.acrolinx.client.sdk.integration;
 
+import com.acrolinx.client.sdk.AccessToken;
+import com.acrolinx.client.sdk.AcrolinxEndpoint;
 import io.github.cdimascio.dotenv.Dotenv;
 
 import java.net.URI;

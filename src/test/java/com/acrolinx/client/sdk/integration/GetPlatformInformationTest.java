@@ -1,5 +1,7 @@
-package com.acrolinx.client.sdk;
+package com.acrolinx.client.sdk.integration;
 
+import com.acrolinx.client.sdk.AcrolinxEndpoint;
+import com.acrolinx.client.sdk.PlatformInformation;
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import com.acrolinx.client.sdk.exceptions.SSOException;
 import org.junit.Before;
@@ -8,8 +10,8 @@ import org.junit.Test;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 
-import static com.acrolinx.client.sdk.CommonTestSetup.ACROLINX_URL;
-import static com.acrolinx.client.sdk.CommonTestSetup.createTestAcrolinxEndpoint;
+import static com.acrolinx.client.sdk.integration.CommonTestSetup.ACROLINX_URL;
+import static com.acrolinx.client.sdk.integration.CommonTestSetup.createTestAcrolinxEndpoint;
 import static org.junit.Assert.*;
 import static org.junit.Assume.assumeTrue;
 

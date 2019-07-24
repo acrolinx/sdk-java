@@ -4,7 +4,13 @@ import com.acrolinx.client.sdk.SignInSuccess;
 import com.google.gson.JsonElement;
 import io.gsonfire.TypeSelector;
 
+/**
+ * "Sealed" class
+ */
 abstract public class SignInResponse {
+    private SignInResponse() {
+    }
+
     static TypeSelector<SignInResponse> TYPE_SELECTOR = new TypeSelector<SignInResponse>() {
         @Override
         public Class<? extends SignInResponse> getClassForElement(JsonElement readElement) {

@@ -6,10 +6,7 @@ import com.acrolinx.client.sdk.exceptions.SignInException;
 import com.acrolinx.client.sdk.http.AcrolinxHttpClient;
 import com.acrolinx.client.sdk.http.ApacheHttpClient;
 import com.acrolinx.client.sdk.http.HttpMethod;
-import com.acrolinx.client.sdk.internal.JsonDeserializer;
-import com.acrolinx.client.sdk.internal.JsonUtils;
-import com.acrolinx.client.sdk.internal.SignInResponse;
-import com.acrolinx.client.sdk.internal.SuccessResponse;
+import com.acrolinx.client.sdk.internal.*;
 import com.acrolinx.client.sdk.platform.Capabilities;
 import org.apache.http.client.utils.URIBuilder;
 
@@ -57,6 +54,10 @@ public class AcrolinxEndpoint {
     }
 
     public SignInSuccess singInInteractive(InteractiveCallback callback, AccessToken accessToken) throws SignInException {
+        return singInInteractive(callback, accessToken, 60 * 60 * 1000);
+    }
+
+    public SignInSuccess singInInteractive(InteractiveCallback callback, AccessToken accessToken, long timeoutMs) throws SignInException {
         try {
             SignInResponse signInResponse = fetchFromApiPath("auth/sign-ins", JsonUtils.getSerializer(SignInResponse.class),
                     HttpMethod.POST, accessToken, null, null);
@@ -68,11 +69,32 @@ public class AcrolinxEndpoint {
 
             callback.onInteractiveUrl(signInLinks.links.interactive);
 
-            return null; // TODO
+            return pollForInteractiveSignIn(signInLinks.links, timeoutMs);
 
-        } catch (AcrolinxException e) {
+        } catch (AcrolinxException | InterruptedException | URISyntaxException | IOException e) {
             throw new SignInException();
         }
+    }
+
+    private SignInSuccess pollForInteractiveSignIn(SignInResponse.SignInLinksInternal signInLinks, long timeoutMs) throws SignInException, AcrolinxException, InterruptedException, URISyntaxException, IOException {
+        long endTime = System.currentTimeMillis() + timeoutMs;
+
+        while (System.currentTimeMillis() < endTime) {
+            SignInPollResponse pollResponse = fetchFromUrl(new URI(signInLinks.poll), JsonUtils.getSerializer(SignInPollResponse.class),
+                    HttpMethod.POST, null, null, null);
+            if (pollResponse instanceof SignInPollResponse.Success) {
+                return ((SignInPollResponse.Success) pollResponse).data;
+            }
+            ProgressInternal progress = ((SignInPollResponse.Progress) pollResponse).progress;
+
+            long sleepTimeMs = progress.getRetryAfterMs();
+            if (System.currentTimeMillis() + sleepTimeMs > endTime) {
+                break;
+            }
+            Thread.sleep(sleepTimeMs);
+        }
+
+        throw new SignInException();
     }
 
     // TODO

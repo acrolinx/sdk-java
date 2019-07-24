@@ -8,7 +8,9 @@ import java.lang.reflect.Type;
 
 public class JsonUtils {
     private static GsonFireBuilder builder = new GsonFireBuilder()
-            .registerTypeSelector(SignInResponse.class, SignInResponse.TYPE_SELECTOR);
+            .registerTypeSelector(SignInResponse.class, SignInResponse.TYPE_SELECTOR)
+            .registerTypeSelector(SignInPollResponse.class, SignInPollResponse.TYPE_SELECTOR);
+
     private static Gson gson = builder.createGson();
 
     public static Type getType(final Class<?> rawClass, final Class<?> parameter) {
