@@ -4,7 +4,6 @@ import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.concurrent.Future;
 

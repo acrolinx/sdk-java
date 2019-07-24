@@ -17,7 +17,6 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 public class AcrolinxEndpoint {
 
@@ -56,7 +55,7 @@ public class AcrolinxEndpoint {
     }
 
     public SignInSuccess signInInteractive(InteractiveCallback callback, AccessToken accessToken) throws SignInException {
-        return signInInteractive(callback, accessToken, 60 * 60 * 1000);
+        return signInInteractive(callback, accessToken, 60L * 60L * 1000L);
     }
 
     public SignInSuccess signInInteractive(InteractiveCallback callback, AccessToken accessToken, long timeoutMs) throws SignInException {
@@ -69,7 +68,7 @@ public class AcrolinxEndpoint {
             }
             SignInResponse.SignInLinks signInLinks = (SignInResponse.SignInLinks) signInResponse;
 
-            callback.onInteractiveUrl(signInLinks.links.interactive);
+            callback.onInteractiveUrl(signInLinks.links.getInteractive());
 
             return pollForInteractiveSignIn(signInLinks.links, timeoutMs);
 
@@ -78,11 +77,11 @@ public class AcrolinxEndpoint {
         }
     }
 
-    private SignInSuccess pollForInteractiveSignIn(SignInResponse.SignInLinksInternal signInLinks, long timeoutMs) throws SignInException, AcrolinxException, InterruptedException, URISyntaxException, IOException {
+    private SignInSuccess pollForInteractiveSignIn(SignInResponse.SignInLinksInternal signInLinks, long timeoutMs) throws  AcrolinxException, InterruptedException, URISyntaxException, IOException {
         long endTime = System.currentTimeMillis() + timeoutMs;
 
         while (System.currentTimeMillis() < endTime) {
-            SignInPollResponse pollResponse = fetchFromUrl(new URI(signInLinks.poll), JsonUtils.getSerializer(SignInPollResponse.class),
+            SignInPollResponse pollResponse = fetchFromUrl(new URI(signInLinks.getPoll()), JsonUtils.getSerializer(SignInPollResponse.class),
                     HttpMethod.GET, null, null, null);
             if (pollResponse instanceof SignInPollResponse.Success) {
                 return ((SignInPollResponse.Success) pollResponse).data;

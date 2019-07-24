@@ -3,8 +3,21 @@ package com.acrolinx.client.sdk.internal;
 public class ProgressInternal {
     Double retryAfter;
     Double percent;
-    Double message;
+    String message;
 
+    public ProgressInternal(Double retryAfter, Double percent, String message) {
+        this.retryAfter = retryAfter;
+        this.percent = percent;
+        this.message = message;
+    }
+
+    public Double getPercent() {
+        return percent;
+    }
+
+    public String getMessage() {
+        return message;
+    }
     /**
      * In seconds
      */
@@ -16,6 +29,6 @@ public class ProgressInternal {
      * In milliseconds
      */
     public long getRetryAfterMs() {
-        return Math.round(retryAfter * 1000.0);
+        return Math.round(this.getRetryAfter() * 1000.0);
     }
 }

@@ -11,7 +11,7 @@ public abstract class SignInPollResponse {
     private SignInPollResponse() {
     }
 
-    static TypeSelector<SignInPollResponse> TYPE_SELECTOR = new TypeSelector<SignInPollResponse>() {
+    static final TypeSelector<SignInPollResponse> TYPE_SELECTOR = new TypeSelector<SignInPollResponse>() {
         @Override
         public Class<? extends SignInPollResponse> getClassForElement(JsonElement readElement) {
             Boolean isSuccess = readElement.getAsJsonObject().has("data");

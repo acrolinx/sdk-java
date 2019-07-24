@@ -7,6 +7,9 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 public class JsonUtils {
+    private JsonUtils() {
+    }
+
     private static GsonFireBuilder builder = new GsonFireBuilder()
             .registerTypeSelector(SignInResponse.class, SignInResponse.TYPE_SELECTOR)
             .registerTypeSelector(SignInPollResponse.class, SignInPollResponse.TYPE_SELECTOR);

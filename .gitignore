@@ -13,3 +13,4 @@
 
 .env
 .attach_pid*
+/out

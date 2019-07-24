@@ -17,8 +17,8 @@ public class GsonTest {
 
         Server server = parseJson(json, Server.class);
 
-        assertEquals(server.getName(), "ServerName");
-        assertEquals(server.getVersion(), "ServerVersion");
+        assertEquals("ServerName", server.getName());
+        assertEquals("ServerVersion", server.getVersion());
     }
 
     @Test
@@ -27,8 +27,8 @@ public class GsonTest {
 
         SuccessResponse<Server> server = parseJson(json, SuccessResponse.class, Server.class);
 
-        assertEquals(server.data.getName(), "ServerName");
-        assertEquals(server.data.getVersion(), "ServerVersion");
+        assertEquals("ServerName", server.data.getName());
+        assertEquals("ServerVersion", server.data.getVersion());
     }
 
     @Test
@@ -53,7 +53,7 @@ public class GsonTest {
 
         if (signInResponse instanceof SignInResponse.SignInLinks) {
             SignInResponse.SignInLinksInternal links = ((SignInResponse.SignInLinks) signInResponse).links;
-            assertEquals("https://test-next-ssl.acrolinx.com/signin/?ticket_id=2b3db9c6-79e3-4cc0-b760-624fb19802e9", links.interactive);
+            assertEquals("https://test-next-ssl.acrolinx.com/signin/?ticket_id=2b3db9c6-79e3-4cc0-b760-624fb19802e9", links.getInteractive());
         } else {
             fail("signInResponse should be links but is " + signInResponse);
         }

@@ -5,6 +5,11 @@ public class Server
     private String version;
     private String name;
 
+    public Server(String version, String name) {
+        this.version = version;
+        this.name = name;
+    }
+
     public String getName()
     {
         return name;

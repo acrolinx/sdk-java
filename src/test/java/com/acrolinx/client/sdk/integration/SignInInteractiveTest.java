@@ -39,8 +39,9 @@ public class SignInInteractiveTest {
             }, null, timeoutMs);
             fail("It should fail due to timeout.");
         } catch (SignInException e) {
-            assertEquals(interactiveUrls.size(), 1);
-            assertTrue(interactiveUrls.get(0).startsWith("https"));
+            assertEquals(1, interactiveUrls.size());
+            // We assert for "http" (and not "https") to allow easy testing with local servers
+            assertTrue(interactiveUrls.get(0).startsWith("http"));
         }
 
     }
@@ -57,6 +58,6 @@ public class SignInInteractiveTest {
         }, ACROLINX_API_TOKEN);
 
         assertEquals(ACROLINX_API_USERNAME, signInSuccess.getUser().getUsername());
-        assertEquals(interactiveUrls.size(), 0);
+        assertEquals(0, interactiveUrls.size());
     }
 }

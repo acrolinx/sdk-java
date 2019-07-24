@@ -12,7 +12,7 @@ public class CommonTestSetup {
             .ignoreIfMissing()
             .load();
 
-    public static String ACROLINX_URL = dotenv.get("ACROLINX_URL");
+    public static final String ACROLINX_URL = dotenv.get("ACROLINX_URL");
 
     static String ACROLINX_API_SSO_TOKEN = dotenv.get("ACROLINX_API_SSO_TOKEN");
     static String ACROLINX_API_USERNAME = dotenv.get("ACROLINX_API_USERNAME");

@@ -7,11 +7,11 @@ import io.gsonfire.TypeSelector;
 /**
  * "Sealed" class
  */
-abstract public class SignInResponse {
+public abstract class SignInResponse {
     private SignInResponse() {
     }
 
-    static TypeSelector<SignInResponse> TYPE_SELECTOR = new TypeSelector<SignInResponse>() {
+    static final TypeSelector<SignInResponse> TYPE_SELECTOR = new TypeSelector<SignInResponse>() {
         @Override
         public Class<? extends SignInResponse> getClassForElement(JsonElement readElement) {
             Boolean isSuccess = readElement.getAsJsonObject().get("data").getAsJsonObject().has("accessToken");
@@ -29,12 +29,33 @@ abstract public class SignInResponse {
     }
 
     public static class SignInLinksData {
-        public Double interactiveLinkTimeout;
+        private Double interactiveLinkTimeout;
+
+        public SignInLinksData(Double interactiveLinkTimeout) {
+            this.interactiveLinkTimeout = interactiveLinkTimeout;
+        }
+
+        public Double getInteractiveLinkTimeout() {
+            return interactiveLinkTimeout;
+        }
     }
 
     public static class SignInLinksInternal {
-        public String interactive;
-        public String poll;
+        private String interactive;
+        private String poll;
+
+        public SignInLinksInternal(String interactive, String poll) {
+            this.interactive = interactive;
+            this.poll = poll;
+        }
+
+        public String getInteractive() {
+            return interactive;
+        }
+
+        public String getPoll() {
+            return poll;
+        }
     }
 }
 
