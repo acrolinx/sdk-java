@@ -28,7 +28,7 @@ public class SignInInteractiveTest {
     @Test
     public void testSignInWithPollingCallsCallback() throws SignInException {
         final List<String> interactiveUrls = newArrayList();
-        long timeoutMs = 10000;
+        long timeoutMs = 100;
 
         try {
             endpoint.singInInteractive(new InteractiveCallback() {

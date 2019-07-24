@@ -12,7 +12,7 @@ public class CommonTestSetup {
             .ignoreIfMissing()
             .load();
 
-    static String ACROLINX_URL = dotenv.get("ACROLINX_URL");
+    public static String ACROLINX_URL = dotenv.get("ACROLINX_URL");
 
     static String ACROLINX_API_SSO_TOKEN = dotenv.get("ACROLINX_API_SSO_TOKEN");
     static String ACROLINX_API_USERNAME = dotenv.get("ACROLINX_API_USERNAME");
@@ -21,7 +21,7 @@ public class CommonTestSetup {
 
     static String DEVELOPMENT_SIGNATURE = "SW50ZWdyYXRpb25EZXZlbG9wbWVudERlbW9Pbmx5";
 
-    static AcrolinxEndpoint createTestAcrolinxEndpoint() throws URISyntaxException {
+    public static AcrolinxEndpoint createTestAcrolinxEndpoint() throws URISyntaxException {
         return new AcrolinxEndpoint(new URI(ACROLINX_URL), DEVELOPMENT_SIGNATURE, "1.2.3.4", "en");
     }
 }

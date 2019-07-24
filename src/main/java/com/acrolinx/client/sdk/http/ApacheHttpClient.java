@@ -32,8 +32,9 @@ public class ApacheHttpClient implements AcrolinxHttpClient {
 
         CloseableHttpResponse response = httpClient.execute(request);
 
-        if (!isOk(response)) {
-            throw new IOException("Response has no valid status code.");
+        int statusCode = response.getStatusLine().getStatusCode();
+        if (statusCode < 200 || statusCode > 299) {
+            throw new IOException("Response has invalid valid status code" + statusCode + ".");
         }
 
         HttpEntity responseEntity = response.getEntity();
@@ -62,10 +63,5 @@ public class ApacheHttpClient implements AcrolinxHttpClient {
         for (Map.Entry<String, String> entry : headers.entrySet()) {
             request.setHeader(entry.getKey(), entry.getValue());
         }
-    }
-
-    private boolean isOk(CloseableHttpResponse response) {
-        int statusCode = response.getStatusLine().getStatusCode();
-        return statusCode >= 200 && statusCode <= 299;
     }
 }

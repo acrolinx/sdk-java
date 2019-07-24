@@ -72,7 +72,7 @@ public class AcrolinxEndpoint {
             return pollForInteractiveSignIn(signInLinks.links, timeoutMs);
 
         } catch (AcrolinxException | InterruptedException | URISyntaxException | IOException e) {
-            throw new SignInException();
+            throw new SignInException(e);
         }
     }
 
@@ -81,7 +81,7 @@ public class AcrolinxEndpoint {
 
         while (System.currentTimeMillis() < endTime) {
             SignInPollResponse pollResponse = fetchFromUrl(new URI(signInLinks.poll), JsonUtils.getSerializer(SignInPollResponse.class),
-                    HttpMethod.POST, null, null, null);
+                    HttpMethod.GET, null, null, null);
             if (pollResponse instanceof SignInPollResponse.Success) {
                 return ((SignInPollResponse.Success) pollResponse).data;
             }
@@ -94,7 +94,7 @@ public class AcrolinxEndpoint {
             Thread.sleep(sleepTimeMs);
         }
 
-        throw new SignInException();
+        throw new SignInException("Timeout");
     }
 
     // TODO
