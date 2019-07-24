@@ -47,7 +47,7 @@ public class AcrolinxEndpoint {
         extraHeaders.put("username", username);
         try {
             return fetchDataFromApiPath("auth/sign-ins", SignInSuccess.class, HttpMethod.POST, null, null, extraHeaders);
-        } catch (Throwable e) {
+        } catch (Exception e) {
             throw new SSOException();
         }
     }

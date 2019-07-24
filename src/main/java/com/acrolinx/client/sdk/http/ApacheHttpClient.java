@@ -21,7 +21,7 @@ public class ApacheHttpClient implements AcrolinxHttpClient {
     // Is the default closeable http client the best choice?
     // Can it handle forward proxies? In AEM it didn't
     private CloseableHttpClient httpClient = HttpClients.createDefault();
-    private RequestConfig config = config = RequestConfig.custom().setConnectTimeout(500).setConnectionRequestTimeout(500).setSocketTimeout(500)
+    private RequestConfig config = RequestConfig.custom().setConnectTimeout(500).setConnectionRequestTimeout(500).setSocketTimeout(500)
             .build();
 
     @Override
