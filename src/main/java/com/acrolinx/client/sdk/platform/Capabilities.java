@@ -4,11 +4,10 @@ import com.acrolinx.client.sdk.platform.CheckingCapabilities;
 
 public class Capabilities
 {
-    private CheckingCapabilities checkingCapabilities;
-
+    private CheckingCapabilities checking;
 
     public CheckingCapabilities getCheckingCapabilities()
     {
-        return checkingCapabilities;
+        return checking;
     }
 }

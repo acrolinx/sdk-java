@@ -97,9 +97,8 @@ public class AcrolinxEndpoint {
         throw new SignInException("Timeout");
     }
 
-    // TODO
-    public Capabilities getCapabilities(AccessToken accessToken) {
-        return null;
+    public Capabilities getCapabilities(AccessToken accessToken) throws AcrolinxException {
+        return fetchDataFromApiPath("capabilities", Capabilities.class, HttpMethod.GET, accessToken, null, null);
     }
 
     private <T> T fetchDataFromApiPath(String apiPath,
