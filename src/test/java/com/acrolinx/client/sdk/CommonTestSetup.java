@@ -6,7 +6,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 public class CommonTestSetup {
-    static Dotenv dotenv = Dotenv.load();
+    static Dotenv dotenv = Dotenv.configure()
+            .ignoreIfMissing()
+            .load();
+
     static String ACROLINX_URL = dotenv.get("ACROLINX_URL");
 
     static String ACROLINX_API_SSO_TOKEN = dotenv.get("ACROLINX_API_SSO_TOKEN");
