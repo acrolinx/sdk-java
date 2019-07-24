@@ -12,3 +12,4 @@
 *.iml
 
 .env
+.attach_pid*
