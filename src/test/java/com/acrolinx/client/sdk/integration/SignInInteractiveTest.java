@@ -40,10 +40,8 @@ public class SignInInteractiveTest {
             fail("It should fail due to timeout.");
         } catch (SignInException e) {
             assertEquals(1, interactiveUrls.size());
-            // We assert for "http" (and not "https") to allow easy testing with local servers
-            assertTrue(interactiveUrls.get(0).startsWith("http"));
+            assertTrue(interactiveUrls.get(0).startsWith(ACROLINX_URL));
         }
-
     }
 
     @Test
