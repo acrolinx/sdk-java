@@ -49,15 +49,15 @@ public class AcrolinxEndpoint {
         }
     }
 
-    public SignInSuccess singInInteractive(InteractiveCallback callback) throws SignInException {
-        return singInInteractive(callback, null);
+    public SignInSuccess signInInteractive(InteractiveCallback callback) throws SignInException {
+        return signInInteractive(callback, null);
     }
 
-    public SignInSuccess singInInteractive(InteractiveCallback callback, AccessToken accessToken) throws SignInException {
-        return singInInteractive(callback, accessToken, 60 * 60 * 1000);
+    public SignInSuccess signInInteractive(InteractiveCallback callback, AccessToken accessToken) throws SignInException {
+        return signInInteractive(callback, accessToken, 60 * 60 * 1000);
     }
 
-    public SignInSuccess singInInteractive(InteractiveCallback callback, AccessToken accessToken, long timeoutMs) throws SignInException {
+    public SignInSuccess signInInteractive(InteractiveCallback callback, AccessToken accessToken, long timeoutMs) throws SignInException {
         try {
             SignInResponse signInResponse = fetchFromApiPath("auth/sign-ins", JsonUtils.getSerializer(SignInResponse.class),
                     HttpMethod.POST, accessToken, null, null);

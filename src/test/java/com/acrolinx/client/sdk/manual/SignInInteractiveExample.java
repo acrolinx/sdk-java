@@ -13,7 +13,7 @@ public class SignInInteractiveExample {
     public static void main(String[] args) throws URISyntaxException, SignInException {
         AcrolinxEndpoint endpoint = createTestAcrolinxEndpoint();
 
-        SignInSuccess signInSuccess = endpoint.singInInteractive(new InteractiveCallback() {
+        SignInSuccess signInSuccess = endpoint.signInInteractive(new InteractiveCallback() {
             @Override
             public void onInteractiveUrl(String url) {
                 System.out.println("Please open the following URL:");

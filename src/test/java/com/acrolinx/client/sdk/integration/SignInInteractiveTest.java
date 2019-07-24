@@ -31,7 +31,7 @@ public class SignInInteractiveTest {
         long timeoutMs = 100;
 
         try {
-            endpoint.singInInteractive(new InteractiveCallback() {
+            endpoint.signInInteractive(new InteractiveCallback() {
                 @Override
                 public void onInteractiveUrl(String url) {
                     interactiveUrls.add(url);
@@ -49,7 +49,7 @@ public class SignInInteractiveTest {
     public void testSignInWithPollingWithValidAuthToken() throws SignInException {
         final List<String> interactiveUrls = newArrayList();
 
-        SignInSuccess signInSuccess = endpoint.singInInteractive(new InteractiveCallback() {
+        SignInSuccess signInSuccess = endpoint.signInInteractive(new InteractiveCallback() {
             @Override
             public void onInteractiveUrl(String url) {
                 interactiveUrls.add(url);
