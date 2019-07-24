@@ -20,16 +20,25 @@ public abstract class SignInResponse {
     };
 
     public static class Success extends SignInResponse {
-        public SignInSuccess data;
+        public final SignInSuccess data;
+
+        public Success(SignInSuccess data) {
+            this.data = data;
+        }
     }
 
     public static class SignInLinks extends SignInResponse {
-        public SignInLinksInternal links;
-        public SignInLinksData data;
+        public final SignInLinksInternal links;
+        public final SignInLinksData data;
+
+        public SignInLinks(SignInLinksInternal links, SignInLinksData data) {
+            this.links = links;
+            this.data = data;
+        }
     }
 
     public static class SignInLinksData {
-        private Double interactiveLinkTimeout;
+        private final Double interactiveLinkTimeout;
 
         public SignInLinksData(Double interactiveLinkTimeout) {
             this.interactiveLinkTimeout = interactiveLinkTimeout;
@@ -41,8 +50,8 @@ public abstract class SignInResponse {
     }
 
     public static class SignInLinksInternal {
-        private String interactive;
-        private String poll;
+        private final String interactive;
+        private final String poll;
 
         public SignInLinksInternal(String interactive, String poll) {
             this.interactive = interactive;

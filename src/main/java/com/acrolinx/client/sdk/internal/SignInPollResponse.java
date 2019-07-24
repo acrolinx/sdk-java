@@ -20,10 +20,18 @@ public abstract class SignInPollResponse {
     };
 
     public static class Success extends SignInPollResponse {
-        public SignInSuccess data;
+        public final SignInSuccess data;
+
+        public Success(SignInSuccess data) {
+            this.data = data;
+        }
     }
 
     public static class Progress extends SignInPollResponse {
-        public ProgressInternal progress;
+        public final ProgressInternal progress;
+
+        public Progress(ProgressInternal progress) {
+            this.progress = progress;
+        }
     }
 }

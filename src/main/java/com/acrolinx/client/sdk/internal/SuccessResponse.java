@@ -1,5 +1,9 @@
 package com.acrolinx.client.sdk.internal;
 
 public class SuccessResponse<T> {
-    public T data;
+    public final T data;
+
+    public SuccessResponse(T data) {
+        this.data = data;
+    }
 }
