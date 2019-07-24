@@ -27,4 +27,9 @@ public class SignInSsoTest {
         SignInSuccess signInSuccess = endpoint.signInWithSSO(ACROLINX_API_SSO_TOKEN, ACROLINX_API_USERNAME);
         assertEquals(ACROLINX_API_USERNAME, signInSuccess.getUser().getUsername());
     }
+
+    @Test(expected = SSOException.class)
+    public void testSignInWithSsoThrowsException() throws SSOException {
+        endpoint.signInWithSSO("invalidGenericToken", "invalidUserName");
+    }
 }
