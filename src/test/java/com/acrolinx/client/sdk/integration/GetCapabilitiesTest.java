@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import static com.acrolinx.client.sdk.integration.CommonTestSetup.*;
 import static org.junit.Assert.assertNotNull;
@@ -27,8 +28,8 @@ public class GetCapabilitiesTest {
     }
 
     @Test
-    public void testGetCapabilities() throws AcrolinxException {
-        Capabilities capabilities = endpoint.getCapabilities(ACROLINX_API_TOKEN);
+    public void testGetCapabilities() throws AcrolinxException, InterruptedException, ExecutionException {
+        Capabilities capabilities = endpoint.getCapabilities(ACROLINX_API_TOKEN).get();
         assertNotNull("", capabilities.getCheckingCapabilities());
 
         List<GuidanceProfile> guidanceProfiles = capabilities.getCheckingCapabilities().getGuidanceProfiles();

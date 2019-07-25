@@ -5,6 +5,7 @@ import com.acrolinx.client.sdk.internal.JsonResponse;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.ParseException;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -23,44 +24,97 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class ApacheHttpClient implements AcrolinxHttpClient {
-    // Is the default closeable http client the best choice?
-    // Can it handle forward proxies? In AEM it didn't
+
     private RequestConfig config = RequestConfig.custom().setConnectTimeout(500).setConnectionRequestTimeout(500).setSocketTimeout(500)
             .build();
 
     @Override
-    public Future<AcrolinResponse> fetch(URI uri, HttpMethod httpMethod, Map<String, String> headers, String jsonBody) throws IOException, AcrolinxException {
-
+    public Future<AcrolinxResponse> fetch(URI uri, HttpMethod httpMethod, Map<String, String> headers, String jsonBody) throws IOException, AcrolinxException {
         HttpRequestBase request = createRequests(uri, httpMethod, jsonBody);
         request.setConfig(this.config);
         setHeaders(request, headers);
 
-        CloseableHttpAsyncClient httpAsyncClient = HttpAsyncClients.createDefault();
+        final CloseableHttpAsyncClient httpAsyncClient = HttpAsyncClients.createDefault();
         httpAsyncClient.start(); //blongs somewhere else
-        Future<HttpResponse> responseFuture = httpAsyncClient.execute(request, null);
+        final Future<HttpResponse> responseFuture = httpAsyncClient.execute(request, null);
         
-        return new Future<AcrolinResponse>(){
-            get(){
+        return new Future<AcrolinxResponse>(){
+
+            private volatile AcrolinxResponseState state = AcrolinxResponseState.INPROGRESS;
+            @Override
+            public boolean cancel(boolean mayInterruptIfRunning) {
+                responseFuture.cancel(mayInterruptIfRunning);
+                state = AcrolinxResponseState.CANCELLED;
+                return true;
+            }
+
+            @Override
+            public boolean isCancelled() {
+                return (state == AcrolinxResponseState.CANCELLED);
+            }
+
+            @Override
+            public boolean isDone() {
+                return (state == AcrolinxResponseState.DONE);
+            }
+
+            @Override
+            public AcrolinxResponse get() throws InterruptedException, ExecutionException {
                 HttpResponse response;
                 try {
                     response = responseFuture.get();
                 } catch (InterruptedException | ExecutionException e) {
-                    throw new AcrolinxException(e);
+                    throw e;//new AcrolinxException(e);
                 } finally {
-                    httpAsyncClient.close(); //blongs somewhere else
+                    try {
+                        httpAsyncClient.close(); //blongs somewhere else
+                    } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
                 }
         
-                int statusCode = response.getStatusLine().getStatusCode();
-                const result = new AcrolinxResponse();
-                result.status = statusCode;
-                HttpEntity responseEntity = response.getEntity();
-                result.result =  EntityUtils.toString(responseEntity);
-        
-                return result;
+                return processResponse(response);
             }
-        }
+
+            @Override
+            public AcrolinxResponse get(long timeout, TimeUnit unit)
+                    throws InterruptedException, ExecutionException, TimeoutException {
+                HttpResponse response;
+                try {
+                    response = responseFuture.get(timeout, unit);
+                } catch (InterruptedException | ExecutionException e) {
+                    throw e;//new AcrolinxException(e);
+                } finally {
+                    try {
+                        httpAsyncClient.close();
+                    } catch (IOException e) {
+                        // TODO log
+                    } //blongs somewhere else
+                }
+                return processResponse(response);
+            }
+            
+            private AcrolinxResponse processResponse(HttpResponse response) {
+                AcrolinxResponse acrolinxResponse = new AcrolinxResponse();
+                acrolinxResponse.setStatus(response.getStatusLine().getStatusCode());
+               HttpEntity responseEntity = response.getEntity();
+                try {
+                    acrolinxResponse.setResult(EntityUtils.toString(responseEntity));
+                } catch (ParseException | IOException e) {
+                    // TODO log
+                }
+        
+                state = AcrolinxResponseState.DONE;
+                return acrolinxResponse;
+            }
+            
+            
+        };
     }
 
     private HttpRequestBase createRequests(URI uri, HttpMethod httpMethod, @Nullable String jsonBody) throws UnsupportedEncodingException {

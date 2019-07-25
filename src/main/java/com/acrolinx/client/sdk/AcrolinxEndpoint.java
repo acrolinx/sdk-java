@@ -4,6 +4,8 @@ import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import com.acrolinx.client.sdk.exceptions.SSOException;
 import com.acrolinx.client.sdk.exceptions.SignInException;
 import com.acrolinx.client.sdk.http.AcrolinxHttpClient;
+import com.acrolinx.client.sdk.http.AcrolinxResponse;
+import com.acrolinx.client.sdk.http.AcrolinxResponseState;
 import com.acrolinx.client.sdk.http.ApacheHttpClient;
 import com.acrolinx.client.sdk.http.HttpMethod;
 import com.acrolinx.client.sdk.internal.*;
@@ -17,6 +19,9 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class AcrolinxEndpoint {
 
@@ -36,7 +41,12 @@ public class AcrolinxEndpoint {
     }
 
     public PlatformInformation getPlatformInformation() throws AcrolinxException {
-        return fetchDataFromApiPath("", PlatformInformation.class, HttpMethod.GET, null, null, null);
+        try {
+            return fetchDataFromApiPath("", PlatformInformation.class, HttpMethod.GET, null, null, null).get();
+        } catch (InterruptedException | ExecutionException e) {
+            // TODO log
+        }
+        return null;
     }
 
     public SignInSuccess signInWithSSO(String genericToken, String username) throws SSOException {
@@ -44,7 +54,7 @@ public class AcrolinxEndpoint {
         extraHeaders.put("password", genericToken);
         extraHeaders.put("username", username);
         try {
-            return fetchDataFromApiPath("auth/sign-ins", SignInSuccess.class, HttpMethod.POST, null, null, extraHeaders);
+            return fetchDataFromApiPath("auth/sign-ins", SignInSuccess.class, HttpMethod.POST, null, null, extraHeaders).get();
         } catch (Exception e) {
             throw new SSOException();
         }
@@ -60,8 +70,14 @@ public class AcrolinxEndpoint {
 
     public SignInSuccess signInInteractive(InteractiveCallback callback, AccessToken accessToken, long timeoutMs) throws SignInException {
         try {
-            SignInResponse signInResponse = fetchFromApiPath("auth/sign-ins", JsonUtils.getSerializer(SignInResponse.class),
-                    HttpMethod.POST, accessToken, null, null);
+            SignInResponse signInResponse = null;
+            try {
+                signInResponse = fetchFromApiPath("auth/sign-ins", JsonUtils.getSerializer(SignInResponse.class),
+                        HttpMethod.POST, accessToken, null, null).get();
+            } catch (ExecutionException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
 
             if (signInResponse instanceof SignInResponse.Success) {
                 return ((SignInResponse.Success) signInResponse).data;
@@ -81,8 +97,13 @@ public class AcrolinxEndpoint {
         long endTime = System.currentTimeMillis() + timeoutMs;
 
         while (System.currentTimeMillis() < endTime) {
-            SignInPollResponse pollResponse = fetchFromUrl(new URI(signInLinks.getPoll()), JsonUtils.getSerializer(SignInPollResponse.class),
-                    HttpMethod.GET, null, null, null);
+            SignInPollResponse pollResponse = null;
+            try {
+                pollResponse = fetchFromUrl(new URI(signInLinks.getPoll()), JsonUtils.getSerializer(SignInPollResponse.class),
+                        HttpMethod.GET, null, null, null).get();
+            } catch (ExecutionException e) {
+                // TODO log
+            }
             if (pollResponse instanceof SignInPollResponse.Success) {
                 return ((SignInPollResponse.Success) pollResponse).data;
             }
@@ -98,22 +119,23 @@ public class AcrolinxEndpoint {
         throw new SignInException("Timeout");
     }
 
-    public Capabilities getCapabilities(AccessToken accessToken) throws AcrolinxException {
+    public Future<Capabilities> getCapabilities(AccessToken accessToken) throws AcrolinxException {
         return fetchDataFromApiPath("capabilities", Capabilities.class, HttpMethod.GET, accessToken, null, null);
     }
 
-    private <T> T fetchDataFromApiPath(String apiPath,
+    @SuppressWarnings("unchecked")
+    private <T> Future<T> fetchDataFromApiPath(String apiPath,
                                        Class<T> clazz,
                                        HttpMethod method,
                                        AccessToken accessToken,
                                        String body,
                                        Map<String, String> extraHeaders
     ) throws AcrolinxException {
-        return (T) fetchFromApiPath(apiPath, JsonUtils.getSerializer(SuccessResponse.class, clazz), method, accessToken,
-                body, extraHeaders).data;
+        return (Future<T>) fetchFromApiPath(apiPath, JsonUtils.getSerializer(SuccessResponse.class, clazz), method, accessToken,
+                body, extraHeaders);
     }
 
-    private <T> T fetchFromApiPath(
+    private <T> Future<T> fetchFromApiPath(
             String apiPath,
             JsonDeserializer<T> deserializer,
             HttpMethod method,
@@ -130,9 +152,9 @@ public class AcrolinxEndpoint {
         }
     }
 
-    private Future<T> T fetchFromUrl(
+    private <T> Future<T> fetchFromUrl(
             URI uri,
-            JsonDeserializer<T> deserializer,
+            final JsonDeserializer<T> deserializer,
             HttpMethod method,
             AccessToken accessToken,
             String body,
@@ -143,11 +165,43 @@ public class AcrolinxEndpoint {
             headers.putAll(extraHeaders);
         }
         
-        Future<AcrolinxResult> jsonString = httpClient.fetch(uri, method, headers, body);
+        final Future<AcrolinxResponse> acrolinxResponse = httpClient.fetch(uri, method, headers, body);
+
         return new Future<T>(){
-            get(){
-                return deserializer.deserialize(jsonString.result);
+
+            private volatile AcrolinxResponseState state = AcrolinxResponseState.INPROGRESS;
+            @Override
+            public boolean cancel(boolean mayInterruptIfRunning) {
+                acrolinxResponse.cancel(mayInterruptIfRunning);
+                state = AcrolinxResponseState.CANCELLED;
+                return true;
             }
+
+            @Override
+            public boolean isCancelled() {
+                return (state == AcrolinxResponseState.CANCELLED);
+            }
+
+            @Override
+            public boolean isDone() {
+                return (state == AcrolinxResponseState.DONE);
+            }
+
+            @Override
+            public T get() throws InterruptedException, ExecutionException {
+                state = AcrolinxResponseState.DONE;
+                return deserializer.deserialize(acrolinxResponse.get().getResult());
+            }
+
+            @Override
+            public T get(long timeout, TimeUnit unit)
+                    throws InterruptedException, ExecutionException, TimeoutException {
+                state = AcrolinxResponseState.DONE;
+                return deserializer.deserialize(acrolinxResponse.get(timeout, unit).getResult());
+            }
+        };
+
+           
     }
 
     private HashMap<String, String> getCommonHeaders(AccessToken accessToken) {

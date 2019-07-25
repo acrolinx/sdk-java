@@ -1,6 +1,6 @@
 
 
-
+/*
 const e = new Endpoint();
 
 const caps = e.getCapabilities();
@@ -9,6 +9,7 @@ const exec = execService.createPool(3);
 List<Future<Check>> checks = new ();
 for(file f : files){
     checks.add(exec.submit( () => { return e.check(f, caps.get()[0]);}));
+    //return Future of check -> checkresult 
 }
 
 for(Future<Check> c : checks){
@@ -30,4 +31,4 @@ for(file f : files){
 
 for(Future<Check> c : checks){
     checks.get()
-}
+}*/
