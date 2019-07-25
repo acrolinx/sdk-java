@@ -1,4 +1,4 @@
-package com.acrolinx.client.sdk.http;
+package com.acrolinx.client.sdk.internal;
 
 import java.util.concurrent.Callable;
 

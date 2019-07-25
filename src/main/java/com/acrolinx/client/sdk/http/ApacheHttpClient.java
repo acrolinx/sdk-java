@@ -1,6 +1,8 @@
 package com.acrolinx.client.sdk.http;
 
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
+import com.acrolinx.client.sdk.internal.JsonResponse;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.config.RequestConfig;
