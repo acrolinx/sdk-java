@@ -130,7 +130,7 @@ public class AcrolinxEndpoint {
         }
     }
 
-    private <T> T fetchFromUrl(
+    private Future<T> T fetchFromUrl(
             URI uri,
             JsonDeserializer<T> deserializer,
             HttpMethod method,
@@ -142,14 +142,12 @@ public class AcrolinxEndpoint {
         if (extraHeaders != null) {
             headers.putAll(extraHeaders);
         }
-
-        String jsonString = null;
-        try {
-            jsonString = httpClient.fetch(uri, method, headers, body).get();
-        } catch (InterruptedException | ExecutionException e) {
-            throw new AcrolinxException(e);
-        }
-        return deserializer.deserialize(jsonString);
+        
+        Future<AcrolinxResult> jsonString = httpClient.fetch(uri, method, headers, body);
+        return new Future<T>(){
+            get(){
+                return deserializer.deserialize(jsonString.result);
+            }
     }
 
     private HashMap<String, String> getCommonHeaders(AccessToken accessToken) {

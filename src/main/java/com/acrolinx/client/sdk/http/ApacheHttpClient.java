@@ -31,35 +31,36 @@ public class ApacheHttpClient implements AcrolinxHttpClient {
             .build();
 
     @Override
-    public Future<String> fetch(URI uri, HttpMethod httpMethod, Map<String, String> headers, String jsonBody) throws IOException, AcrolinxException {
+    public Future<AcrolinResponse> fetch(URI uri, HttpMethod httpMethod, Map<String, String> headers, String jsonBody) throws IOException, AcrolinxException {
 
         HttpRequestBase request = createRequests(uri, httpMethod, jsonBody);
         request.setConfig(this.config);
         setHeaders(request, headers);
 
         CloseableHttpAsyncClient httpAsyncClient = HttpAsyncClients.createDefault();
-        httpAsyncClient.start();
+        httpAsyncClient.start(); //blongs somewhere else
         Future<HttpResponse> responseFuture = httpAsyncClient.execute(request, null);
-        HttpResponse response;
-        try {
-            response = responseFuture.get();
-        } catch (InterruptedException | ExecutionException e) {
-            throw new AcrolinxException(e);
-        } finally {
-            httpAsyncClient.close();
+        
+        return new Future<AcrolinResponse>(){
+            get(){
+                HttpResponse response;
+                try {
+                    response = responseFuture.get();
+                } catch (InterruptedException | ExecutionException e) {
+                    throw new AcrolinxException(e);
+                } finally {
+                    httpAsyncClient.close(); //blongs somewhere else
+                }
+        
+                int statusCode = response.getStatusLine().getStatusCode();
+                const result = new AcrolinxResponse();
+                result.status = statusCode;
+                HttpEntity responseEntity = response.getEntity();
+                result.result =  EntityUtils.toString(responseEntity);
+        
+                return result;
+            }
         }
-
-        int statusCode = response.getStatusLine().getStatusCode();
-        if (statusCode < 200 || statusCode > 299) {
-            throw new IOException("Response has invalid valid status code" + statusCode + ".");
-        }
-
-        HttpEntity responseEntity = response.getEntity();
-
-        JsonResponse jsonResponse = new JsonResponse(EntityUtils.toString(responseEntity));
-
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
-        return executorService.submit(jsonResponse);
     }
 
     private HttpRequestBase createRequests(URI uri, HttpMethod httpMethod, @Nullable String jsonBody) throws UnsupportedEncodingException {

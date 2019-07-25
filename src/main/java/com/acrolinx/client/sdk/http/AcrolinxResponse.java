@@ -7,6 +7,7 @@ import java.net.URI;
 import java.util.Map;
 import java.util.concurrent.Future;
 
-public interface AcrolinxHttpClient {
-    Future<AcrolinxResponse> fetch(URI url, HttpMethod method, Map<String, String> headers, String body) throws IOException, AcrolinxException;
+public interface AcrolinxResponse {
+    String result;
+    int status;
 }
