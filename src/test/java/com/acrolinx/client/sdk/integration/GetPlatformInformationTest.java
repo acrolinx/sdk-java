@@ -3,12 +3,14 @@ package com.acrolinx.client.sdk.integration;
 import com.acrolinx.client.sdk.AcrolinxEndpoint;
 import com.acrolinx.client.sdk.PlatformInformation;
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
+import com.acrolinx.client.sdk.exceptions.AcrolinxRuntimeException;
 import com.acrolinx.client.sdk.exceptions.SSOException;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.net.URISyntaxException;
 import java.util.Arrays;
+import java.util.concurrent.ExecutionException;
 
 import static com.acrolinx.client.sdk.integration.CommonTestSetup.ACROLINX_URL;
 import static com.acrolinx.client.sdk.integration.CommonTestSetup.createTestAcrolinxEndpoint;
@@ -38,8 +40,8 @@ public class GetPlatformInformationTest {
         assertTrue("Server version starts with 2019", version.startsWith("2019"));
     }
 
-    @Test(expected=SSOException.class)
-    public void testSignInWithSSO() throws SSOException {
-        endpoint.signInWithSSO("invalid", "marco");
+    @Test(expected= AcrolinxRuntimeException.class)
+    public void testSignInWithSSO() throws AcrolinxException, ExecutionException, InterruptedException {
+        endpoint.signInWithSSO("invalid", "marco").get();
     }
 }

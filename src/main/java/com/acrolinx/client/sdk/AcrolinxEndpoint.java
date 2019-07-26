@@ -1,6 +1,7 @@
 package com.acrolinx.client.sdk;
 
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
+import com.acrolinx.client.sdk.exceptions.AcrolinxRuntimeException;
 import com.acrolinx.client.sdk.exceptions.SSOException;
 import com.acrolinx.client.sdk.exceptions.SignInException;
 import com.acrolinx.client.sdk.http.AcrolinxHttpClient;
@@ -49,14 +50,15 @@ public class AcrolinxEndpoint {
         return null;
     }
 
-    public SignInSuccess signInWithSSO(String genericToken, String username) throws SSOException {
+    public Future<SignInSuccess> signInWithSSO(String genericToken, String username) throws AcrolinxException {
         HashMap<String, String> extraHeaders = new HashMap<>();
         extraHeaders.put("password", genericToken);
         extraHeaders.put("username", username);
+
         try {
-            return fetchDataFromApiPath("auth/sign-ins", SignInSuccess.class, HttpMethod.POST, null, null, extraHeaders).get();
+            return fetchDataFromApiPath("auth/sign-ins", SignInSuccess.class, HttpMethod.POST, null, null, extraHeaders);
         } catch (Exception e) {
-            throw new SSOException();
+            throw new AcrolinxException(e);
         }
     }
 
@@ -131,8 +133,39 @@ public class AcrolinxEndpoint {
                                        String body,
                                        Map<String, String> extraHeaders
     ) throws AcrolinxException {
-        return (Future<T>) fetchFromApiPath(apiPath, JsonUtils.getSerializer(SuccessResponse.class, clazz), method, accessToken,
+          final Future<SuccessResponse> sr = fetchFromApiPath(apiPath, JsonUtils.getSerializer(SuccessResponse.class, clazz), method, accessToken,
                 body, extraHeaders);
+
+        return new Future<T>() {
+
+            private volatile AcrolinxResponseState state = AcrolinxResponseState.INPROGRESS;
+
+            @Override
+            public boolean cancel(boolean mayInterruptIfRunning) {
+                state = AcrolinxResponseState.CANCELLED;
+                return true;
+            }
+
+            @Override
+            public boolean isCancelled() {
+                return (state == AcrolinxResponseState.CANCELLED);
+            }
+
+            @Override
+            public boolean isDone() {
+                return (state == AcrolinxResponseState.DONE);
+            }
+
+            @Override
+            public T get() throws InterruptedException, ExecutionException, AcrolinxRuntimeException {
+                return (T) sr.get().data;
+            }
+
+            @Override
+            public T get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException, AcrolinxRuntimeException {
+                return (T) sr.get(timeout, unit).data;
+            }
+        };
     }
 
     private <T> Future<T> fetchFromApiPath(
@@ -188,16 +221,26 @@ public class AcrolinxEndpoint {
             }
 
             @Override
-            public T get() throws InterruptedException, ExecutionException {
+            public T get() throws InterruptedException, ExecutionException, AcrolinxRuntimeException {
                 state = AcrolinxResponseState.DONE;
-                return deserializer.deserialize(acrolinxResponse.get().getResult());
+                AcrolinxResponse ar = acrolinxResponse.get();
+                int statusCode =  ar.getStatus();
+                if(statusCode < 200 || statusCode > 299) {
+                    throw new AcrolinxRuntimeException("Fetch failed: " + statusCode);
+                }
+                return deserializer.deserialize(ar.getResult());
             }
 
             @Override
             public T get(long timeout, TimeUnit unit)
-                    throws InterruptedException, ExecutionException, TimeoutException {
+                    throws InterruptedException, ExecutionException, TimeoutException, AcrolinxRuntimeException {
                 state = AcrolinxResponseState.DONE;
-                return deserializer.deserialize(acrolinxResponse.get(timeout, unit).getResult());
+                AcrolinxResponse ar = acrolinxResponse.get(timeout, unit);
+                int statusCode =  ar.getStatus();
+                if(statusCode < 200 || statusCode > 299) {
+                    throw new AcrolinxRuntimeException("Fetch failed: " + statusCode);
+                }
+                return deserializer.deserialize(ar.getResult());
             }
         };
 

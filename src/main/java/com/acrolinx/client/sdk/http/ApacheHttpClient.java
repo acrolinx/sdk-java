@@ -101,7 +101,9 @@ public class ApacheHttpClient implements AcrolinxHttpClient {
             
             private AcrolinxResponse processResponse(HttpResponse response) {
                 AcrolinxResponse acrolinxResponse = new AcrolinxResponse();
-                acrolinxResponse.setStatus(response.getStatusLine().getStatusCode());
+                int statusCode = response.getStatusLine().getStatusCode();
+                acrolinxResponse.setStatus(statusCode);
+
                HttpEntity responseEntity = response.getEntity();
                 try {
                     acrolinxResponse.setResult(EntityUtils.toString(responseEntity));

@@ -2,11 +2,14 @@ package com.acrolinx.client.sdk.integration;
 
 import com.acrolinx.client.sdk.AcrolinxEndpoint;
 import com.acrolinx.client.sdk.SignInSuccess;
+import com.acrolinx.client.sdk.exceptions.AcrolinxException;
+import com.acrolinx.client.sdk.exceptions.AcrolinxRuntimeException;
 import com.acrolinx.client.sdk.exceptions.SSOException;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.net.URISyntaxException;
+import java.util.concurrent.ExecutionException;
 
 import static com.acrolinx.client.sdk.integration.CommonTestSetup.*;
 import static org.junit.Assert.assertEquals;
@@ -22,15 +25,15 @@ public class SignInSsoTest {
     }
 
     @Test
-    public void testSignInWithSSO() throws SSOException {
+    public void testSignInWithSSO() throws AcrolinxException, ExecutionException, InterruptedException {
         assumeTrue(ACROLINX_API_USERNAME != null && ACROLINX_API_SSO_TOKEN != null);
 
-        SignInSuccess signInSuccess = endpoint.signInWithSSO(ACROLINX_API_SSO_TOKEN, ACROLINX_API_USERNAME);
+        SignInSuccess signInSuccess = endpoint.signInWithSSO(ACROLINX_API_SSO_TOKEN, ACROLINX_API_USERNAME).get();
         assertEquals(ACROLINX_API_USERNAME, signInSuccess.getUser().getUsername());
     }
 
-    @Test(expected = SSOException.class)
-    public void testSignInWithSsoThrowsException() throws SSOException {
-        endpoint.signInWithSSO("invalidGenericToken", "invalidUserName");
+    @Test(expected = AcrolinxRuntimeException.class)
+    public void testSignInWithSsoThrowsException() throws AcrolinxException, ExecutionException, InterruptedException {
+        endpoint.signInWithSSO("invalidGenericToken", "invalidUserName").get();
     }
 }
