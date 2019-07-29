@@ -2,8 +2,7 @@ package com.acrolinx.client.sdk.platform;
 
 import java.util.List;
 
-public class CheckingCapabilities
-{
+public class CheckingCapabilities {
     private List<GuidanceProfile> guidanceProfiles;
 
     public CheckingCapabilities(List<GuidanceProfile> guidanceProfiles) {

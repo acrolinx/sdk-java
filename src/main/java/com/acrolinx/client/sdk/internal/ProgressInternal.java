@@ -18,6 +18,7 @@ public class ProgressInternal {
     public String getMessage() {
         return message;
     }
+
     /**
      * In seconds
      */

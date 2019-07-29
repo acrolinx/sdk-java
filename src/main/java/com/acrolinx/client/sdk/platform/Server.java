@@ -1,7 +1,6 @@
 package com.acrolinx.client.sdk.platform;
 
-public class Server
-{
+public class Server {
     private String version;
     private String name;
 
@@ -10,13 +9,11 @@ public class Server
         this.name = name;
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
-    public String getVersion()
-    {
+    public String getVersion() {
         return version;
     }
 }

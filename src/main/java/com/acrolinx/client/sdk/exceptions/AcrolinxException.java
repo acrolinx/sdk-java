@@ -4,6 +4,7 @@ public class AcrolinxException extends Exception {
     public AcrolinxException(String message) {
         super(message);
     }
+
     public AcrolinxException(Throwable cause) {
         super(cause);
     }
