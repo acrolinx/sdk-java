@@ -1,8 +1,7 @@
 package com.acrolinx.client.sdk.http;
 
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
-import com.acrolinx.client.sdk.internal.JsonResponse;
-
+import com.acrolinx.client.sdk.exceptions.AcrolinxRuntimeException;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.ParseException;
@@ -21,8 +20,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -41,43 +38,29 @@ public class ApacheHttpClient implements AcrolinxHttpClient {
         final CloseableHttpAsyncClient httpAsyncClient = HttpAsyncClients.createDefault();
         httpAsyncClient.start(); //blongs somewhere else
         final Future<HttpResponse> responseFuture = httpAsyncClient.execute(request, null);
-        
-        return new Future<AcrolinxResponse>(){
 
-            private volatile AcrolinxResponseState state = AcrolinxResponseState.INPROGRESS;
+        return new Future<AcrolinxResponse>() {
+
             @Override
             public boolean cancel(boolean mayInterruptIfRunning) {
-                responseFuture.cancel(mayInterruptIfRunning);
-                state = AcrolinxResponseState.CANCELLED;
-                return true;
+                return responseFuture.cancel(mayInterruptIfRunning);
             }
 
             @Override
             public boolean isCancelled() {
-                return (state == AcrolinxResponseState.CANCELLED);
+                return responseFuture.isCancelled();
             }
 
             @Override
             public boolean isDone() {
-                return (state == AcrolinxResponseState.DONE);
+                return responseFuture.isDone();
             }
 
             @Override
             public AcrolinxResponse get() throws InterruptedException, ExecutionException {
                 HttpResponse response;
-                try {
-                    response = responseFuture.get();
-                } catch (InterruptedException | ExecutionException e) {
-                    throw e;//new AcrolinxException(e);
-                } finally {
-                    try {
-                        httpAsyncClient.close(); //blongs somewhere else
-                    } catch (IOException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                }
-        
+
+                response = responseFuture.get();
                 return processResponse(response);
             }
 
@@ -88,7 +71,7 @@ public class ApacheHttpClient implements AcrolinxHttpClient {
                 try {
                     response = responseFuture.get(timeout, unit);
                 } catch (InterruptedException | ExecutionException e) {
-                    throw e;//new AcrolinxException(e);
+                    throw e;
                 } finally {
                     try {
                         httpAsyncClient.close();
@@ -98,24 +81,22 @@ public class ApacheHttpClient implements AcrolinxHttpClient {
                 }
                 return processResponse(response);
             }
-            
+
             private AcrolinxResponse processResponse(HttpResponse response) {
                 AcrolinxResponse acrolinxResponse = new AcrolinxResponse();
                 int statusCode = response.getStatusLine().getStatusCode();
                 acrolinxResponse.setStatus(statusCode);
 
-               HttpEntity responseEntity = response.getEntity();
+                HttpEntity responseEntity = response.getEntity();
                 try {
                     acrolinxResponse.setResult(EntityUtils.toString(responseEntity));
                 } catch (ParseException | IOException e) {
-                    // TODO log
+                    throw new AcrolinxRuntimeException(e);
                 }
-        
-                state = AcrolinxResponseState.DONE;
                 return acrolinxResponse;
             }
-            
-            
+
+
         };
     }
 

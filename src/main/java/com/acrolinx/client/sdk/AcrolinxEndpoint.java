@@ -137,22 +137,20 @@ public class AcrolinxEndpoint {
 
         return new Future<T>() {
 
-            private volatile AcrolinxResponseState state = AcrolinxResponseState.INPROGRESS;
 
             @Override
             public boolean cancel(boolean mayInterruptIfRunning) {
-                state = AcrolinxResponseState.CANCELLED;
-                return true;
+                return sr.cancel(mayInterruptIfRunning);
             }
 
             @Override
             public boolean isCancelled() {
-                return (state == AcrolinxResponseState.CANCELLED);
+                return sr.isCancelled();
             }
 
             @Override
             public boolean isDone() {
-                return (state == AcrolinxResponseState.DONE);
+                return sr.isDone();
             }
 
             @Override
@@ -201,27 +199,23 @@ public class AcrolinxEndpoint {
 
         return new Future<T>(){
 
-            private volatile AcrolinxResponseState state = AcrolinxResponseState.INPROGRESS;
             @Override
             public boolean cancel(boolean mayInterruptIfRunning) {
-                acrolinxResponse.cancel(mayInterruptIfRunning);
-                state = AcrolinxResponseState.CANCELLED;
-                return true;
+                return acrolinxResponse.cancel(mayInterruptIfRunning);
             }
 
             @Override
             public boolean isCancelled() {
-                return (state == AcrolinxResponseState.CANCELLED);
+                return acrolinxResponse.isCancelled();
             }
 
             @Override
             public boolean isDone() {
-                return (state == AcrolinxResponseState.DONE);
+                return acrolinxResponse.isDone();
             }
 
             @Override
             public T get() throws InterruptedException, ExecutionException, AcrolinxRuntimeException {
-                state = AcrolinxResponseState.DONE;
                 AcrolinxResponse ar = acrolinxResponse.get();
                 int statusCode =  ar.getStatus();
                 if(statusCode < 200 || statusCode > 299) {
@@ -233,7 +227,6 @@ public class AcrolinxEndpoint {
             @Override
             public T get(long timeout, TimeUnit unit)
                     throws InterruptedException, ExecutionException, TimeoutException, AcrolinxRuntimeException {
-                state = AcrolinxResponseState.DONE;
                 AcrolinxResponse ar = acrolinxResponse.get(timeout, unit);
                 int statusCode =  ar.getStatus();
                 if(statusCode < 200 || statusCode > 299) {
