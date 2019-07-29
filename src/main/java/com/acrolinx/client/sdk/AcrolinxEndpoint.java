@@ -84,14 +84,8 @@ public class AcrolinxEndpoint {
 
     public SignInSuccess signInInteractive(InteractiveCallback callback, AccessToken accessToken, long timeoutMs) throws SignInException {
         try {
-            SignInResponse signInResponse = null;
-            try {
-                signInResponse = fetchFromApiPath("auth/sign-ins", JsonUtils.getSerializer(SignInResponse.class),
-                        HttpMethod.POST, accessToken, null, null).get();
-            } catch (ExecutionException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+            SignInResponse signInResponse = fetchFromApiPath("auth/sign-ins",
+                    JsonUtils.getSerializer(SignInResponse.class), HttpMethod.POST, accessToken, null, null).get();
 
             if (signInResponse instanceof SignInResponse.Success) {
                 return ((SignInResponse.Success) signInResponse).data;
@@ -102,7 +96,8 @@ public class AcrolinxEndpoint {
 
             return pollForInteractiveSignIn(signInLinks.links, timeoutMs);
 
-        } catch (AcrolinxException | InterruptedException | URISyntaxException | IOException e) {
+        } catch (AcrolinxException | InterruptedException | URISyntaxException | IOException | ExecutionException e) {
+            // TODO: log?
             throw new SignInException(e);
         }
     }
@@ -116,7 +111,8 @@ public class AcrolinxEndpoint {
                 pollResponse = fetchFromUrl(new URI(signInLinks.getPoll()), JsonUtils.getSerializer(SignInPollResponse.class),
                         HttpMethod.GET, null, null, null).get();
             } catch (ExecutionException e) {
-                // TODO log
+                // TODO: log?
+                throw new SignInException(e);
             }
             if (pollResponse instanceof SignInPollResponse.Success) {
                 return ((SignInPollResponse.Success) pollResponse).data;
