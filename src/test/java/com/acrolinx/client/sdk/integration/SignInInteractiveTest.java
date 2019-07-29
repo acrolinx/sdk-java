@@ -1,9 +1,9 @@
 package com.acrolinx.client.sdk.integration;
 
-import com.acrolinx.client.sdk.AcrolinxEndpoint;
 import com.acrolinx.client.sdk.InteractiveCallback;
 import com.acrolinx.client.sdk.SignInSuccess;
 import com.acrolinx.client.sdk.exceptions.SignInException;
+import com.acrolinx.client.sdk.integration.common.IntegrationTestBase;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,23 +15,20 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-import static com.acrolinx.client.sdk.integration.CommonTestSetup.*;
+import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
-public class SignInInteractiveTest {
-    private AcrolinxEndpoint endpoint;
+public class SignInInteractiveTest extends IntegrationTestBase {
     @Mock
     private InteractiveCallback interactiveCallback;
 
     @Before
     public void beforeTest() throws URISyntaxException {
-        assumeTrue(ACROLINX_URL != null);
         assumeTrue(ACROLINX_API_USERNAME != null && ACROLINX_API_TOKEN != null);
-        endpoint = createTestAcrolinxEndpoint();
     }
 
     @Test

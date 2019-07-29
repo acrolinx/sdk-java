@@ -1,30 +1,17 @@
 package com.acrolinx.client.sdk.integration;
 
-import com.acrolinx.client.sdk.AcrolinxEndpoint;
 import com.acrolinx.client.sdk.PlatformInformation;
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
+import com.acrolinx.client.sdk.integration.common.IntegrationTestBase;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.Arrays;
 
-import static com.acrolinx.client.sdk.integration.CommonTestSetup.ACROLINX_URL;
-import static com.acrolinx.client.sdk.integration.CommonTestSetup.createTestAcrolinxEndpoint;
 import static org.junit.Assert.*;
-import static org.junit.Assume.assumeTrue;
 
-public class GetPlatformInformationTest {
-    AcrolinxEndpoint endpoint;
-
-    @Before
-    public void beforeTest() throws URISyntaxException {
-        assumeTrue(ACROLINX_URL != null);
-        endpoint = createTestAcrolinxEndpoint();
-    }
-
+public class GetPlatformInformationTest extends IntegrationTestBase {
     @Test
     public void testFetchingPlatformInformation() throws AcrolinxException {
         PlatformInformation platformInformation = endpoint.getPlatformInformation();

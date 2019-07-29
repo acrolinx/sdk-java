@@ -7,7 +7,7 @@ import com.acrolinx.client.sdk.exceptions.SignInException;
 
 import java.net.URISyntaxException;
 
-import static com.acrolinx.client.sdk.integration.CommonTestSetup.createTestAcrolinxEndpoint;
+import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.createTestAcrolinxEndpoint;
 
 public class SignInInteractiveExample {
     public static void main(String[] args) throws URISyntaxException, SignInException {

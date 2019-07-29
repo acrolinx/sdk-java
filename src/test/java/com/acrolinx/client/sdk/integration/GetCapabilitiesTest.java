@@ -1,7 +1,7 @@
 package com.acrolinx.client.sdk.integration;
 
-import com.acrolinx.client.sdk.AcrolinxEndpoint;
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
+import com.acrolinx.client.sdk.integration.common.IntegrationTestBase;
 import com.acrolinx.client.sdk.platform.Capabilities;
 import com.acrolinx.client.sdk.platform.GuidanceProfile;
 import com.acrolinx.client.sdk.platform.Language;
@@ -14,19 +14,15 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import static com.acrolinx.client.sdk.integration.CommonTestSetup.*;
+import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.ACROLINX_API_TOKEN;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
-public class GetCapabilitiesTest {
-    private AcrolinxEndpoint endpoint;
-
+public class GetCapabilitiesTest extends IntegrationTestBase {
     @Before
     public void beforeTest() throws URISyntaxException {
-        assumeTrue(ACROLINX_URL != null);
         assumeTrue(ACROLINX_API_TOKEN != null);
-        endpoint = createTestAcrolinxEndpoint();
     }
 
     @Test
