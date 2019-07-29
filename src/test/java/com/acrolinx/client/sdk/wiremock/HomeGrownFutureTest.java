@@ -41,7 +41,6 @@ public class HomeGrownFutureTest extends MockedTestBase {
     }
 
     @Test(timeout = 1000)
-    @Ignore
     public void isDone_should_be_done_at_some_point_without_calling_get() throws AcrolinxException, InterruptedException, ExecutionException {
         Future<SignInSuccess> future = endpoint.signInWithSSO("genericToken", "username");
 
@@ -55,12 +54,11 @@ public class HomeGrownFutureTest extends MockedTestBase {
 
     // Future specs: https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/Future.html
     @Test(expected = CancellationException.class)
-    @Ignore
     public void cancel_should_really_cancel() throws AcrolinxException, InterruptedException, ExecutionException {
         Future<SignInSuccess> future = endpoint.signInWithSSO("genericToken", "username");
 
         boolean cancelResult = future.cancel(true);
-        //assertTrue(cancelResult);
+        // assertTrue(cancelResult);
         // Why cancel result is expected to be true, could be false if execution has already completed.
         // So it seems cancelling has worked...
 
