@@ -45,7 +45,7 @@ public class AcrolinxEndpoint {
         try {
             return fetchDataFromApiPath("", PlatformInformation.class, HttpMethod.GET, null, null, null).get();
         } catch (InterruptedException | ExecutionException e) {
-            throw new AcrolinxException(e.getCause());
+            throw new AcrolinxException(e);
         }
     }
 
