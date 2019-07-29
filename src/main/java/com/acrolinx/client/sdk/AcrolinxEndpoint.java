@@ -199,7 +199,7 @@ public class AcrolinxEndpoint {
             String body,
             @Nullable Map<String, String> extraHeaders
     ) throws IOException, AcrolinxException {
-        HashMap<String, String> headers = getCommonHeaders(accessToken);
+        Map<String, String> headers = getCommonHeaders(accessToken);
         if (extraHeaders != null) {
             headers.putAll(extraHeaders);
         }
@@ -248,7 +248,7 @@ public class AcrolinxEndpoint {
 
     }
 
-    private HashMap<String, String> getCommonHeaders(AccessToken accessToken) {
+    private Map<String, String> getCommonHeaders(AccessToken accessToken) {
         HashMap<String, String> headersMap = new HashMap<>();
 
         if (accessToken != null && !accessToken.isEmpty()) {
