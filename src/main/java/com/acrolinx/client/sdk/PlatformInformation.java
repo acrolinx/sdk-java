@@ -5,8 +5,13 @@ import com.acrolinx.client.sdk.platform.Server;
 import java.util.List;
 
 public class PlatformInformation {
-    private Server server;
-    private List<String> locales;
+    private final Server server;
+    private final List<String> locales;
+
+    public PlatformInformation(Server server, List<String> locales) {
+        this.server = server;
+        this.locales = locales;
+    }
 
     public Server getServer() {
         return server;

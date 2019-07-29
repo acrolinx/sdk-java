@@ -43,6 +43,10 @@ public class JsonUtils {
         return gson.fromJson(json, getType(rawClass, parameter));
     }
 
+    public static <T> String toJson(T object) {
+        return gson.toJson(object);
+    }
+
     public static <T> JsonDeserializer<T> getSerializer(final Class<T> rawClass) {
         return new JsonDeserializer<T>() {
             @Override

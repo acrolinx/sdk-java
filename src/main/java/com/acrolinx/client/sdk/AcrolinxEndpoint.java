@@ -45,9 +45,8 @@ public class AcrolinxEndpoint {
         try {
             return fetchDataFromApiPath("", PlatformInformation.class, HttpMethod.GET, null, null, null).get();
         } catch (InterruptedException | ExecutionException e) {
-            // TODO log
+            throw new AcrolinxException(e.getCause());
         }
-        return null;
     }
 
     public Future<SignInSuccess> signInWithSSO(String genericToken, String username) throws AcrolinxException {

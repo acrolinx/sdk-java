@@ -4,7 +4,6 @@ import com.acrolinx.client.sdk.AcrolinxEndpoint;
 import com.acrolinx.client.sdk.SignInSuccess;
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import com.acrolinx.client.sdk.exceptions.AcrolinxRuntimeException;
-import com.acrolinx.client.sdk.exceptions.SSOException;
 import org.junit.Before;
 import org.junit.Test;
 

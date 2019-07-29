@@ -65,6 +65,12 @@ dependencies {
 	// https://github.com/cdimascio/java-dotenv
 	testImplementation 'io.github.cdimascio:java-dotenv:5.1.1'
 
+	// http://wiremock.org
+	testCompile "com.github.tomakehurst:wiremock:2.24.0"
+
+	// https://site.mockito.org
+	testCompile "org.mockito:mockito-core:2.+"
+
 	//Apache http dependencies
 	compile group: 'org.apache.httpcomponents', name: 'httpasyncclient', version: '4.1.4'
 	

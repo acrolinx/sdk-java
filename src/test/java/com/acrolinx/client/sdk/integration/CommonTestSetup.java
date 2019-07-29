@@ -7,6 +7,8 @@ import io.github.cdimascio.dotenv.Dotenv;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import static com.acrolinx.client.sdk.testutils.TestConstants.DEVELOPMENT_SIGNATURE;
+
 public class CommonTestSetup {
     static Dotenv dotenv = Dotenv.configure()
             .ignoreIfMissing()
@@ -18,8 +20,6 @@ public class CommonTestSetup {
     static String ACROLINX_API_USERNAME = dotenv.get("ACROLINX_API_USERNAME");
     static String ACROLINX_API_TOKEN_STRING = dotenv.get("ACROLINX_API_TOKEN");
     static AccessToken ACROLINX_API_TOKEN = ACROLINX_API_TOKEN_STRING != null ? new AccessToken(ACROLINX_API_TOKEN_STRING) : null;
-
-    static String DEVELOPMENT_SIGNATURE = "SW50ZWdyYXRpb25EZXZlbG9wbWVudERlbW9Pbmx5";
 
     public static AcrolinxEndpoint createTestAcrolinxEndpoint() throws URISyntaxException {
         return new AcrolinxEndpoint(new URI(ACROLINX_URL), DEVELOPMENT_SIGNATURE, "1.2.3.4", "en");

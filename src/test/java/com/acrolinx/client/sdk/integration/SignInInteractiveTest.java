@@ -6,17 +6,24 @@ import com.acrolinx.client.sdk.SignInSuccess;
 import com.acrolinx.client.sdk.exceptions.SignInException;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.net.URISyntaxException;
-import java.util.List;
 
 import static com.acrolinx.client.sdk.integration.CommonTestSetup.*;
-import static com.google.common.collect.Lists.newArrayList;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
+import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class SignInInteractiveTest {
     private AcrolinxEndpoint endpoint;
+    @Mock
+    private InteractiveCallback interactiveCallback;
 
     @Before
     public void beforeTest() throws URISyntaxException {
@@ -27,35 +34,21 @@ public class SignInInteractiveTest {
 
     @Test
     public void testSignInWithPollingCallsCallback() throws SignInException {
-        final List<String> interactiveUrls = newArrayList();
         long timeoutMs = 100;
 
         try {
-            endpoint.signInInteractive(new InteractiveCallback() {
-                @Override
-                public void onInteractiveUrl(String url) {
-                    interactiveUrls.add(url);
-                }
-            }, null, timeoutMs);
+            endpoint.signInInteractive(interactiveCallback, null, timeoutMs);
             fail("It should fail due to timeout.");
         } catch (SignInException e) {
-            assertEquals(1, interactiveUrls.size());
-            assertTrue(interactiveUrls.get(0).startsWith(ACROLINX_URL));
+            verify(interactiveCallback, times(1)).onInteractiveUrl(ArgumentMatchers.startsWith(ACROLINX_URL));
         }
     }
 
     @Test
     public void testSignInWithPollingWithValidAuthToken() throws SignInException {
-        final List<String> interactiveUrls = newArrayList();
-
-        SignInSuccess signInSuccess = endpoint.signInInteractive(new InteractiveCallback() {
-            @Override
-            public void onInteractiveUrl(String url) {
-                interactiveUrls.add(url);
-            }
-        }, ACROLINX_API_TOKEN);
+        SignInSuccess signInSuccess = endpoint.signInInteractive(interactiveCallback, ACROLINX_API_TOKEN);
 
         assertEquals(ACROLINX_API_USERNAME, signInSuccess.getUser().getUsername());
-        assertEquals(0, interactiveUrls.size());
+        verifyZeroInteractions(interactiveCallback);
     }
 }
