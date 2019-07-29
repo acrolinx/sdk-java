@@ -9,4 +9,8 @@ import java.util.concurrent.Future;
 
 public interface AcrolinxHttpClient {
     Future<AcrolinxResponse> fetch(URI url, HttpMethod method, Map<String, String> headers, String body) throws IOException, AcrolinxException;
+
+    void close() throws IOException;
+
+    void start();
 }

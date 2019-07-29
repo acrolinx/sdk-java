@@ -2,11 +2,9 @@ package com.acrolinx.client.sdk;
 
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import com.acrolinx.client.sdk.exceptions.AcrolinxRuntimeException;
-import com.acrolinx.client.sdk.exceptions.SSOException;
 import com.acrolinx.client.sdk.exceptions.SignInException;
 import com.acrolinx.client.sdk.http.AcrolinxHttpClient;
 import com.acrolinx.client.sdk.http.AcrolinxResponse;
-import com.acrolinx.client.sdk.http.AcrolinxResponseState;
 import com.acrolinx.client.sdk.http.ApacheHttpClient;
 import com.acrolinx.client.sdk.http.HttpMethod;
 import com.acrolinx.client.sdk.internal.*;
@@ -31,14 +29,29 @@ public class AcrolinxEndpoint {
     private String clientLocale;
     private URI acrolinxUri;
 
-    private AcrolinxHttpClient httpClient = new ApacheHttpClient();
+    private AcrolinxHttpClient httpClient;
 
-    // Constructor with lots of params?
     public AcrolinxEndpoint(URI acrolinxURL, String clientSignature, String clientVersion, String clientLocale) {
         this.clientSignature = clientSignature;
         this.clientVersion = clientVersion;
         this.clientLocale = clientLocale;
         this.acrolinxUri = acrolinxURL;
+        this.httpClient = new ApacheHttpClient();
+        this.httpClient.start();
+    }
+
+    public AcrolinxEndpoint(AcrolinxHttpClient httpClient, URI acrolinxURL, String clientSignature, String clientVersion, String clientLocale) {
+        this.clientSignature = clientSignature;
+        this.clientVersion = clientVersion;
+        this.clientLocale = clientLocale;
+        this.acrolinxUri = acrolinxURL;
+        this.httpClient = httpClient;
+        this.httpClient.start();
+
+    }
+
+    public void close() throws IOException {
+        this.httpClient.close();
     }
 
     public PlatformInformation getPlatformInformation() throws AcrolinxException {
@@ -94,7 +107,7 @@ public class AcrolinxEndpoint {
         }
     }
 
-    private SignInSuccess pollForInteractiveSignIn(SignInResponse.SignInLinksInternal signInLinks, long timeoutMs) throws  AcrolinxException, InterruptedException, URISyntaxException, IOException {
+    private SignInSuccess pollForInteractiveSignIn(SignInResponse.SignInLinksInternal signInLinks, long timeoutMs) throws AcrolinxException, InterruptedException, URISyntaxException, IOException {
         long endTime = System.currentTimeMillis() + timeoutMs;
 
         while (System.currentTimeMillis() < endTime) {
@@ -126,13 +139,13 @@ public class AcrolinxEndpoint {
 
     @SuppressWarnings("unchecked")
     private <T> Future<T> fetchDataFromApiPath(String apiPath,
-                                       Class<T> clazz,
-                                       HttpMethod method,
-                                       AccessToken accessToken,
-                                       String body,
-                                       Map<String, String> extraHeaders
+                                               Class<T> clazz,
+                                               HttpMethod method,
+                                               AccessToken accessToken,
+                                               String body,
+                                               Map<String, String> extraHeaders
     ) throws AcrolinxException {
-          final Future<SuccessResponse> sr = fetchFromApiPath(apiPath, JsonUtils.getSerializer(SuccessResponse.class, clazz), method, accessToken,
+        final Future<SuccessResponse> sr = fetchFromApiPath(apiPath, JsonUtils.getSerializer(SuccessResponse.class, clazz), method, accessToken,
                 body, extraHeaders);
 
         return new Future<T>() {
@@ -194,10 +207,10 @@ public class AcrolinxEndpoint {
         if (extraHeaders != null) {
             headers.putAll(extraHeaders);
         }
-        
+
         final Future<AcrolinxResponse> acrolinxResponse = httpClient.fetch(uri, method, headers, body);
 
-        return new Future<T>(){
+        return new Future<T>() {
 
             @Override
             public boolean cancel(boolean mayInterruptIfRunning) {
@@ -217,8 +230,8 @@ public class AcrolinxEndpoint {
             @Override
             public T get() throws InterruptedException, ExecutionException, AcrolinxRuntimeException {
                 AcrolinxResponse ar = acrolinxResponse.get();
-                int statusCode =  ar.getStatus();
-                if(statusCode < 200 || statusCode > 299) {
+                int statusCode = ar.getStatus();
+                if (statusCode < 200 || statusCode > 299) {
                     throw new AcrolinxRuntimeException("Fetch failed: " + statusCode);
                 }
                 return deserializer.deserialize(ar.getResult());
@@ -228,15 +241,15 @@ public class AcrolinxEndpoint {
             public T get(long timeout, TimeUnit unit)
                     throws InterruptedException, ExecutionException, TimeoutException, AcrolinxRuntimeException {
                 AcrolinxResponse ar = acrolinxResponse.get(timeout, unit);
-                int statusCode =  ar.getStatus();
-                if(statusCode < 200 || statusCode > 299) {
+                int statusCode = ar.getStatus();
+                if (statusCode < 200 || statusCode > 299) {
                     throw new AcrolinxRuntimeException("Fetch failed: " + statusCode);
                 }
                 return deserializer.deserialize(ar.getResult());
             }
         };
 
-           
+
     }
 
     private HashMap<String, String> getCommonHeaders(AccessToken accessToken) {

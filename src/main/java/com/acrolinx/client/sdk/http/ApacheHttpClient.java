@@ -28,6 +28,8 @@ public class ApacheHttpClient implements AcrolinxHttpClient {
 
     private RequestConfig config = RequestConfig.custom().setConnectTimeout(500).setConnectionRequestTimeout(500).setSocketTimeout(500)
             .build();
+    private CloseableHttpAsyncClient httpAsyncClient = HttpAsyncClients.createDefault();
+
 
     @Override
     public Future<AcrolinxResponse> fetch(URI uri, HttpMethod httpMethod, Map<String, String> headers, String jsonBody) throws IOException, AcrolinxException {
@@ -35,8 +37,6 @@ public class ApacheHttpClient implements AcrolinxHttpClient {
         request.setConfig(this.config);
         setHeaders(request, headers);
 
-        final CloseableHttpAsyncClient httpAsyncClient = HttpAsyncClients.createDefault();
-        httpAsyncClient.start(); //blongs somewhere else
         final Future<HttpResponse> responseFuture = httpAsyncClient.execute(request, null);
 
         return new Future<AcrolinxResponse>() {
@@ -58,27 +58,14 @@ public class ApacheHttpClient implements AcrolinxHttpClient {
 
             @Override
             public AcrolinxResponse get() throws InterruptedException, ExecutionException {
-                HttpResponse response;
-
-                response = responseFuture.get();
+                HttpResponse response = responseFuture.get();
                 return processResponse(response);
             }
 
             @Override
             public AcrolinxResponse get(long timeout, TimeUnit unit)
                     throws InterruptedException, ExecutionException, TimeoutException {
-                HttpResponse response;
-                try {
-                    response = responseFuture.get(timeout, unit);
-                } catch (InterruptedException | ExecutionException e) {
-                    throw e;
-                } finally {
-                    try {
-                        httpAsyncClient.close();
-                    } catch (IOException e) {
-                        // TODO log
-                    } //blongs somewhere else
-                }
+                HttpResponse response = responseFuture.get(timeout, unit);
                 return processResponse(response);
             }
 
@@ -98,6 +85,16 @@ public class ApacheHttpClient implements AcrolinxHttpClient {
 
 
         };
+    }
+
+    @Override
+    public void close() throws IOException {
+        this.httpAsyncClient.close();
+    }
+
+    @Override
+    public void start() {
+        this.httpAsyncClient.start();
     }
 
     private HttpRequestBase createRequests(URI uri, HttpMethod httpMethod, @Nullable String jsonBody) throws UnsupportedEncodingException {
