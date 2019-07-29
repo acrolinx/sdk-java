@@ -24,4 +24,5 @@ public class CommonTestSetup {
     public static AcrolinxEndpoint createTestAcrolinxEndpoint() throws URISyntaxException {
         return new AcrolinxEndpoint(new URI(ACROLINX_URL), DEVELOPMENT_SIGNATURE, "1.2.3.4", "en");
     }
+
 }

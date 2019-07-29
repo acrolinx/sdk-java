@@ -4,6 +4,7 @@ import com.acrolinx.client.sdk.AcrolinxEndpoint;
 import com.acrolinx.client.sdk.InteractiveCallback;
 import com.acrolinx.client.sdk.SignInSuccess;
 import com.acrolinx.client.sdk.exceptions.SignInException;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,6 +12,7 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 
 import static com.acrolinx.client.sdk.integration.CommonTestSetup.*;
@@ -50,5 +52,10 @@ public class SignInInteractiveTest {
 
         assertEquals(ACROLINX_API_USERNAME, signInSuccess.getUser().getUsername());
         verifyZeroInteractions(interactiveCallback);
+    }
+
+    @After
+    public void afterTest() throws IOException {
+        endpoint.close();
     }
 }

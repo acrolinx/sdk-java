@@ -3,9 +3,11 @@ package com.acrolinx.client.sdk.integration;
 import com.acrolinx.client.sdk.AcrolinxEndpoint;
 import com.acrolinx.client.sdk.PlatformInformation;
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 
@@ -35,5 +37,10 @@ public class GetPlatformInformationTest {
         String version = platformInformation.getServer().getVersion();
         assertTrue("Server version set", !version.isEmpty());
         assertTrue("Server version starts with 2019", version.startsWith("2019"));
+    }
+
+    @After
+    public void afterTest() throws IOException {
+        endpoint.close();
     }
 }

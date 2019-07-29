@@ -4,9 +4,11 @@ import com.acrolinx.client.sdk.AcrolinxEndpoint;
 import com.acrolinx.client.sdk.SignInSuccess;
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import com.acrolinx.client.sdk.exceptions.AcrolinxRuntimeException;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.concurrent.ExecutionException;
 
@@ -34,5 +36,10 @@ public class SignInSsoTest {
     @Test(expected = AcrolinxRuntimeException.class)
     public void testSignInWithSsoThrowsException() throws AcrolinxException, ExecutionException, InterruptedException {
         endpoint.signInWithSSO("invalidGenericToken", "invalidUserName").get();
+    }
+
+    @After
+    public void afterTest() throws IOException {
+        endpoint.close();
     }
 }
