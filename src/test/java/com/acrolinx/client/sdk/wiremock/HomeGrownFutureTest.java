@@ -8,7 +8,6 @@ import com.acrolinx.client.sdk.wiremock.common.MockedTestBase;
 import com.acrolinx.client.sdk.wiremock.common.WireMockUtils;
 import com.google.common.collect.Maps;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.concurrent.CancellationException;
