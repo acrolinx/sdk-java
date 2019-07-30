@@ -3,6 +3,10 @@ package com.acrolinx.client.sdk.check;
 import javax.annotation.Nullable;
 
 public class CheckRequest {
+    public static CheckRequestBuilder ofDocumentContent(String content) {
+        return new CheckRequestBuilder(content);
+    }
+
     public enum ContentEncoding {
         none,
         base64,
@@ -19,7 +23,7 @@ public class CheckRequest {
     @Nullable
     private final DocumentDescriptorRequest document;
 
-    public CheckRequest(String content, @Nullable ContentEncoding contentEncoding, @Nullable CheckOptions checkOptions, @Nullable DocumentDescriptorRequest document) {
+    CheckRequest(String content, @Nullable ContentEncoding contentEncoding, @Nullable CheckOptions checkOptions, @Nullable DocumentDescriptorRequest document) {
         this.content = content;
         this.contentEncoding = contentEncoding;
         this.checkOptions = checkOptions;

@@ -1,5 +1,6 @@
 package com.acrolinx.client.sdk.internal;
 
+import com.acrolinx.client.sdk.check.CheckPollResponse;
 import com.google.gson.Gson;
 import io.gsonfire.GsonFireBuilder;
 
@@ -11,6 +12,7 @@ public class JsonUtils {
     }
 
     private static GsonFireBuilder builder = new GsonFireBuilder()
+            .registerTypeSelector(CheckPollResponse.class, CheckPollResponse.TYPE_SELECTOR)
             .registerTypeSelector(SignInResponse.class, SignInResponse.TYPE_SELECTOR)
             .registerTypeSelector(SignInPollResponse.class, SignInPollResponse.TYPE_SELECTOR);
 

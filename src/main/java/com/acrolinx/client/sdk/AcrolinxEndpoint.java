@@ -1,7 +1,9 @@
 package com.acrolinx.client.sdk;
 
+import com.acrolinx.client.sdk.check.CheckPollResponse;
 import com.acrolinx.client.sdk.check.CheckRequest;
 import com.acrolinx.client.sdk.check.CheckResponse;
+import com.acrolinx.client.sdk.check.CheckResult;
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import com.acrolinx.client.sdk.exceptions.AcrolinxRuntimeException;
 import com.acrolinx.client.sdk.exceptions.SignInException;
@@ -136,6 +138,22 @@ public class AcrolinxEndpoint {
     public Future<CheckResponse> check(AccessToken accessToken, CheckRequest checkRequest) throws AcrolinxException {
         return fetchFromApiPath("checking/checks", JsonUtils.getSerializer(CheckResponse.class), HttpMethod.POST,
                 accessToken, JsonUtils.toJson(checkRequest), null);
+    }
+
+    public CheckResult pollForCheckResult(AccessToken accessToken, CheckResponse checkResponse)
+            throws AcrolinxException, URISyntaxException, IOException, ExecutionException, InterruptedException {
+        URI pollUrl = new URI(checkResponse.getLinks().getResult());
+        while (true) {
+            CheckPollResponse pollResponse = fetchFromUrl(pollUrl, JsonUtils.getSerializer(CheckPollResponse.class),
+                    HttpMethod.GET, accessToken, null, null).get();
+            if (pollResponse instanceof CheckPollResponse.Success) {
+                return ((CheckPollResponse.Success) pollResponse).data;
+            }
+            ProgressInternal progress = ((CheckPollResponse.Progress) pollResponse).progress;
+
+            long sleepTimeMs = progress.getRetryAfterMs();
+            Thread.sleep(sleepTimeMs);
+        }
     }
 
     @SuppressWarnings("unchecked")
