@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2019-present Acrolinx GmbH
+ */
 /*
 const e = new Endpoint();
 

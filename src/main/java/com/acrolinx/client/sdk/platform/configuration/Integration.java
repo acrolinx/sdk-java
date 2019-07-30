@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2019-present Acrolinx GmbH
+ */
 package com.acrolinx.client.sdk.platform.configuration;
 
 import java.util.Map;
