@@ -21,8 +21,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 public class AcrolinxEndpoint {
 
@@ -76,18 +75,35 @@ public class AcrolinxEndpoint {
         }
     }
 
-    public SignInSuccess signInInteractive(InteractiveCallback callback) throws SignInException {
+    public Future<SignInSuccess> signInInteractive(InteractiveCallback callback) throws SignInException {
         return signInInteractive(callback, null);
     }
 
-    public SignInSuccess signInInteractive(InteractiveCallback callback, AccessToken accessToken) throws SignInException {
+    public Future<SignInSuccess> signInInteractive(InteractiveCallback callback, AccessToken accessToken) throws SignInException {
         return signInInteractive(callback, accessToken, 60L * 60L * 1000L);
     }
 
-    public SignInSuccess signInInteractive(InteractiveCallback callback, AccessToken accessToken, long timeoutMs) throws SignInException {
-        try {
-            SignInResponse signInResponse = fetchFromApiPath("auth/sign-ins",
-                    JsonUtils.getSerializer(SignInResponse.class), HttpMethod.POST, accessToken, null, null).get();
+    public Future<SignInSuccess> signInInteractive(final InteractiveCallback callback, AccessToken accessToken, long timeoutMs) throws SignInException {
+        ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
+        SignInInteractiveWithPolling poller = new SignInInteractiveWithPolling(accessToken, callback);
+        return executor.submit(poller);
+    }
+
+    private class SignInInteractiveWithPolling implements Callable<SignInSuccess> {
+
+        private AccessToken accessToken;
+        private InteractiveCallback callback;
+
+        public SignInInteractiveWithPolling(AccessToken accessToken, InteractiveCallback callback) {
+            this.accessToken = accessToken;
+            this.callback = callback;
+        }
+
+        @Override
+        public SignInSuccess call() throws Exception {
+
+            final SignInResponse signInResponse = fetchFromApiPath("auth/sign-ins",
+                    JsonUtils.getSerializer(SignInResponse.class), HttpMethod.POST, this.accessToken, null, null).get();
 
             if (signInResponse instanceof SignInResponse.Success) {
                 return ((SignInResponse.Success) signInResponse).data;
@@ -96,40 +112,20 @@ public class AcrolinxEndpoint {
 
             callback.onInteractiveUrl(signInLinks.links.getInteractive());
 
-            return pollForInteractiveSignIn(signInLinks.links, timeoutMs);
-
-        } catch (AcrolinxException | InterruptedException | URISyntaxException | IOException | ExecutionException e) {
-            // TODO: log?
-            throw new SignInException(e);
-        }
-    }
-
-    private SignInSuccess pollForInteractiveSignIn(SignInResponse.SignInLinksInternal signInLinks, long timeoutMs) throws AcrolinxException, InterruptedException, URISyntaxException, IOException {
-        long endTime = System.currentTimeMillis() + timeoutMs;
-
-        while (System.currentTimeMillis() < endTime) {
-            SignInPollResponse pollResponse = null;
-            try {
-                pollResponse = fetchFromUrl(new URI(signInLinks.getPoll()), JsonUtils.getSerializer(SignInPollResponse.class),
+            while (true) {
+                SignInPollResponse pollResponse = fetchFromUrl(new URI(signInLinks.links.getPoll()), JsonUtils.getSerializer(SignInPollResponse.class),
                         HttpMethod.GET, null, null, null).get();
-            } catch (ExecutionException e) {
-                // TODO: log?
-                throw new SignInException(e);
-            }
-            if (pollResponse instanceof SignInPollResponse.Success) {
-                return ((SignInPollResponse.Success) pollResponse).data;
-            }
-            Progress progress = ((SignInPollResponse.Progress) pollResponse).progress;
+                if (pollResponse instanceof SignInPollResponse.Success) {
+                    return ((SignInPollResponse.Success) pollResponse).data;
+                }
+                Progress progress = ((SignInPollResponse.Progress) pollResponse).progress;
 
-            long sleepTimeMs = progress.getRetryAfterMs();
-            if (System.currentTimeMillis() + sleepTimeMs > endTime) {
-                break;
+                long sleepTimeMs = progress.getRetryAfterMs();
+                Thread.sleep(sleepTimeMs);
             }
-            Thread.sleep(sleepTimeMs);
         }
-
-        throw new SignInException("Timeout");
     }
+
 
     public Future<Capabilities> getCapabilities(AccessToken accessToken) throws AcrolinxException {
         return fetchDataFromApiPath("capabilities", Capabilities.class, HttpMethod.GET, accessToken, null, null);
