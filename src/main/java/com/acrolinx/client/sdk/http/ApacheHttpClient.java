@@ -2,6 +2,7 @@ package com.acrolinx.client.sdk.http;
 
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import com.acrolinx.client.sdk.exceptions.AcrolinxRuntimeException;
+import com.acrolinx.client.sdk.internal.FutureWrapper;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.ParseException;
@@ -19,10 +20,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 public class ApacheHttpClient implements AcrolinxHttpClient {
 
@@ -39,37 +37,9 @@ public class ApacheHttpClient implements AcrolinxHttpClient {
 
         final Future<HttpResponse> responseFuture = httpAsyncClient.execute(request, null);
 
-        return new Future<AcrolinxResponse>() {
-
+        return new FutureWrapper<HttpResponse, AcrolinxResponse>(responseFuture) {
             @Override
-            public boolean cancel(boolean mayInterruptIfRunning) {
-                return responseFuture.cancel(mayInterruptIfRunning);
-            }
-
-            @Override
-            public boolean isCancelled() {
-                return responseFuture.isCancelled();
-            }
-
-            @Override
-            public boolean isDone() {
-                return responseFuture.isDone();
-            }
-
-            @Override
-            public AcrolinxResponse get() throws InterruptedException, ExecutionException {
-                HttpResponse response = responseFuture.get();
-                return processResponse(response);
-            }
-
-            @Override
-            public AcrolinxResponse get(long timeout, TimeUnit unit)
-                    throws InterruptedException, ExecutionException, TimeoutException {
-                HttpResponse response = responseFuture.get(timeout, unit);
-                return processResponse(response);
-            }
-
-            private AcrolinxResponse processResponse(HttpResponse response) {
+            protected AcrolinxResponse processResponse(HttpResponse response) {
                 AcrolinxResponse acrolinxResponse = new AcrolinxResponse();
                 int statusCode = response.getStatusLine().getStatusCode();
                 acrolinxResponse.setStatus(statusCode);
@@ -82,8 +52,6 @@ public class ApacheHttpClient implements AcrolinxHttpClient {
                 }
                 return acrolinxResponse;
             }
-
-
         };
     }
 

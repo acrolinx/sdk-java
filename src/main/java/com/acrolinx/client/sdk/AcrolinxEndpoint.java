@@ -21,8 +21,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 public class AcrolinxEndpoint {
 
@@ -148,35 +146,13 @@ public class AcrolinxEndpoint {
                                                String body,
                                                Map<String, String> extraHeaders
     ) throws AcrolinxException {
-        final Future<SuccessResponse> sr = fetchFromApiPath(apiPath, JsonUtils.getSerializer(SuccessResponse.class, clazz), method, accessToken,
+        final Future<SuccessResponse> successResponse = fetchFromApiPath(apiPath, JsonUtils.getSerializer(SuccessResponse.class, clazz), method, accessToken,
                 body, extraHeaders);
 
-        return new Future<T>() {
-
-
+        return new FutureWrapper<SuccessResponse, T>(successResponse) {
             @Override
-            public boolean cancel(boolean mayInterruptIfRunning) {
-                return sr.cancel(mayInterruptIfRunning);
-            }
-
-            @Override
-            public boolean isCancelled() {
-                return sr.isCancelled();
-            }
-
-            @Override
-            public boolean isDone() {
-                return sr.isDone();
-            }
-
-            @Override
-            public T get() throws InterruptedException, ExecutionException, AcrolinxRuntimeException {
-                return (T) sr.get().data;
-            }
-
-            @Override
-            public T get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException, AcrolinxRuntimeException {
-                return (T) sr.get(timeout, unit).data;
+            protected T processResponse(SuccessResponse wrappedFutureResult) {
+                return (T) wrappedFutureResult.data;
             }
         };
     }
@@ -213,46 +189,16 @@ public class AcrolinxEndpoint {
 
         final Future<AcrolinxResponse> acrolinxResponse = httpClient.fetch(uri, method, headers, body);
 
-        return new Future<T>() {
-
+        return new FutureWrapper<AcrolinxResponse, T>(acrolinxResponse) {
             @Override
-            public boolean cancel(boolean mayInterruptIfRunning) {
-                return acrolinxResponse.cancel(mayInterruptIfRunning);
-            }
-
-            @Override
-            public boolean isCancelled() {
-                return acrolinxResponse.isCancelled();
-            }
-
-            @Override
-            public boolean isDone() {
-                return acrolinxResponse.isDone();
-            }
-
-            @Override
-            public T get() throws InterruptedException, ExecutionException, AcrolinxRuntimeException {
-                AcrolinxResponse ar = acrolinxResponse.get();
-                int statusCode = ar.getStatus();
+            protected T processResponse(AcrolinxResponse acrolinxHttpResponse) {
+                int statusCode = acrolinxHttpResponse.getStatus();
                 if (statusCode < 200 || statusCode > 299) {
                     throw new AcrolinxRuntimeException("Fetch failed: " + statusCode);
                 }
-                return deserializer.deserialize(ar.getResult());
-            }
-
-            @Override
-            public T get(long timeout, TimeUnit unit)
-                    throws InterruptedException, ExecutionException, TimeoutException, AcrolinxRuntimeException {
-                AcrolinxResponse ar = acrolinxResponse.get(timeout, unit);
-                int statusCode = ar.getStatus();
-                if (statusCode < 200 || statusCode > 299) {
-                    throw new AcrolinxRuntimeException("Fetch failed: " + statusCode);
-                }
-                return deserializer.deserialize(ar.getResult());
+                return deserializer.deserialize(acrolinxHttpResponse.getResult());
             }
         };
-
-
     }
 
     private Map<String, String> getCommonHeaders(AccessToken accessToken) {
