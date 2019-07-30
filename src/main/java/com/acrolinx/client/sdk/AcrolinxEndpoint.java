@@ -1,9 +1,6 @@
 package com.acrolinx.client.sdk;
 
-import com.acrolinx.client.sdk.check.CheckPollResponse;
-import com.acrolinx.client.sdk.check.CheckRequest;
-import com.acrolinx.client.sdk.check.CheckResponse;
-import com.acrolinx.client.sdk.check.CheckResult;
+import com.acrolinx.client.sdk.check.*;
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import com.acrolinx.client.sdk.exceptions.AcrolinxRuntimeException;
 import com.acrolinx.client.sdk.exceptions.SignInException;
@@ -96,7 +93,7 @@ public class AcrolinxEndpoint {
                 accessToken, JsonUtils.toJson(checkRequest), null);
     }
 
-    public CheckResult pollForCheckResult(AccessToken accessToken, CheckResponse checkResponse)
+    public CheckResult pollForCheckResult(AccessToken accessToken, CheckResponse checkResponse, ProgressListener progressListener)
             throws AcrolinxException, URISyntaxException, IOException, ExecutionException, InterruptedException {
         URI pollUrl = new URI(checkResponse.getLinks().getResult());
         while (true) {
@@ -106,6 +103,7 @@ public class AcrolinxEndpoint {
                 return ((CheckPollResponse.Success) pollResponse).data;
             }
             Progress progress = ((CheckPollResponse.Progress) pollResponse).progress;
+            progressListener.onProgress(progress);
 
             long sleepTimeMs = progress.getRetryAfterMs();
             Thread.sleep(sleepTimeMs);
