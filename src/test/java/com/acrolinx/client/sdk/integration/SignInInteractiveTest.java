@@ -47,7 +47,7 @@ public class SignInInteractiveTest extends IntegrationTestBase {
 
     @Test
     public void testSignInWithPollingWithValidAuthToken() throws SignInException, ExecutionException, InterruptedException {
-        SignInSuccess signInSuccess = endpoint.signInInteractive(interactiveCallback, ACROLINX_API_TOKEN).get();
+        SignInSuccess signInSuccess = endpoint.signInInteractive(interactiveCallback, null, ACROLINX_API_TOKEN).get();
 
         assertEquals(ACROLINX_API_USERNAME, signInSuccess.getUser().getUsername());
         verifyZeroInteractions(interactiveCallback);

@@ -20,7 +20,7 @@ public class SignInInteractiveExample {
                 System.out.println("Please open the following URL:");
                 System.out.println(url);
             }
-        }).get();
+        }, null).get();
 
         System.out.println("accessToken = " + signInSuccess.getAccessToken().getAccessToken());
         System.out.println("username = " + signInSuccess.getUser().getUsername());

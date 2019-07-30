@@ -72,12 +72,16 @@ public class AcrolinxEndpoint {
         }
     }
 
-    public Future<SignInSuccess> signInInteractive(InteractiveCallback callback) throws SignInException {
-        return signInInteractive(callback, null);
+    public Future<SignInSuccess> signInInteractive(InteractiveCallback callback, ExecutorService executorService) {
+        return signInInteractive(callback, executorService, null);
     }
 
-    public Future<SignInSuccess> signInInteractive(final InteractiveCallback callback, AccessToken accessToken) throws SignInException {
-        ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
+    public Future<SignInSuccess> signInInteractive(final InteractiveCallback callback, ExecutorService executorService, AccessToken accessToken) {
+        ExecutorService executor = executorService;
+        if (executor == null) {
+            executor = Executors.newFixedThreadPool(1);
+        }
+
         SignInInteractiveWithPolling poller = new SignInInteractiveWithPolling(accessToken, callback);
         Future<SignInSuccess> signInSuccessFuture = executor.submit(poller);
         executor.shutdown();
@@ -209,7 +213,10 @@ public class AcrolinxEndpoint {
             SignInResponse.SignInLinks signInLinks = (SignInResponse.SignInLinks) signInResponse;
             callback.onInteractiveUrl(signInLinks.links.getInteractive());
 
-            while (true) {
+            //An upper limit for polling.
+            long endTime = System.currentTimeMillis() + 15L * 60L * 1000L;
+
+            while (System.currentTimeMillis() < endTime) {
                 SignInPollResponse pollResponse = fetchFromUrl(new URI(signInLinks.links.getPoll()), JsonUtils.getSerializer(SignInPollResponse.class),
                         HttpMethod.GET, null, null, null).get();
                 if (pollResponse instanceof SignInPollResponse.Success) {
@@ -221,6 +228,10 @@ public class AcrolinxEndpoint {
                 long sleepTimeMs = progress.getRetryAfterMs();
                 Thread.sleep(sleepTimeMs);
             }
+            throw new SignInException("Timeout");
+
         }
+
+
     }
 }
