@@ -1,6 +1,7 @@
 .gradle
 .idea
 .eclipse
+.private
 
 /build
 /spotless-sdk-java/**/build/
