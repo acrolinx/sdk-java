@@ -71,6 +71,9 @@ dependencies {
 	// https://site.mockito.org
 	testCompile "org.mockito:mockito-core:2.+"
 
+	// http://hamcrest.org
+	testImplementation 'org.hamcrest:hamcrest:2.1'
+
 	//Apache http dependencies
 	compile group: 'org.apache.httpcomponents', name: 'httpasyncclient', version: '4.1.4'
 	

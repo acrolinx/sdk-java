@@ -1,8 +1,10 @@
 package com.acrolinx.client.sdk.integration.common;
 
 import com.acrolinx.client.sdk.AcrolinxEndpoint;
+import org.junit.After;
 import org.junit.Before;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 
 import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.ACROLINX_URL;
@@ -16,5 +18,10 @@ public class IntegrationTestBase {
     public void beforeTestBase() throws URISyntaxException {
         assumeTrue(ACROLINX_URL != null);
         endpoint = createTestAcrolinxEndpoint();
+    }
+
+    @After
+    public void afterTestBase() throws IOException {
+        endpoint.close();
     }
 }

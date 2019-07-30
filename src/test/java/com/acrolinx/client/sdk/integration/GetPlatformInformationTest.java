@@ -3,10 +3,10 @@ package com.acrolinx.client.sdk.integration;
 import com.acrolinx.client.sdk.PlatformInformation;
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import com.acrolinx.client.sdk.integration.common.IntegrationTestBase;
-import org.junit.After;
 import org.junit.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
-import java.io.IOException;
 import java.util.Arrays;
 
 import static org.junit.Assert.*;
@@ -24,10 +24,5 @@ public class GetPlatformInformationTest extends IntegrationTestBase {
         String version = platformInformation.getServer().getVersion();
         assertTrue("Server version set", !version.isEmpty());
         assertTrue("Server version starts with 2019", version.startsWith("2019"));
-    }
-
-    @After
-    public void afterTest() throws IOException {
-        endpoint.close();
     }
 }

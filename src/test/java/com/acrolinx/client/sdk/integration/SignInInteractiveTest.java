@@ -4,16 +4,12 @@ import com.acrolinx.client.sdk.InteractiveCallback;
 import com.acrolinx.client.sdk.SignInSuccess;
 import com.acrolinx.client.sdk.exceptions.SignInException;
 import com.acrolinx.client.sdk.integration.common.IntegrationTestBase;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
 
 import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.*;
 import static org.junit.Assert.assertEquals;
@@ -27,7 +23,7 @@ public class SignInInteractiveTest extends IntegrationTestBase {
     private InteractiveCallback interactiveCallback;
 
     @Before
-    public void beforeTest() throws URISyntaxException {
+    public void beforeTest() {
         assumeTrue(ACROLINX_API_USERNAME != null && ACROLINX_API_TOKEN != null);
     }
 
@@ -49,10 +45,5 @@ public class SignInInteractiveTest extends IntegrationTestBase {
 
         assertEquals(ACROLINX_API_USERNAME, signInSuccess.getUser().getUsername());
         verifyZeroInteractions(interactiveCallback);
-    }
-
-    @After
-    public void afterTest() throws IOException {
-        endpoint.close();
     }
 }

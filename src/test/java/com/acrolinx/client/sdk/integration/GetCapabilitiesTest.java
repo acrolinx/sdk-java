@@ -5,12 +5,9 @@ import com.acrolinx.client.sdk.integration.common.IntegrationTestBase;
 import com.acrolinx.client.sdk.platform.Capabilities;
 import com.acrolinx.client.sdk.platform.GuidanceProfile;
 import com.acrolinx.client.sdk.platform.Language;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -21,7 +18,7 @@ import static org.junit.Assume.assumeTrue;
 
 public class GetCapabilitiesTest extends IntegrationTestBase {
     @Before
-    public void beforeTest() throws URISyntaxException {
+    public void beforeTest() {
         assumeTrue(ACROLINX_API_TOKEN != null);
     }
 
@@ -42,11 +39,5 @@ public class GetCapabilitiesTest extends IntegrationTestBase {
         assertNotNull(language);
         assertNotNull(language.getId());
         assertNotNull(language.getDisplayName());
-
-    }
-
-    @After
-    public void afterTest() throws IOException {
-        endpoint.close();
     }
 }

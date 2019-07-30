@@ -1,5 +1,7 @@
 package com.acrolinx.client.sdk;
 
+import com.acrolinx.client.sdk.check.CheckRequest;
+import com.acrolinx.client.sdk.check.CheckResponse;
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import com.acrolinx.client.sdk.exceptions.AcrolinxRuntimeException;
 import com.acrolinx.client.sdk.exceptions.SignInException;
@@ -131,6 +133,11 @@ public class AcrolinxEndpoint {
 
     public Future<Capabilities> getCapabilities(AccessToken accessToken) throws AcrolinxException {
         return fetchDataFromApiPath("capabilities", Capabilities.class, HttpMethod.GET, accessToken, null, null);
+    }
+
+    public Future<CheckResponse> check(AccessToken accessToken, CheckRequest checkRequest) throws AcrolinxException {
+        return fetchFromApiPath("checking/checks", JsonUtils.getSerializer(CheckResponse.class), HttpMethod.POST,
+                accessToken, JsonUtils.toJson(checkRequest), null);
     }
 
     @SuppressWarnings("unchecked")
