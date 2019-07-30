@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2019-present Acrolinx GmbH
+ */
 package com.acrolinx.client.sdk.http;
 
 import com.acrolinx.client.sdk.exceptions.AcrolinxRuntimeException;

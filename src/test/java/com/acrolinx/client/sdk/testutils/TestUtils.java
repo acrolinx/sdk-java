@@ -1,3 +1,6 @@
+/**
+ * Copyright (c) 2019-present Acrolinx GmbH
+ */
 package com.acrolinx.client.sdk.testutils;
 
 import com.google.common.base.Charsets;
