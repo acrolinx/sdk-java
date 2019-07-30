@@ -56,6 +56,5 @@ public class CheckTest extends IntegrationTestBase {
         final Quality quality = checkResult.getQuality();
         assertThat(quality.getScore(), lessThan(100));
         assertThat(quality.getScore(), not(lessThan(40)));
-        assertEquals(Quality.Status.red, quality.getStatus());
     }
 }
