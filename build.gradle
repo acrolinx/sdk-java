@@ -1,14 +1,19 @@
 plugins {
-	// Apply the java-library plugin to add support for Java Library
-	id 'java-library'
-	id 'jacoco'
-	id 'org.owasp.dependencycheck' version '5.1.1'
-	id 'org.sonarqube' version '2.7.1'
+    // Apply the java-library plugin to add support for Java Library
+    id 'java-library'
+    id 'jacoco'
+    id 'org.owasp.dependencycheck' version '5.1.1'
+    id 'org.sonarqube' version '2.7.1'
 
-	id 'idea'
-	// id 'eclipse'
+    id 'maven-publish'
+    id 'signing'
+    id 'org.ajoberstar.grgit' version '3.1.1'
+
+    id 'idea'
+    // id 'eclipse'
 }
 
+project.version = CURRENT_VERSION
 group 'com.acrolinx.client'
 
 sourceCompatibility = JavaVersion.VERSION_1_7
@@ -17,63 +22,181 @@ targetCompatibility = JavaVersion.VERSION_1_7
 compileJava.options.encoding = 'UTF-8'
 compileTestJava.options.encoding = 'UTF-8'
 
+def devId = "Acrolinx Open Source"
+def devName = "Acrolinx"
+def devEmail = "opensource@acrolinx.com"
+
+// def buildNumber = System.getenv('TRAVIS_BUILD_NUMBER');
+
+def buildNumber = System.getenv('BUILD_NUMBER')
+def buildVersion = buildNumber != null ? buildNumber : 123
+
+def artifactName = 'sdk'
+
+def fullVersion = "${project.version}.${buildVersion}"
+
+def isReleaseBuild = !fullVersion.contains('SNAPSHOT')
+
 repositories {
-	// Use jcenter for resolving dependencies.
-	// You can declare any Maven/Ivy/file repository here.
-	jcenter()
+    // Use jcenter for resolving dependencies.
+    // You can declare any Maven/Ivy/file repository here.
+    jcenter()
 }
 
 jacocoTestReport {
-	reports {
-		xml {
-			enabled true
-		}
-	}
+    reports {
+        xml {
+            enabled true
+        }
+    }
 }
 
 dependencyCheck {
-	formats = ['HTML', 'XML']
+    formats = ['HTML', 'XML']
 
-	cve {
-		urlModified = 'https://dune.dev.acrolinx.com/~nist-data-mirror/nvdcve-1.0-modified.json.gz'
-		urlBase = 'https://dune.dev.acrolinx.com/~nist-data-mirror/nvdcve-1.0-%d.json.gz'
-	}
+    cve {
+        urlModified = 'https://dune.dev.acrolinx.com/~nist-data-mirror/nvdcve-1.0-modified.json.gz'
+        urlBase = 'https://dune.dev.acrolinx.com/~nist-data-mirror/nvdcve-1.0-%d.json.gz'
+    }
 }
 
 sonarqube {
-	properties {
-		property 'sonar.projectKey', 'com.acrolinx.client:sdk-java'
-		property 'sonar.dependencyCheck.reportPath', "${dependencyCheck.outputDirectory}/dependency-check-report.xml"
-		property 'sonar.dependencyCheck.htmlReportPath', "${dependencyCheck.outputDirectory}/dependency-check-report.html"
-	}
+    properties {
+        property 'sonar.projectKey', 'com.acrolinx.client:sdk-java'
+        property 'sonar.dependencyCheck.reportPath', "${dependencyCheck.outputDirectory}/dependency-check-report.xml"
+        property 'sonar.dependencyCheck.htmlReportPath', "${dependencyCheck.outputDirectory}/dependency-check-report.html"
+    }
 }
 
 dependencies {
-	// This dependency is used internally, and not exposed to consumers on their own compile classpath.
-	implementation 'com.google.guava:guava:27.1-jre'
+    // This dependency is used internally, and not exposed to consumers on their own compile classpath.
+    implementation 'com.google.guava:guava:27.1-jre'
 
-	// https://github.com/julman99/gson-fire
-	implementation 'io.gsonfire:gson-fire:1.8.3'
+    // https://github.com/julman99/gson-fire
+    implementation 'io.gsonfire:gson-fire:1.8.3'
 
-	// Use JUnit test framework
-	testImplementation 'junit:junit:4.12'
+    // Use JUnit test framework
+    testImplementation 'junit:junit:4.12'
 
-	// https://github.com/cdimascio/java-dotenv
-	testImplementation 'io.github.cdimascio:java-dotenv:5.1.1'
+    // https://github.com/cdimascio/java-dotenv
+    testImplementation 'io.github.cdimascio:java-dotenv:5.1.1'
 
-	// http://wiremock.org
-	testImplementation "com.github.tomakehurst:wiremock:2.24.0"
+    // http://wiremock.org
+    testImplementation "com.github.tomakehurst:wiremock:2.24.0"
 
-	// https://site.mockito.org
-	testImplementation "org.mockito:mockito-core:2.+"
+    // https://site.mockito.org
+    testImplementation "org.mockito:mockito-core:2.+"
 
-	// http://hamcrest.org
-	testImplementation 'org.hamcrest:hamcrest:2.1'
+    // http://hamcrest.org
+    testImplementation 'org.hamcrest:hamcrest:2.1'
 
-	//Apache http dependencies
-	implementation group: 'org.apache.httpcomponents', name: 'httpasyncclient', version: '4.1.4'
+    //Apache http dependencies
+    implementation group: 'org.apache.httpcomponents', name: 'httpasyncclient', version: '4.1.4'
 
-	implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.google.code.gson:gson:2.8.5'
 }
 
+task sourcesJar(type: Jar) {
+    archiveClassifier = 'sources'
+    from sourceSets.main.allJava
+}
+
+task javadocJar(type: Jar) {
+    archiveClassifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+jar {
+    archiveName = "${artifactName}-${fullVersion}.jar"
+    manifest {
+        attributes(
+                "Implementation-Title": "${artifactName}",
+                "Implementation-Version": "${fullVersion}",
+                "Specification-Title": "${artifactName}",
+                "Specification-Version": project.version
+        )
+
+    }
+    // from("$rootDir") {
+    //     include 'dependency-licenses/*.html'
+    // }
+}
+
+artifacts {
+    archives jar
+    archives javadocJar
+    archives sourcesJar
+}
+
+publishing {
+    repositories {
+        maven {
+            name = 'localRepo'
+            url = "file://${buildDir}/repo"
+        }
+    }
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+
+            pom {
+                name = 'Acrolinx Platform SDK'
+                description 'A library to interact with the Acrolinx Platform.'
+                url = 'https://github.com/acrolinx/sdk-java'
+                scm {
+                    url = 'https://github.com/acrolinx/sdk-java'
+                    connection = 'scm:git@github.com:acrolinx/sdk-java.git'
+                    developerConnection = 'scm:git@github.com:acrolinx/sdk-java.git'
+                }
+                licenses {
+                    license {
+                        name = 'The Apache Software License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        distribution = 'repo'
+                    }
+                }
+                developers {
+                    developer {
+                        id = devId
+                        name = devName
+                        email = devEmail
+                        organization = 'Acrolinx'
+                        organizationUrl = 'https://www.acrolinx.com/'
+                    }
+                }
+                versionMapping {
+                    usage('java-api') {
+                        fromResolutionOf('runtimeClasspath')
+                    }
+                    usage('java-runtime') {
+                        fromResolutionResult()
+                    }
+                }
+            }
+        }
+    }
+}
+
+signing {
+    required { isReleaseBuild }
+    sign publishing.publications.mavenJava
+}
+
+task createGithubReleaseTag {
+    doLast {
+        println 'Creating Github Release Tag'
+        if (isReleaseBuild) {
+            def hasOldReleaseVersion = grgit.tag.list().find { it.getName() == "release-${project.version}" }
+            if (!hasOldReleaseVersion) {
+                println 'is new release version'
+                grgit.tag.add(name: "release-${project.version}", message: "Releasing ${project.version}")
+                grgit.push(tags: true)
+            }
+        } else {
+            println 'NO RELEASE VERSION'
+        }
+    }
+}
 // vim: sw=4 ts=4 noet
