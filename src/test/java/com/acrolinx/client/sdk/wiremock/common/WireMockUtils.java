@@ -60,7 +60,7 @@ public class WireMockUtils {
                 .willReturn(okJson(JsonUtils.toJson(response))));
     }
 
-    public static String mockUrl(String path) {
-        return acrolinxUrl + API_PATH_PREFIX + path;
+    public static String mockUrlOfApiPath(String apiPath) {
+        return acrolinxUrl + API_PATH_PREFIX + apiPath;
     }
 }

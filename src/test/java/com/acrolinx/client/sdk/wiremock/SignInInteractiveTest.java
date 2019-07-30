@@ -23,9 +23,9 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class SignInInteractiveTest extends MockedTestBase {
-    static final String mockedInteractiveUrl = mockUrl("auth/sign-ins/interactive");
+    static final String mockedInteractiveUrl = mockUrlOfApiPath("auth/sign-ins/interactive");
     static final String mockedPollPath = "auth/sign-ins/poll";
-    static String mockedPollUrl = mockUrl(mockedPollPath);
+    static String mockedPollUrl = mockUrlOfApiPath(mockedPollPath);
 
     @Mock
     private InteractiveCallback interactiveCallback;

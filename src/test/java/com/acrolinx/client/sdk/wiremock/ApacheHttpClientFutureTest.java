@@ -18,7 +18,7 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import static com.acrolinx.client.sdk.wiremock.common.WireMockUtils.mockUrl;
+import static com.acrolinx.client.sdk.wiremock.common.WireMockUtils.mockUrlOfApiPath;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
 
@@ -35,7 +35,7 @@ public class ApacheHttpClientFutureTest extends MockedTestBase {
         WireMockUtils.mockPostSuccessResponseWithDelay("", "dummyResponse", DELAY_MS);
         RequestConfig config = RequestConfig.custom().setConnectTimeout(60000).setConnectionRequestTimeout(60000).setSocketTimeout(60000)
                 .build();
-        HttpRequestBase request = new HttpGet(mockUrl(""));
+        HttpRequestBase request = new HttpGet(mockUrlOfApiPath(""));
         request.setConfig(config);
         httpAsyncClient = HttpAsyncClients.createDefault();
         httpAsyncClient.start();
