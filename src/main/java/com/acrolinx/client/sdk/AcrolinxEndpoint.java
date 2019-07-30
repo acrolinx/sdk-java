@@ -149,9 +149,9 @@ public class AcrolinxEndpoint {
         final Future<SuccessResponse> successResponse = fetchFromApiPath(apiPath, JsonUtils.getSerializer(SuccessResponse.class, clazz), method, accessToken,
                 body, extraHeaders);
 
-        return new FutureWrapper<SuccessResponse, T>(successResponse) {
+        return new FutureMapper<SuccessResponse, T>(successResponse) {
             @Override
-            protected T processResponse(SuccessResponse wrappedFutureResult) {
+            protected T map(SuccessResponse wrappedFutureResult) {
                 return (T) wrappedFutureResult.data;
             }
         };
@@ -189,9 +189,9 @@ public class AcrolinxEndpoint {
 
         final Future<AcrolinxResponse> acrolinxResponse = httpClient.fetch(uri, method, headers, body);
 
-        return new FutureWrapper<AcrolinxResponse, T>(acrolinxResponse) {
+        return new FutureMapper<AcrolinxResponse, T>(acrolinxResponse) {
             @Override
-            protected T processResponse(AcrolinxResponse acrolinxHttpResponse) {
+            protected T map(AcrolinxResponse acrolinxHttpResponse) {
                 int statusCode = acrolinxHttpResponse.getStatus();
                 if (statusCode < 200 || statusCode > 299) {
                     throw new AcrolinxRuntimeException("Fetch failed: " + statusCode);

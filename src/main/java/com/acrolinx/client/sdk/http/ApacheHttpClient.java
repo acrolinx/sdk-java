@@ -2,7 +2,7 @@ package com.acrolinx.client.sdk.http;
 
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import com.acrolinx.client.sdk.exceptions.AcrolinxRuntimeException;
-import com.acrolinx.client.sdk.internal.FutureWrapper;
+import com.acrolinx.client.sdk.internal.FutureMapper;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.ParseException;
@@ -37,9 +37,9 @@ public class ApacheHttpClient implements AcrolinxHttpClient {
 
         final Future<HttpResponse> responseFuture = httpAsyncClient.execute(request, null);
 
-        return new FutureWrapper<HttpResponse, AcrolinxResponse>(responseFuture) {
+        return new FutureMapper<HttpResponse, AcrolinxResponse>(responseFuture) {
             @Override
-            protected AcrolinxResponse processResponse(HttpResponse response) {
+            protected AcrolinxResponse map(HttpResponse response) {
                 AcrolinxResponse acrolinxResponse = new AcrolinxResponse();
                 int statusCode = response.getStatusLine().getStatusCode();
                 acrolinxResponse.setStatus(statusCode);

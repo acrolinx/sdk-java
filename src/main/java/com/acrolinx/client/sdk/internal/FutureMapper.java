@@ -5,10 +5,10 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public abstract class FutureWrapper<S, T> implements Future<T> {
+public abstract class FutureMapper<S, T> implements Future<T> {
     private Future<S> wrappedFuture;
 
-    public FutureWrapper(Future<S> wrappedFuture) {
+    public FutureMapper(Future<S> wrappedFuture) {
         this.wrappedFuture = wrappedFuture;
     }
 
@@ -29,13 +29,13 @@ public abstract class FutureWrapper<S, T> implements Future<T> {
 
     @Override
     public T get() throws InterruptedException, ExecutionException {
-        return processResponse(wrappedFuture.get());
+        return map(wrappedFuture.get());
     }
 
     @Override
     public T get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-        return processResponse(wrappedFuture.get(timeout, unit));
+        return map(wrappedFuture.get(timeout, unit));
     }
 
-    protected abstract T processResponse(S wrappedFutureResult);
+    protected abstract T map(S wrappedFutureResult);
 }
