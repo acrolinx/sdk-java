@@ -1,10 +1,10 @@
 package com.acrolinx.client.sdk.wiremock;
 
 import com.acrolinx.client.sdk.InteractiveCallback;
+import com.acrolinx.client.sdk.Progress;
 import com.acrolinx.client.sdk.SignInSuccess;
 import com.acrolinx.client.sdk.User;
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
-import com.acrolinx.client.sdk.Progress;
 import com.acrolinx.client.sdk.internal.SignInPollResponse;
 import com.acrolinx.client.sdk.internal.SignInResponse;
 import com.acrolinx.client.sdk.platform.configuration.Integration;
@@ -16,6 +16,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import java.util.concurrent.ExecutionException;
 
 import static com.acrolinx.client.sdk.wiremock.common.WireMockUtils.*;
 import static org.junit.Assert.assertEquals;
@@ -49,24 +51,24 @@ public class SignInInteractiveTest extends MockedTestBase {
     }
 
     @Test
-    public void signInWithImmediatePollSuccess() throws AcrolinxException {
+    public void signInWithImmediatePollSuccess() throws AcrolinxException, ExecutionException, InterruptedException {
         mockSuccessResponse(mockedPollPath, expectedSignInSuccess);
 
-        SignInSuccess signInSuccess = endpoint.signInInteractive(interactiveCallback);
+        SignInSuccess signInSuccess = endpoint.signInInteractive(interactiveCallback).get();
 
         verify(interactiveCallback).onInteractiveUrl(mockedInteractiveUrl);
         assertEquals(expectedSignInSuccess.getAccessToken(), signInSuccess.getAccessToken());
     }
 
     @Test
-    public void signInWithLaterPollSuccess() throws AcrolinxException {
+    public void signInWithLaterPollSuccess() throws AcrolinxException, ExecutionException, InterruptedException {
         final String scenario = "laterPollSuccess";
         final String SIGNED_IN_STATE = "SIGNED_IN_STATE";
 
         mockGetResponseInScenario(mockedPollPath, mockedSignInPollMoreResponse, scenario, Scenario.STARTED, SIGNED_IN_STATE);
         mockSuccessResponseInScenario(mockedPollPath, expectedSignInSuccess, scenario, SIGNED_IN_STATE);
 
-        SignInSuccess signInSuccess = endpoint.signInInteractive(interactiveCallback);
+        SignInSuccess signInSuccess = endpoint.signInInteractive(interactiveCallback).get();
 
         verify(interactiveCallback).onInteractiveUrl(mockedInteractiveUrl);
         assertEquals(expectedSignInSuccess.getAccessToken().getAccessToken(), signInSuccess.getAccessToken().getAccessToken());

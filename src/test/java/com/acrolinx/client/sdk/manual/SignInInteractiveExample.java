@@ -6,11 +6,12 @@ import com.acrolinx.client.sdk.SignInSuccess;
 import com.acrolinx.client.sdk.exceptions.SignInException;
 
 import java.net.URISyntaxException;
+import java.util.concurrent.ExecutionException;
 
 import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.createTestAcrolinxEndpoint;
 
 public class SignInInteractiveExample {
-    public static void main(String[] args) throws URISyntaxException, SignInException {
+    public static void main(String[] args) throws URISyntaxException, SignInException, ExecutionException, InterruptedException {
         AcrolinxEndpoint endpoint = createTestAcrolinxEndpoint();
 
         SignInSuccess signInSuccess = endpoint.signInInteractive(new InteractiveCallback() {
@@ -19,7 +20,7 @@ public class SignInInteractiveExample {
                 System.out.println("Please open the following URL:");
                 System.out.println(url);
             }
-        });
+        }).get();
 
         System.out.println("accessToken = " + signInSuccess.getAccessToken().getAccessToken());
         System.out.println("username = " + signInSuccess.getUser().getUsername());

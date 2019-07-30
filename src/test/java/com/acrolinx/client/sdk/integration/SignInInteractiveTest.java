@@ -11,6 +11,11 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
 import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -28,20 +33,21 @@ public class SignInInteractiveTest extends IntegrationTestBase {
     }
 
     @Test
-    public void testSignInWithPollingCallsCallback() throws SignInException {
-        long timeoutMs = 100;
+    public void testSignInWithPollingCallsCallback() throws SignInException, InterruptedException, ExecutionException, TimeoutException {
+        long timeoutMs = 400;
 
         try {
-            endpoint.signInInteractive(interactiveCallback, null, timeoutMs);
+            Future<SignInSuccess> ss = endpoint.signInInteractive(interactiveCallback, null, timeoutMs);
+            ss.get(timeoutMs, TimeUnit.MILLISECONDS);
             fail("It should fail due to timeout.");
-        } catch (SignInException e) {
+        } catch (TimeoutException e) {
             verify(interactiveCallback, times(1)).onInteractiveUrl(ArgumentMatchers.startsWith(ACROLINX_URL));
         }
     }
 
     @Test
-    public void testSignInWithPollingWithValidAuthToken() throws SignInException {
-        SignInSuccess signInSuccess = endpoint.signInInteractive(interactiveCallback, ACROLINX_API_TOKEN);
+    public void testSignInWithPollingWithValidAuthToken() throws SignInException, ExecutionException, InterruptedException {
+        SignInSuccess signInSuccess = endpoint.signInInteractive(interactiveCallback, ACROLINX_API_TOKEN).get();
 
         assertEquals(ACROLINX_API_USERNAME, signInSuccess.getUser().getUsername());
         verifyZeroInteractions(interactiveCallback);
