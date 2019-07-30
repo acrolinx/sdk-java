@@ -204,7 +204,7 @@ public class AcrolinxEndpoint {
         }
 
         @Override
-        public SignInSuccess call() throws Exception {
+        public SignInSuccess call() throws AcrolinxException, InterruptedException, ExecutionException, URISyntaxException, IOException {
 
             final SignInResponse signInResponse = fetchFromApiPath("auth/sign-ins",
                     JsonUtils.getSerializer(SignInResponse.class), HttpMethod.POST, this.accessToken, null, null).get();
