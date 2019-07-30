@@ -16,6 +16,7 @@ import java.util.concurrent.Future;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 /**
  * Tests our homegrown Futures using the example of signInWithSSO
@@ -51,15 +52,18 @@ public class HomeGrownFutureTest extends MockedTestBase {
         assertEquals(expectedSignInSuccess.getAccessToken(), signInSuccess.getAccessToken());
     }
 
-    // Future specs: https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/Future.html
+    /**
+     * Future specs: https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/Future.html
+     * {@link ApacheHttpClientFutureTest}
+     */
     @Test(expected = CancellationException.class)
     public void cancel_should_really_cancel() throws AcrolinxException, InterruptedException, ExecutionException {
         Future<SignInSuccess> future = endpoint.signInWithSSO("genericToken", "username");
 
+        assertFalse(future.isDone());
         boolean cancelResult = future.cancel(true);
-        // assertTrue(cancelResult);
-        // Why cancel result is expected to be true, could be false if execution has already completed.
-        // So it seems cancelling has worked...
+        // Caused by internal future of ApacheHttpClientFuture
+        assertFalse("actually cancelResult should be true, but we assert false because this is strange reality", cancelResult);
 
         assertTrue(future.isCancelled());
         assertTrue("A canceled Future should be also \"done\" according to the Future specs", future.isDone());
@@ -67,5 +71,4 @@ public class HomeGrownFutureTest extends MockedTestBase {
         // Here we expect a CancellationException according to the Future specs
         future.get();
     }
-
 }
