@@ -1,0 +1,34 @@
+sudo: false
+dist: trusty
+language: java
+jdk:
+- oraclejdk8
+os:
+- linux
+before_cache:
+- rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+- rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+cache:
+  directories:
+  - "$HOME/.gradle/caches/"
+  - "$HOME/.gradle/wrapper/"
+script:
+- ./gradlew build --scan -s
+- cd $TRAVIS_BUILD_DIR
+- chmod +x ./deploy.sh
+deploy:
+- provider: script
+  script: "./deploy.sh"
+  skip_cleanup: true
+  on:
+    branch: master
+- provider: pages
+  skip-cleanup: true
+  github-token: $GITHUB_API_TOKEN
+  keep-history: true
+  local-dir: "./docs/"
+  on:
+    tags: true
+before_deploy:
+- openssl aes-256-cbc -K $encrypted_04827ca67184_key -iv $encrypted_04827ca67184_iv
+  -in encrypted.enc -out secring.gpg -d
