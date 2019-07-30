@@ -1,6 +1,5 @@
 package com.acrolinx.client.sdk.http;
 
-import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import com.acrolinx.client.sdk.exceptions.AcrolinxRuntimeException;
 import com.acrolinx.client.sdk.internal.FutureMapper;
 import org.apache.http.HttpEntity;
@@ -30,7 +29,7 @@ public class ApacheHttpClient implements AcrolinxHttpClient {
 
 
     @Override
-    public Future<AcrolinxResponse> fetch(URI uri, HttpMethod httpMethod, Map<String, String> headers, String jsonBody) throws IOException, AcrolinxException {
+    public Future<AcrolinxResponse> fetch(URI uri, HttpMethod httpMethod, Map<String, String> headers, String jsonBody) throws IOException {
         HttpRequestBase request = createRequests(uri, httpMethod, jsonBody);
         request.setConfig(this.config);
         setHeaders(request, headers);

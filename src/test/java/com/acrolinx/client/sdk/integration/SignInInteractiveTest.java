@@ -37,7 +37,7 @@ public class SignInInteractiveTest extends IntegrationTestBase {
         long timeoutMs = 400;
 
         try {
-            Future<SignInSuccess> ss = endpoint.signInInteractive(interactiveCallback, null, timeoutMs);
+            Future<SignInSuccess> ss = endpoint.signInInteractive(interactiveCallback, null);
             ss.get(timeoutMs, TimeUnit.MILLISECONDS);
             fail("It should fail due to timeout.");
         } catch (TimeoutException e) {

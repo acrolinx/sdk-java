@@ -79,53 +79,13 @@ public class AcrolinxEndpoint {
         return signInInteractive(callback, null);
     }
 
-    public Future<SignInSuccess> signInInteractive(InteractiveCallback callback, AccessToken accessToken) throws SignInException {
-        return signInInteractive(callback, accessToken, 60L * 60L * 1000L);
-    }
-
-    public Future<SignInSuccess> signInInteractive(final InteractiveCallback callback, AccessToken accessToken, long timeoutMs) throws SignInException {
+    public Future<SignInSuccess> signInInteractive(final InteractiveCallback callback, AccessToken accessToken) throws SignInException {
         ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
         SignInInteractiveWithPolling poller = new SignInInteractiveWithPolling(accessToken, callback);
-        return executor.submit(poller);
+        Future<SignInSuccess> signInSuccessFuture = executor.submit(poller);
+        executor.shutdown();
+        return signInSuccessFuture;
     }
-
-    private class SignInInteractiveWithPolling implements Callable<SignInSuccess> {
-
-        private AccessToken accessToken;
-        private InteractiveCallback callback;
-
-        public SignInInteractiveWithPolling(AccessToken accessToken, InteractiveCallback callback) {
-            this.accessToken = accessToken;
-            this.callback = callback;
-        }
-
-        @Override
-        public SignInSuccess call() throws Exception {
-
-            final SignInResponse signInResponse = fetchFromApiPath("auth/sign-ins",
-                    JsonUtils.getSerializer(SignInResponse.class), HttpMethod.POST, this.accessToken, null, null).get();
-
-            if (signInResponse instanceof SignInResponse.Success) {
-                return ((SignInResponse.Success) signInResponse).data;
-            }
-            SignInResponse.SignInLinks signInLinks = (SignInResponse.SignInLinks) signInResponse;
-
-            callback.onInteractiveUrl(signInLinks.links.getInteractive());
-
-            while (true) {
-                SignInPollResponse pollResponse = fetchFromUrl(new URI(signInLinks.links.getPoll()), JsonUtils.getSerializer(SignInPollResponse.class),
-                        HttpMethod.GET, null, null, null).get();
-                if (pollResponse instanceof SignInPollResponse.Success) {
-                    return ((SignInPollResponse.Success) pollResponse).data;
-                }
-                Progress progress = ((SignInPollResponse.Progress) pollResponse).progress;
-
-                long sleepTimeMs = progress.getRetryAfterMs();
-                Thread.sleep(sleepTimeMs);
-            }
-        }
-    }
-
 
     public Future<Capabilities> getCapabilities(AccessToken accessToken) throws AcrolinxException {
         return fetchDataFromApiPath("capabilities", Capabilities.class, HttpMethod.GET, accessToken, null, null);
@@ -226,5 +186,43 @@ public class AcrolinxEndpoint {
         headersMap.put("X-Acrolinx-Client", this.clientSignature + "; " + this.clientVersion);
 
         return headersMap;
+    }
+
+    private class SignInInteractiveWithPolling implements Callable<SignInSuccess> {
+
+        private AccessToken accessToken;
+        private InteractiveCallback callback;
+
+        public SignInInteractiveWithPolling(AccessToken accessToken, InteractiveCallback callback) {
+            this.accessToken = accessToken;
+            this.callback = callback;
+        }
+
+        @Override
+        public SignInSuccess call() throws Exception {
+
+            final SignInResponse signInResponse = fetchFromApiPath("auth/sign-ins",
+                    JsonUtils.getSerializer(SignInResponse.class), HttpMethod.POST, this.accessToken, null, null).get();
+
+            if (signInResponse instanceof SignInResponse.Success) {
+                return ((SignInResponse.Success) signInResponse).data;
+            }
+
+            SignInResponse.SignInLinks signInLinks = (SignInResponse.SignInLinks) signInResponse;
+            callback.onInteractiveUrl(signInLinks.links.getInteractive());
+
+            while (true) {
+                SignInPollResponse pollResponse = fetchFromUrl(new URI(signInLinks.links.getPoll()), JsonUtils.getSerializer(SignInPollResponse.class),
+                        HttpMethod.GET, null, null, null).get();
+                if (pollResponse instanceof SignInPollResponse.Success) {
+                    return ((SignInPollResponse.Success) pollResponse).data;
+                }
+
+                Progress progress = ((SignInPollResponse.Progress) pollResponse).progress;
+
+                long sleepTimeMs = progress.getRetryAfterMs();
+                Thread.sleep(sleepTimeMs);
+            }
+        }
     }
 }
