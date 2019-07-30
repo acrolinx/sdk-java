@@ -1,6 +1,5 @@
 package com.acrolinx.client.sdk.check;
 
-import com.acrolinx.client.sdk.internal.ProgressInternal;
 import com.google.gson.JsonElement;
 import io.gsonfire.TypeSelector;
 
@@ -12,7 +11,7 @@ public abstract class CheckPollResponse {
         @Override
         public Class<? extends CheckPollResponse> getClassForElement(JsonElement readElement) {
             Boolean isSuccess = readElement.getAsJsonObject().has("data");
-            return isSuccess ? CheckPollResponse.Success.class : CheckPollResponse.Progress.class;
+            return isSuccess ? CheckPollResponse.Success.class : Progress.class;
         }
     };
 
@@ -28,9 +27,9 @@ public abstract class CheckPollResponse {
     }
 
     public static class Progress extends CheckPollResponse {
-        public final ProgressInternal progress;
+        public final com.acrolinx.client.sdk.Progress progress;
 
-        public Progress(ProgressInternal progress) {
+        public Progress(com.acrolinx.client.sdk.Progress progress) {
             this.progress = progress;
         }
     }

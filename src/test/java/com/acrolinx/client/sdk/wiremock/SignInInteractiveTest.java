@@ -4,7 +4,7 @@ import com.acrolinx.client.sdk.InteractiveCallback;
 import com.acrolinx.client.sdk.SignInSuccess;
 import com.acrolinx.client.sdk.User;
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
-import com.acrolinx.client.sdk.internal.ProgressInternal;
+import com.acrolinx.client.sdk.Progress;
 import com.acrolinx.client.sdk.internal.SignInPollResponse;
 import com.acrolinx.client.sdk.internal.SignInResponse;
 import com.acrolinx.client.sdk.platform.configuration.Integration;
@@ -36,7 +36,7 @@ public class SignInInteractiveTest extends MockedTestBase {
 
 
     SignInPollResponse.Progress mockedSignInPollMoreResponse =
-            new SignInPollResponse.Progress(new ProgressInternal(1.0, null, null));
+            new SignInPollResponse.Progress(new Progress(1.0, null, null));
 
     SignInResponse.SignInLinks mockedSignInLinksResponse = new SignInResponse.SignInLinks(
             new SignInResponse.SignInLinksInternal(mockedInteractiveUrl, mockedPollUrl),

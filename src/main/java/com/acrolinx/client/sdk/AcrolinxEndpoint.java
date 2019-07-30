@@ -119,7 +119,7 @@ public class AcrolinxEndpoint {
             if (pollResponse instanceof SignInPollResponse.Success) {
                 return ((SignInPollResponse.Success) pollResponse).data;
             }
-            ProgressInternal progress = ((SignInPollResponse.Progress) pollResponse).progress;
+            Progress progress = ((SignInPollResponse.Progress) pollResponse).progress;
 
             long sleepTimeMs = progress.getRetryAfterMs();
             if (System.currentTimeMillis() + sleepTimeMs > endTime) {
@@ -149,7 +149,7 @@ public class AcrolinxEndpoint {
             if (pollResponse instanceof CheckPollResponse.Success) {
                 return ((CheckPollResponse.Success) pollResponse).data;
             }
-            ProgressInternal progress = ((CheckPollResponse.Progress) pollResponse).progress;
+            Progress progress = ((CheckPollResponse.Progress) pollResponse).progress;
 
             long sleepTimeMs = progress.getRetryAfterMs();
             Thread.sleep(sleepTimeMs);

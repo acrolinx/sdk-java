@@ -1,11 +1,11 @@
-package com.acrolinx.client.sdk.internal;
+package com.acrolinx.client.sdk;
 
-public class ProgressInternal {
+public class Progress {
     Double retryAfter;
     Double percent;
     String message;
 
-    public ProgressInternal(Double retryAfter, Double percent, String message) {
+    public Progress(Double retryAfter, Double percent, String message) {
         this.retryAfter = retryAfter;
         this.percent = percent;
         this.message = message;

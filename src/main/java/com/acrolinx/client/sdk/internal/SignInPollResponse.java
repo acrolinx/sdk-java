@@ -15,7 +15,7 @@ public abstract class SignInPollResponse {
         @Override
         public Class<? extends SignInPollResponse> getClassForElement(JsonElement readElement) {
             Boolean isSuccess = readElement.getAsJsonObject().has("data");
-            return isSuccess ? SignInPollResponse.Success.class : SignInPollResponse.Progress.class;
+            return isSuccess ? SignInPollResponse.Success.class : Progress.class;
         }
     };
 
@@ -28,9 +28,9 @@ public abstract class SignInPollResponse {
     }
 
     public static class Progress extends SignInPollResponse {
-        public final ProgressInternal progress;
+        public final com.acrolinx.client.sdk.Progress progress;
 
-        public Progress(ProgressInternal progress) {
+        public Progress(com.acrolinx.client.sdk.Progress progress) {
             this.progress = progress;
         }
     }
