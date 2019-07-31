@@ -13,7 +13,7 @@ plugins {
     id 'de.marcphilipp.nexus-publish' version '0.2.0'
 
     id 'com.github.hierynomus.license' version '0.15.0'
-
+    id 'com.github.hierynomus.license-report' version '0.15.0'
 
     id 'idea'
     // id 'eclipse'
@@ -117,6 +117,11 @@ license {
     strictCheck true
 }
 
+downloadLicenses {
+    includeProjectDependencies true
+    dependencyConfiguration = "compileClasspath"
+}
+
 jar {
     archiveName = "${artifactName}-${fullVersion}.jar"
     manifest {
@@ -128,9 +133,9 @@ jar {
         )
 
     }
-    // from("$rootDir") {
-    //     include 'dependency-licenses/*.html'
-    // }
+    from("$buildDir/reports/license") {
+        include 'license-dependency.html'
+    }
 }
 
 artifacts {
@@ -225,7 +230,6 @@ task createGithubReleaseTag {
 }
 
 
-
 task checkLicenseHeaders {
     doLast {
         println 'If this fails run \'./gradlew licenseFormat\' to apply missing headers'
@@ -234,4 +238,5 @@ task checkLicenseHeaders {
 
 licenseMain.dependsOn checkLicenseHeaders
 licenseTest.dependsOn checkLicenseHeaders
+jar.dependsOn 'downloadLicenses'
 // vim: sw=4 ts=4 noet
