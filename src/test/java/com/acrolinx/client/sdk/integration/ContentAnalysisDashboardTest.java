@@ -3,11 +3,8 @@
  */
 package com.acrolinx.client.sdk.integration;
 
-import com.acrolinx.client.sdk.ContentAnalysisDashboard;
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import com.acrolinx.client.sdk.integration.common.IntegrationTestBase;
-import com.acrolinx.client.sdk.platform.Link;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,13 +21,9 @@ public class ContentAnalysisDashboardTest extends IntegrationTestBase {
 
     @Test
     public void testFetchingContentAnalysisDasboard() throws AcrolinxException {
-        ContentAnalysisDashboard dashboard = endpoint.getLinkToContentAnalysisDashboard(ACROLINX_API_TOKEN, "1");
+        String contentAnalysisDashboardLink = endpoint.getContentAnalysisDashboard(ACROLINX_API_TOKEN, "1");
 
-
-        for (Link link : dashboard.getLinks()) {
-            assertTrue("Link with access token", link != null);
-            assertTrue("Link presence", !StringUtils.isEmpty(link.getLink()));
-            assertTrue("LinkType", !StringUtils.isEmpty(link.getLinkType()));
-        }
+        assertTrue(contentAnalysisDashboardLink != null);
+        assertTrue(!contentAnalysisDashboardLink.isEmpty());
     }
 }

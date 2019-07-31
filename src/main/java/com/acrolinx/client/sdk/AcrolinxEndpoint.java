@@ -13,6 +13,7 @@ import com.acrolinx.client.sdk.http.ApacheHttpClient;
 import com.acrolinx.client.sdk.http.HttpMethod;
 import com.acrolinx.client.sdk.internal.*;
 import com.acrolinx.client.sdk.platform.Capabilities;
+import com.acrolinx.client.sdk.platform.Link;
 import org.apache.http.client.utils.URIBuilder;
 
 import javax.annotation.Nullable;
@@ -100,10 +101,19 @@ public class AcrolinxEndpoint {
                 accessToken, JsonUtils.toJson(checkRequest), null);
     }
 
-    public ContentAnalysisDashboard getLinkToContentAnalysisDashboard(AccessToken accessToken, String batchId) throws AcrolinxException {
+    public String getContentAnalysisDashboard(AccessToken accessToken, String batchId) throws AcrolinxException {
         try {
-            return fetchDataFromApiPath("checking/" + batchId + "/contentanalysis", ContentAnalysisDashboard.class,
-                    HttpMethod.GET, accessToken, null, null).get();
+            ContentAnalysisDashboard contentAnalysisDashboard = fetchDataFromApiPath("checking/" + batchId + "/contentanalysis",
+                    ContentAnalysisDashboard.class, HttpMethod.GET, accessToken, null, null).get();
+
+
+            for (Link link : contentAnalysisDashboard.getLinks()) {
+                if (link.getLinkType().equals("shortWithoutAccessToken")) {
+                    return link.getLink();
+                }
+            }
+
+            throw new AcrolinxException("Could not fetch content analysis dashboard");
         } catch (InterruptedException | ExecutionException | AcrolinxException e) {
             throw new AcrolinxException(e);
         }
