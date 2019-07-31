@@ -55,10 +55,10 @@ public class AcrolinxEndpoint {
         this.httpClient.close();
     }
 
-    public PlatformInformation getPlatformInformation() throws AcrolinxException {
+    public PlatformInformation getPlatformInformation() throws AcrolinxException, InterruptedException {
         try {
             return fetchDataFromApiPath("", PlatformInformation.class, HttpMethod.GET, null, null, null).get();
-        } catch (InterruptedException | ExecutionException e) {
+        } catch (ExecutionException e) {
             throw new AcrolinxException(e);
         }
     }
@@ -100,7 +100,25 @@ public class AcrolinxEndpoint {
                 accessToken, JsonUtils.toJson(checkRequest), null);
     }
 
-    public CheckResult pollForCheckResult(AccessToken accessToken, CheckResponse checkResponse, ProgressListener progressListener)
+    public CheckResult checkAndGetResult(AccessToken accessToken, CheckRequest checkRequest, ProgressListener progressListener) throws AcrolinxException, InterruptedException {
+        try {
+            CheckResponse checkResponse = this.check(accessToken, checkRequest).get();
+            return pollForResultWithCancelHandling(accessToken, progressListener, checkResponse);
+        } catch (ExecutionException | URISyntaxException | IOException e) {
+            throw new AcrolinxException(e);
+        }
+    }
+
+    private CheckResult pollForResultWithCancelHandling(AccessToken accessToken, ProgressListener progressListener, CheckResponse checkResponse) throws AcrolinxException, URISyntaxException, IOException, ExecutionException, InterruptedException {
+        try {
+            return pollForCheckResult(accessToken, checkResponse, progressListener);
+        } catch (InterruptedException e) {
+            cancelCheck(accessToken, checkResponse);
+            throw e;
+        }
+    }
+
+    private CheckResult pollForCheckResult(AccessToken accessToken, CheckResponse checkResponse, ProgressListener progressListener)
             throws AcrolinxException, URISyntaxException, IOException, ExecutionException, InterruptedException {
         URI pollUrl = new URI(checkResponse.getLinks().getResult());
         while (true) {
@@ -115,6 +133,10 @@ public class AcrolinxEndpoint {
             long sleepTimeMs = progress.getRetryAfterMs();
             Thread.sleep(sleepTimeMs);
         }
+    }
+
+    private CheckCancelledResponse cancelCheck(AccessToken accessToken, CheckResponse checkResponse) throws URISyntaxException, IOException, AcrolinxException, ExecutionException, InterruptedException {
+        return this.fetchFromUrl(new URI(checkResponse.getLinks().getCancel()), JsonUtils.getSerializer(CheckCancelledResponse.class), HttpMethod.DELETE, accessToken, null, null).get();
     }
 
     @SuppressWarnings("unchecked")

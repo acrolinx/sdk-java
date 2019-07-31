@@ -19,23 +19,26 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.*;
 
 import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.ACROLINX_API_TOKEN;
 import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.ACROLINX_URL;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assume.assumeTrue;
-import static org.mockito.ArgumentMatchers.anyObject;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class CheckTest extends IntegrationTestBase {
+    /**
+     * This text should should need some seconds to check.
+     */
+    static final String longTestText = Strings.repeat("This sentence is nice. \n", 300);
     GuidanceProfile guidanceProfileEn;
+
     @Mock
     private ProgressListener progressListener;
 
@@ -55,16 +58,17 @@ public class CheckTest extends IntegrationTestBase {
 
     public static class ProgressMatcher implements ArgumentMatcher<Progress> {
         private double prevPercent = 0;
+
         @Override
         public boolean matches(Progress value) {
             boolean valid = value.getPercent() >= this.prevPercent && value.getMessage() != null;
             this.prevPercent = value.getPercent();
-            return valid ;
+            return valid;
         }
     }
 
     @Test
-    public void check() throws AcrolinxException, InterruptedException, ExecutionException, IOException, URISyntaxException {
+    public void startACheck() throws AcrolinxException, InterruptedException, ExecutionException, IOException, URISyntaxException {
         CheckResponse checkResponse = endpoint.check(ACROLINX_API_TOKEN,
                 CheckRequest.ofDocumentContent("This textt has ann erroor.")
                         .setDocument(new DocumentDescriptorRequest("file.txt"))
@@ -76,32 +80,68 @@ public class CheckTest extends IntegrationTestBase {
         assertThat(checkResponse.getData().getId(), not(isEmptyOrNullString()));
         assertThat(checkResponse.getLinks().getResult(), startsWith(ACROLINX_URL));
         assertThat(checkResponse.getLinks().getCancel(), startsWith(ACROLINX_URL));
+    }
 
-        CheckResult checkResult = endpoint.pollForCheckResult(ACROLINX_API_TOKEN, checkResponse, progressListener);
+    @Test
+    public void checkAndGetResult() throws AcrolinxException, InterruptedException, ExecutionException, IOException, URISyntaxException {
+        CheckResult checkResult = endpoint.checkAndGetResult(ACROLINX_API_TOKEN,
+                CheckRequest.ofDocumentContent("This textt has ann erroor.")
+                        .setDocument(new DocumentDescriptorRequest("file.txt"))
+                        .setCheckOptions(new CheckOptions(guidanceProfileEn.getId()))
+                        .build(),
+                progressListener
+        );
 
-        assertEquals(checkResponse.getData().getId(), checkResult.getId());
         final Quality quality = checkResult.getQuality();
         assertThat(quality.getScore(), lessThan(100));
         assertThat(quality.getScore(), not(lessThan(40)));
         assertNotNull(quality.getStatus());
     }
 
-    @Test
     /**
      * This test might become pretty flaky, when the server is faster than expected. When we notice this problem,
      * we should rewrite it using a mocked server.
      */
+    @Test
     public void checkALargeTextAndGetProgress() throws AcrolinxException, InterruptedException, ExecutionException, IOException, URISyntaxException {
-        CheckResponse checkResponse = endpoint.check(ACROLINX_API_TOKEN,
-                CheckRequest.ofDocumentContent(Strings.repeat("This sentence is nice. \n", 300))
+        CheckResult checkResult = endpoint.checkAndGetResult(ACROLINX_API_TOKEN,
+                CheckRequest.ofDocumentContent(longTestText)
                         .setDocument(new DocumentDescriptorRequest("file.txt"))
                         .setCheckOptions(new CheckOptions(guidanceProfileEn.getId()))
-                        .build()
-        ).get();
+                        .build(),
+                progressListener
+        );
 
-        CheckResult checkResult = endpoint.pollForCheckResult(ACROLINX_API_TOKEN, checkResponse, progressListener);
         verify(progressListener, atLeast(2)).onProgress(argThat(new ProgressMatcher()));
 
         assertThat(checkResult.getQuality().getScore(), not(lessThan(40)));
+    }
+
+    /**
+     * This test might become pretty flaky, when the server is faster than expected. When we notice this problem,
+     * we should rewrite it using a mocked server.
+     */
+    @Test(expected = CancellationException.class)
+    public void cancelCheck() throws InterruptedException, ExecutionException {
+        final CheckRequest checkRequest = CheckRequest.ofDocumentContent(longTestText)
+                .setDocument(new DocumentDescriptorRequest("file.txt"))
+                .setCheckOptions(new CheckOptions(guidanceProfileEn.getId()))
+                .build();
+
+        ExecutorService executorService = Executors.newFixedThreadPool(1);
+        Future<CheckResult> future = executorService.submit(new Callable<CheckResult>() {
+            @Override
+            public CheckResult call() throws Exception {
+                return endpoint.checkAndGetResult(ACROLINX_API_TOKEN,
+                        checkRequest,
+                        progressListener
+                );
+            }
+        });
+
+        Thread.sleep(500); // Give some time to start the check
+
+        future.cancel(true);
+        future.get();
     }
 }

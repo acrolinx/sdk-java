@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
 
 public class GetPlatformInformationTest extends IntegrationTestBase {
     @Test
-    public void testFetchingPlatformInformation() throws AcrolinxException {
+    public void testFetchingPlatformInformation() throws AcrolinxException, InterruptedException {
         PlatformInformation platformInformation = endpoint.getPlatformInformation();
 
         assertNotNull(platformInformation);

@@ -17,7 +17,7 @@ import static org.junit.Assert.assertNotNull;
 
 public class GetPlatformInformationMockedTest extends MockedTestBase {
     @Test
-    public void testFetchingPlatformInformationSucces() throws AcrolinxException {
+    public void testFetchingPlatformInformationSucces() throws AcrolinxException, InterruptedException {
         PlatformInformation expectedPlatformInformation = new PlatformInformation(new Server("2018.12", "Old Server"), Lists.newArrayList("en"));
         mockSuccessResponse("", expectedPlatformInformation);
 
@@ -32,7 +32,7 @@ public class GetPlatformInformationMockedTest extends MockedTestBase {
 
     // TODO: Specify our Exception strategy
     @Test(expected = Exception.class)
-    public void testFetchingPlatformInformationFailure() throws AcrolinxException {
+    public void testFetchingPlatformInformationFailure() throws AcrolinxException, InterruptedException {
         mockSuccessResponse("", "Wrong Result");
         endpoint.getPlatformInformation();
     }

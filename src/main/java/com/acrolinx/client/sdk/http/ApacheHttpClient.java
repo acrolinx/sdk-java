@@ -9,6 +9,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.ParseException;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
@@ -71,6 +72,8 @@ public class ApacheHttpClient implements AcrolinxHttpClient {
         switch (httpMethod) {
             case GET:
                 return new HttpGet(uri);
+            case DELETE:
+                return new HttpDelete(uri);
             case POST:
                 HttpPost httpPost = new HttpPost(uri);
                 httpPost.setHeader("Content-type", "application/json");
