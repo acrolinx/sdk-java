@@ -100,6 +100,15 @@ public class AcrolinxEndpoint {
                 accessToken, JsonUtils.toJson(checkRequest), null);
     }
 
+    public ContentAnalysisDashboard getLinkToContentAnalysisDashboard(AccessToken accessToken, String batchId) throws AcrolinxException {
+        try {
+            return fetchDataFromApiPath("checking/" + batchId + "/contentanalysis", ContentAnalysisDashboard.class,
+                    HttpMethod.GET, accessToken, null, null).get();
+        } catch (InterruptedException | ExecutionException | AcrolinxException e) {
+            throw new AcrolinxException(e);
+        }
+    }
+
     public CheckResult checkAndGetResult(AccessToken accessToken, CheckRequest checkRequest, ProgressListener progressListener) throws AcrolinxException, InterruptedException {
         try {
             CheckResponse checkResponse = this.check(accessToken, checkRequest).get();
