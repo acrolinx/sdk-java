@@ -236,7 +236,13 @@ task checkLicenseHeaders {
     }
 }
 
+tasks.withType(Javadoc) {
+    options.addStringOption('Xdoclint:none', '-quiet')
+    options.memberLevel = JavadocMemberLevel.PUBLIC
+}
+
 licenseMain.dependsOn checkLicenseHeaders
 licenseTest.dependsOn checkLicenseHeaders
 jar.dependsOn 'downloadLicenses'
+test.dependsOn javadoc
 // vim: sw=4 ts=4 noet
