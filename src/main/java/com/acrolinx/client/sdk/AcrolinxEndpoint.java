@@ -77,16 +77,16 @@ public class AcrolinxEndpoint {
     }
 
     public Future<SignInSuccess> signInInteractive(InteractiveCallback callback, ExecutorService executorService) {
-        return signInInteractive(callback, executorService, null);
+        return signInInteractive(callback, executorService, null, 15L * 60L * 1000L);
     }
 
-    public Future<SignInSuccess> signInInteractive(final InteractiveCallback callback, ExecutorService executorService, AccessToken accessToken) {
+    public Future<SignInSuccess> signInInteractive(final InteractiveCallback callback, ExecutorService executorService, AccessToken accessToken, Long timeoutMs) {
         ExecutorService executor = executorService;
         if (executor == null) {
             executor = Executors.newFixedThreadPool(1);
         }
 
-        SignInInteractiveWithPolling poller = new SignInInteractiveWithPolling(accessToken, callback);
+        SignInInteractiveWithPolling poller = new SignInInteractiveWithPolling(accessToken, callback, timeoutMs);
         Future<SignInSuccess> signInSuccessFuture = executor.submit(poller);
         executor.shutdown();
         return signInSuccessFuture;
@@ -235,13 +235,14 @@ public class AcrolinxEndpoint {
     }
 
     private class SignInInteractiveWithPolling implements Callable<SignInSuccess> {
-
+        private final long timeoutMs;
         private AccessToken accessToken;
         private InteractiveCallback callback;
 
-        public SignInInteractiveWithPolling(AccessToken accessToken, InteractiveCallback callback) {
+        public SignInInteractiveWithPolling(AccessToken accessToken, InteractiveCallback callback, long timeoutMs) {
             this.accessToken = accessToken;
             this.callback = callback;
+            this.timeoutMs = timeoutMs;
         }
 
         @Override
@@ -258,7 +259,7 @@ public class AcrolinxEndpoint {
             callback.onInteractiveUrl(signInLinks.links.getInteractive());
 
             //An upper limit for polling.
-            long endTime = System.currentTimeMillis() + 15L * 60L * 1000L;
+            long endTime = System.currentTimeMillis() + timeoutMs;
 
             while (System.currentTimeMillis() < endTime) {
                 SignInPollResponse pollResponse = fetchFromUrl(new URI(signInLinks.links.getPoll()), JsonUtils.getSerializer(SignInPollResponse.class),

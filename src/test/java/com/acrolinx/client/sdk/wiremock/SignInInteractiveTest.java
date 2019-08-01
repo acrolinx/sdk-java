@@ -64,7 +64,7 @@ public class SignInInteractiveTest extends MockedTestBase {
     }
 
     @Test
-    public void signInWithLaterPollSuccess() throws AcrolinxException, ExecutionException, InterruptedException {
+    public void signInWithLaterPollSuccess() throws ExecutionException, InterruptedException {
         final String scenario = "laterPollSuccess";
         final String SIGNED_IN_STATE = "SIGNED_IN_STATE";
 

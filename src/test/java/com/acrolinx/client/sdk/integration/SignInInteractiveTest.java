@@ -9,7 +9,6 @@ import com.acrolinx.client.sdk.SignInSuccess;
 import com.acrolinx.client.sdk.exceptions.SignInException;
 import com.acrolinx.client.sdk.integration.common.IntegrationTestBase;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
@@ -34,12 +33,10 @@ public class SignInInteractiveTest extends IntegrationTestBase {
     }
 
     @Test
-    public void testSignInWithPollingCallsCallback() throws SignInException, InterruptedException, ExecutionException, TimeoutException {
-        long timeoutMs = 400;
-
+    public void testSignInWithNoAccessToken() throws SignInException, InterruptedException, ExecutionException, TimeoutException {
         try {
             Future<SignInSuccess> ss = endpoint.signInInteractive(interactiveCallback, null);
-            ss.get(timeoutMs, TimeUnit.MILLISECONDS);
+            ss.get(400, TimeUnit.MILLISECONDS);
             fail("It should fail due to timeout.");
         } catch (TimeoutException e) {
             verify(interactiveCallback, times(1)).onInteractiveUrl(ArgumentMatchers.startsWith(ACROLINX_URL));
@@ -47,20 +44,18 @@ public class SignInInteractiveTest extends IntegrationTestBase {
     }
 
     @Test
-    public void testSignInWithPollingWithValidAuthToken() throws SignInException, ExecutionException, InterruptedException {
-        SignInSuccess signInSuccess = endpoint.signInInteractive(interactiveCallback, null, ACROLINX_API_TOKEN).get();
+    public void testSignInWithPollingWithValidAccessToken() throws SignInException, ExecutionException, InterruptedException {
+        SignInSuccess signInSuccess = endpoint.signInInteractive(interactiveCallback, null, ACROLINX_API_TOKEN, 500L).get();
 
         assertEquals(ACROLINX_API_USERNAME, signInSuccess.getUser().getUsername());
         verifyZeroInteractions(interactiveCallback);
     }
 
     @Test
-    public void testSignInWithPollingWithInvalidAuthToken() throws ExecutionException, InterruptedException {
-        long timeoutMs = 1000;
-
+    public void testSignInWithPollingWithInvalidAccessToken() throws ExecutionException, InterruptedException {
         try {
-            Future<SignInSuccess> ss = endpoint.signInInteractive(interactiveCallback, null, new AccessToken("accesstoken"));
-            ss.get(timeoutMs, TimeUnit.MILLISECONDS);
+            Future<SignInSuccess> ss = endpoint.signInInteractive(interactiveCallback, null, new AccessToken("accesstoken"), 1000L);
+            ss.get(500, TimeUnit.MILLISECONDS);
             fail("It should fail due to timeout.");
         } catch (TimeoutException e) {
             verify(interactiveCallback, times(1)).onInteractiveUrl(ArgumentMatchers.startsWith(ACROLINX_URL));
@@ -69,8 +64,8 @@ public class SignInInteractiveTest extends IntegrationTestBase {
 
     @Test(expected = CancellationException.class)
     public void testSignCancel() throws ExecutionException, InterruptedException, TimeoutException {
-        long timeoutMs = 100;
-        Future<SignInSuccess> ss = endpoint.signInInteractive(interactiveCallback, null, ACROLINX_API_TOKEN);
+        long timeoutMs = 1000;
+        Future<SignInSuccess> ss = endpoint.signInInteractive(interactiveCallback, null, ACROLINX_API_TOKEN, timeoutMs);
         boolean cancelled = ss.cancel(true);
         assertTrue("User cancelled", cancelled);
         ss.get(timeoutMs, TimeUnit.MILLISECONDS);
@@ -78,12 +73,10 @@ public class SignInInteractiveTest extends IntegrationTestBase {
     }
 
     @Test
-    @Ignore
-    public void testUpperTimeLimit() throws ExecutionException, InterruptedException {
-
+    public void testUpperTimeLimit() throws InterruptedException {
         Throwable ex = null;
         try {
-            Future<SignInSuccess> ss = endpoint.signInInteractive(interactiveCallback, null, new AccessToken("accesstoken"));
+            Future<SignInSuccess> ss = endpoint.signInInteractive(interactiveCallback, null, null, 1000L);
             ss.get();
             fail("Sign In exception expected");
         } catch (ExecutionException e) {
