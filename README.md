@@ -3,9 +3,29 @@
 This library is meant to be used to interact with the Acrolinx Platform API in Java integrations. 
 It does NOT offer an interface to work with the Acrolinx Sidebar (see [Sidebar Java SDK](https://github.com/acrolinx/sidebar-sdk-java)).
 
+## Prerequisites
+
+Please contact [Acrolinx SDK support](https://github.com/acrolinx/acrolinx-coding-guidance/blob/master/topics/sdk-support.md)
+for consulting and getting your integration certified.
+The tests in this SDK work with a test license on an internal Acrolinx URL.
+This license is only meant for demonstration and developing purposes.
+Once you finished your integration, you'll have to get a license for your integration from Acrolinx.
+  
+Acrolinx offers different other SDKs, and examples for developing integrations.
+
+Before you start developing your own integration, you might benefit from looking into:
+
+* [Getting Started with Custom Integrations](https://docs.acrolinx.com/customintegrations),
+* the [Guidance for the Development of Acrolinx Integrations](https://github.com/acrolinx/acrolinx-coding-guidance),
+* the [Acrolinx Platform API](https://github.com/acrolinx/platform-api)
+* the [Rendered Version of Acrolinx Platform API](https://acrolinxapi.docs.apiary.io/#)
+* the [Acrolinx SDKs](https://github.com/acrolinx?q=sdk), and
+* the [Acrolinx Demo Projects](https://github.com/acrolinx?q=demo).
+
 ## How to start
 
 Have a look at [AcrolinxEndpoint](./src/main/java/com/acrolinx/client/sdk/AcrolinxEndpoint.java) and use it.
+Check out the [SDK Java API Reference](https://acrolinx.github.io/sdk-java/) for more details.
 
 ## Integration tests
 
