@@ -19,6 +19,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.UUID;
 import java.util.concurrent.*;
 
 import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.ACROLINX_API_TOKEN;
@@ -54,17 +55,6 @@ public class CheckTest extends IntegrationTestBase {
             }
         }
         assumeTrue(guidanceProfileEn != null);
-    }
-
-    public static class ProgressMatcher implements ArgumentMatcher<Progress> {
-        private double prevPercent = 0;
-
-        @Override
-        public boolean matches(Progress value) {
-            boolean valid = value.getPercent() >= this.prevPercent && value.getMessage() != null;
-            this.prevPercent = value.getPercent();
-            return valid;
-        }
     }
 
     @Test
@@ -143,5 +133,65 @@ public class CheckTest extends IntegrationTestBase {
 
         future.cancel(true);
         future.get();
+    }
+
+    @Test
+    public void testFireMultipleChecksWithoutWaitingForResult() throws AcrolinxException, ExecutionException, InterruptedException {
+
+        int numberOfChecks = 10;
+
+        for (int i = 0; i < numberOfChecks; i++) {
+
+            String uuid = UUID.randomUUID().toString();
+
+            CheckResponse checkResponse = endpoint.check(ACROLINX_API_TOKEN,
+                    CheckRequest.ofDocumentContent(uuid)
+                            .setDocument(new DocumentDescriptorRequest(uuid + ".txt"))
+                            .setCheckOptions(new CheckOptions(guidanceProfileEn.getId()))
+                            .build()
+            ).get();
+
+            assertNotNull(checkResponse);
+            assertThat(checkResponse.getData().getId(), not(isEmptyOrNullString()));
+            assertThat(checkResponse.getLinks().getResult(), startsWith(ACROLINX_URL));
+            assertThat(checkResponse.getLinks().getCancel(), startsWith(ACROLINX_URL));
+        }
+
+
+    }
+
+    @Test
+    public void testFireMultipleChecksWaitingForResult() throws AcrolinxException, InterruptedException, ExecutionException, IOException, URISyntaxException {
+
+        int numberOfChecks = 5;
+
+        for (int i = 0; i < numberOfChecks; i++) {
+
+            String uuid = UUID.randomUUID().toString();
+
+            CheckResult checkResult = endpoint.checkAndGetResult(ACROLINX_API_TOKEN,
+                    CheckRequest.ofDocumentContent(uuid)
+                            .setDocument(new DocumentDescriptorRequest(uuid + ".txt"))
+                            .setCheckOptions(new CheckOptions(guidanceProfileEn.getId()))
+                            .build(),
+                    progressListener
+            );
+
+            final Quality quality = checkResult.getQuality();
+            assertThat(quality.getScore(), lessThanOrEqualTo(100));
+            assertThat(quality.getScore(), not(lessThan(40)));
+            assertNotNull(quality.getStatus());
+        }
+    }
+
+    public static class ProgressMatcher implements ArgumentMatcher<Progress> {
+        private double prevPercent = 0;
+
+        @Override
+        public boolean matches(Progress value) {
+            boolean valid = value.getPercent() >= this.prevPercent && value.getMessage() != null;
+            this.prevPercent = value.getPercent();
+            return valid;
+        }
     }
 }
