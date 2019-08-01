@@ -199,9 +199,9 @@ public class AcrolinxEndpoint {
     }
 
     private <T> Future<T> fetchFromUrl(
-            URI uri,
+            final URI uri,
             final JsonDeserializer<T> deserializer,
-            HttpMethod method,
+            final HttpMethod method,
             AccessToken accessToken,
             String body,
             @Nullable Map<String, String> extraHeaders
@@ -216,7 +216,7 @@ public class AcrolinxEndpoint {
         return new FutureMapper<AcrolinxResponse, T>(acrolinxResponse) {
             @Override
             protected T map(AcrolinxResponse acrolinxHttpResponse) {
-                validateHttpResponse(acrolinxHttpResponse);
+                validateHttpResponse(acrolinxHttpResponse, uri, method);
                 return deserializer.deserialize(acrolinxHttpResponse.getResult());
             }
         };
@@ -224,10 +224,11 @@ public class AcrolinxEndpoint {
 
     /**
      * Throws an exception if the acrolinxHttpResponse indicates an error.
+     *
      * @throws AcrolinxServiceException
      * @throws RuntimeException
      */
-    private static void validateHttpResponse(AcrolinxResponse acrolinxHttpResponse) {
+    private static void validateHttpResponse(AcrolinxResponse acrolinxHttpResponse, URI uri, HttpMethod method) {
         int statusCode = acrolinxHttpResponse.getStatus();
         if (statusCode >= 200 && statusCode < 300) {
             // Should we still check if there is an error?
@@ -240,15 +241,15 @@ public class AcrolinxEndpoint {
             throw new AcrolinxRuntimeException("Fetch failed with status " + statusCode + " and no result.");
         }
 
-        AcrolinxServiceException acrolinxServiceException;
+        ErrorResponse.AcrolinxServiceError acrolinxServiceError;
         try {
-            acrolinxServiceException = parseJson(responseText, ErrorResponse.class).error;
+            acrolinxServiceError = parseJson(responseText, ErrorResponse.class).error;
         } catch (RuntimeException e) {
             throw new AcrolinxRuntimeException("Fetch failed with status " + statusCode +
                     " and unexpected result\"" + responseText + "\".");
         }
 
-        throw acrolinxServiceException;
+        throw new AcrolinxServiceException(acrolinxServiceError, new AcrolinxServiceException.HttpRequest(uri, method));
     }
 
     private Map<String, String> getCommonHeaders(AccessToken accessToken) {
