@@ -27,15 +27,18 @@ import java.util.concurrent.Future;
 
 public class ApacheHttpClient implements AcrolinxHttpClient {
 
-    private RequestConfig config = RequestConfig.custom().setConnectTimeout(500).setConnectionRequestTimeout(500).setSocketTimeout(500)
-            .build();
+    private RequestConfig config = null;
     private CloseableHttpAsyncClient httpAsyncClient = HttpAsyncClients.createDefault();
 
 
     @Override
     public Future<AcrolinxResponse> fetch(URI uri, HttpMethod httpMethod, Map<String, String> headers, String jsonBody) throws IOException {
         HttpRequestBase request = createRequests(uri, httpMethod, jsonBody);
-        request.setConfig(this.config);
+
+        if (config != null) {
+            request.setConfig(config);
+        }
+
         setHeaders(request, headers);
 
         final Future<HttpResponse> responseFuture = httpAsyncClient.execute(request, null);
@@ -66,6 +69,10 @@ public class ApacheHttpClient implements AcrolinxHttpClient {
     @Override
     public void start() {
         this.httpAsyncClient.start();
+    }
+
+    public void configure(RequestConfig config) {
+        this.config = config;
     }
 
     private HttpRequestBase createRequests(URI uri, HttpMethod httpMethod, @Nullable String jsonBody) throws UnsupportedEncodingException {

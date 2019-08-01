@@ -16,6 +16,7 @@ import com.acrolinx.client.sdk.internal.*;
 import com.acrolinx.client.sdk.platform.Capabilities;
 import com.acrolinx.client.sdk.platform.Link;
 import com.google.common.base.Strings;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.utils.URIBuilder;
 
 import javax.annotation.Nullable;
@@ -54,6 +55,10 @@ public class AcrolinxEndpoint {
         this.httpClient = httpClient;
         this.httpClient.start();
 
+    }
+
+    public void configure(RequestConfig config) {
+        httpClient.configure(config);
     }
 
     public void close() throws IOException {
