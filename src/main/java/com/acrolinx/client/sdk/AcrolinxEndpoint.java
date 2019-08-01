@@ -6,6 +6,7 @@ package com.acrolinx.client.sdk;
 import com.acrolinx.client.sdk.check.*;
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import com.acrolinx.client.sdk.exceptions.AcrolinxRuntimeException;
+import com.acrolinx.client.sdk.exceptions.AcrolinxServiceException;
 import com.acrolinx.client.sdk.exceptions.SignInException;
 import com.acrolinx.client.sdk.http.AcrolinxHttpClient;
 import com.acrolinx.client.sdk.http.AcrolinxResponse;
@@ -14,6 +15,7 @@ import com.acrolinx.client.sdk.http.HttpMethod;
 import com.acrolinx.client.sdk.internal.*;
 import com.acrolinx.client.sdk.platform.Capabilities;
 import com.acrolinx.client.sdk.platform.Link;
+import com.google.common.base.Strings;
 import org.apache.http.client.utils.URIBuilder;
 
 import javax.annotation.Nullable;
@@ -23,6 +25,8 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.*;
+
+import static com.acrolinx.client.sdk.internal.JsonUtils.parseJson;
 
 public class AcrolinxEndpoint {
 
@@ -212,13 +216,39 @@ public class AcrolinxEndpoint {
         return new FutureMapper<AcrolinxResponse, T>(acrolinxResponse) {
             @Override
             protected T map(AcrolinxResponse acrolinxHttpResponse) {
-                int statusCode = acrolinxHttpResponse.getStatus();
-                if (statusCode < 200 || statusCode > 299) {
-                    throw new AcrolinxRuntimeException("Fetch failed: " + statusCode);
-                }
+                validateHttpResponse(acrolinxHttpResponse);
                 return deserializer.deserialize(acrolinxHttpResponse.getResult());
             }
         };
+    }
+
+    /**
+     * Throws an exception if the acrolinxHttpResponse indicates an error.
+     * @throws AcrolinxServiceException
+     * @throws RuntimeException
+     */
+    private static void validateHttpResponse(AcrolinxResponse acrolinxHttpResponse) {
+        int statusCode = acrolinxHttpResponse.getStatus();
+        if (statusCode >= 200 && statusCode < 300) {
+            // Should we still check if there is an error?
+            return;
+        }
+
+        String responseText = acrolinxHttpResponse.getResult();
+
+        if (Strings.isNullOrEmpty(responseText)) {
+            throw new AcrolinxRuntimeException("Fetch failed with status " + statusCode + " and no result.");
+        }
+
+        AcrolinxServiceException acrolinxServiceException;
+        try {
+            acrolinxServiceException = parseJson(responseText, ErrorResponse.class).error;
+        } catch (RuntimeException e) {
+            throw new AcrolinxRuntimeException("Fetch failed with status " + statusCode +
+                    " and unexpected result\"" + responseText + "\".");
+        }
+
+        throw acrolinxServiceException;
     }
 
     private Map<String, String> getCommonHeaders(AccessToken accessToken) {
