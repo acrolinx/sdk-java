@@ -19,6 +19,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.*;
 
@@ -183,6 +185,32 @@ public class CheckTest extends IntegrationTestBase {
             assertNotNull(quality.getStatus());
         }
     }
+
+    @Test
+    public void checkWithOptions() throws AcrolinxException, ExecutionException, InterruptedException {
+        CheckOptions checkOptions = new CheckOptions(guidanceProfileEn.getId());
+        checkOptions.setBatchId(UUID.randomUUID().toString());
+        checkOptions.setCheckType(CheckType.baseline);
+        checkOptions.setContentFormat("txt");
+        checkOptions.setDisableCustomFieldValidation(true);
+        checkOptions.setLanguageId("en");
+
+        List<ReportType> rtl = new ArrayList<ReportType>();
+        rtl.add(ReportType.scorecard);
+        rtl.add((ReportType.termHarvesting));
+        CheckResponse checkResponse = endpoint.check(ACROLINX_API_TOKEN,
+                CheckRequest.ofDocumentContent("This textt has ann erroor.")
+                        .setDocument(new DocumentDescriptorRequest("file.txt"))
+                        .setCheckOptions(new CheckOptions(guidanceProfileEn.getId()))
+                        .build()
+        ).get();
+
+        assertNotNull(checkResponse);
+        assertThat(checkResponse.getData().getId(), not(isEmptyOrNullString()));
+        assertThat(checkResponse.getLinks().getResult(), startsWith(ACROLINX_URL));
+        assertThat(checkResponse.getLinks().getCancel(), startsWith(ACROLINX_URL));
+    }
+
 
     public static class ProgressMatcher implements ArgumentMatcher<Progress> {
         private double prevPercent = 0;

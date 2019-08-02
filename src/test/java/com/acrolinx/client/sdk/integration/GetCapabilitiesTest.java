@@ -43,4 +43,18 @@ public class GetCapabilitiesTest extends IntegrationTestBase {
         assertNotNull(language.getId());
         assertNotNull(language.getDisplayName());
     }
+
+    @Test
+    public void testGetCapablitiesExtended() throws AcrolinxException, ExecutionException, InterruptedException {
+
+        Capabilities capabilities = endpoint.getCapabilities(ACROLINX_API_TOKEN).get();
+        assertNotNull("", capabilities.getCheckingCapabilities());
+
+        assertNotNull("", capabilities.getCheckingCapabilities().getCheckTypes());
+        assertNotNull("", capabilities.getCheckingCapabilities().getContentEncodings());
+        assertNotNull("", capabilities.getCheckingCapabilities().getContentFormats());
+        assertNotNull("", capabilities.getCheckingCapabilities().getReferencePattern());
+        assertNotNull("", capabilities.getCheckingCapabilities().getReportTypes());
+
+    }
 }
