@@ -8,7 +8,6 @@ import com.acrolinx.client.sdk.internal.FutureMapper;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.ParseException;
-import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -27,17 +26,12 @@ import java.util.concurrent.Future;
 
 public class ApacheHttpClient implements AcrolinxHttpClient {
 
-    private RequestConfig config = null;
     private CloseableHttpAsyncClient httpAsyncClient = HttpAsyncClients.createDefault();
 
 
     @Override
     public Future<AcrolinxResponse> fetch(URI uri, HttpMethod httpMethod, Map<String, String> headers, String jsonBody) throws IOException {
         HttpRequestBase request = createRequests(uri, httpMethod, jsonBody);
-
-        if (config != null) {
-            request.setConfig(config);
-        }
 
         setHeaders(request, headers);
 
