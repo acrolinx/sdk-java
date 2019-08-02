@@ -115,6 +115,7 @@ task javadocJar(type: Jar) {
 license {
     header rootProject.file('LICENSE_HEADER')
     strictCheck true
+    exclude("*.json")
 }
 
 downloadLicenses {
