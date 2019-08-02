@@ -4,7 +4,6 @@
 package com.acrolinx.client.sdk.http;
 
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
-import org.apache.http.client.config.RequestConfig;
 
 import java.io.IOException;
 import java.net.URI;
@@ -18,5 +17,4 @@ public interface AcrolinxHttpClient {
 
     void start();
 
-    void configure(RequestConfig config);
 }

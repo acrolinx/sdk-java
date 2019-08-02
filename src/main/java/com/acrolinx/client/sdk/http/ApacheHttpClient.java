@@ -71,9 +71,6 @@ public class ApacheHttpClient implements AcrolinxHttpClient {
         this.httpAsyncClient.start();
     }
 
-    public void configure(RequestConfig config) {
-        this.config = config;
-    }
 
     private HttpRequestBase createRequests(URI uri, HttpMethod httpMethod, @Nullable String jsonBody) throws UnsupportedEncodingException {
         switch (httpMethod) {
