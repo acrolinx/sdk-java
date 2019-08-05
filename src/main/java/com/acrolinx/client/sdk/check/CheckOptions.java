@@ -42,8 +42,9 @@ public class CheckOptions {
         return reportTypes;
     }
 
-    public void setReportTypes(List<ReportType> reportTypes) {
+    public CheckOptions setReportTypes(List<ReportType> reportTypes) {
         this.reportTypes = reportTypes;
+        return this;
     }
 
     public CheckType getCheckType() {

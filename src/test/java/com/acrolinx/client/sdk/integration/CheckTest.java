@@ -10,6 +10,7 @@ import com.acrolinx.client.sdk.integration.common.IntegrationTestBase;
 import com.acrolinx.client.sdk.platform.Capabilities;
 import com.acrolinx.client.sdk.platform.GuidanceProfile;
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,6 +22,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.*;
 
@@ -28,6 +30,7 @@ import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.ACROLIN
 import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.ACROLINX_URL;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assume.assumeTrue;
 import static org.mockito.ArgumentMatchers.argThat;
@@ -75,7 +78,7 @@ public class CheckTest extends IntegrationTestBase {
     }
 
     @Test
-    public void checkAndGetResult() throws AcrolinxException, InterruptedException, ExecutionException, IOException, URISyntaxException {
+    public void checkAndGetResult() throws AcrolinxException, InterruptedException {
         CheckResult checkResult = endpoint.checkAndGetResult(ACROLINX_API_TOKEN,
                 CheckRequest.ofDocumentContent("This textt has ann erroor.")
                         .setDocument(new DocumentDescriptorRequest("file.txt"))
@@ -88,6 +91,28 @@ public class CheckTest extends IntegrationTestBase {
         assertThat(quality.getScore(), lessThan(100));
         assertThat(quality.getScore(), not(lessThan(40)));
         assertNotNull(quality.getStatus());
+
+        assertEquals(1, checkResult.getReports().size());
+        CheckResult.Report scorecard = checkResult.getReport(ReportType.scorecard);
+        assertEquals("Score Card", scorecard.getDisplayName());
+        assertThat(scorecard.getLink(), startsWith(ACROLINX_URL));
+    }
+
+    @Test
+    public void getTermHarvestingReport() throws AcrolinxException, InterruptedException {
+        ArrayList<ReportType> reportTypes = Lists.newArrayList(ReportType.termHarvesting);
+        CheckResult checkResult = endpoint.checkAndGetResult(ACROLINX_API_TOKEN,
+                CheckRequest.ofDocumentContent("This textt has ann erroor.")
+                        .setDocument(new DocumentDescriptorRequest("file.txt"))
+                        .setCheckOptions(new CheckOptions(guidanceProfileEn.getId()).setReportTypes(reportTypes))
+                        .build(),
+                progressListener
+        );
+
+        assertEquals(1, checkResult.getReports().size());
+        CheckResult.Report termHarvestingReport = checkResult.getReport(ReportType.termHarvesting);
+        assertEquals("Term Harvesting", termHarvestingReport.getDisplayName());
+        assertThat(termHarvestingReport.getLink(), startsWith(ACROLINX_URL));
     }
 
     /**
