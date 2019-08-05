@@ -100,31 +100,32 @@ public class CheckTest extends IntegrationTestBase {
     @Test
     public void checkResultContainsIssues() throws AcrolinxException, InterruptedException {
         CheckResult checkResult = endpoint.checkAndGetResult(ACROLINX_API_TOKEN,
-                CheckRequest.ofDocumentContent("Textt")
+                CheckRequest.ofDocumentContent("A textt")
                         .setDocument(new DocumentDescriptorRequest("file.txt"))
                         .setCheckOptions(new CheckOptions(guidanceProfileEn.getId()))
                         .build(),
                 progressListener
         );
 
-        assertEquals(1, checkResult.getIssues().size());
-        Issue issue = checkResult.getIssues().get(0);
+        Issue issue = findIssueWithFirstSuggestion(checkResult.getIssues(), "text");
+
+        assertNotNull("Expected issue not found", issue);
 
         assertThat(issue.getDisplayNameHtml(), not(emptyOrNullString()));
         assertThat(issue.getGuidanceHtml(), not(emptyOrNullString()));
-        assertEquals("Textt", issue.getDisplaySurface());
-        assertEquals("Textt", issue.getDisplaySurface());
+        assertEquals("textt", issue.getDisplaySurface());
+        assertEquals("textt", issue.getDisplaySurface());
 
         Issue.Suggestion suggestion = issue.getSuggestions().get(0);
-        assertEquals("Text", suggestion.getSurface());
+        assertEquals("text", suggestion.getSurface());
 
         List<Issue.Match> matches = issue.getPositionalInformation().getMatches();
         assertThat(matches, hasSize(1));
         Issue.Match match = matches.get(0);
 
-        assertEquals(0, match.getOriginalBegin());
-        assertEquals(5, match.getOriginalEnd());
-        assertEquals("Textt", match.getOriginalPart());
+        assertEquals(2, match.getOriginalBegin());
+        assertEquals(7, match.getOriginalEnd());
+        assertEquals("textt", match.getOriginalPart());
     }
 
     @Test
@@ -275,5 +276,16 @@ public class CheckTest extends IntegrationTestBase {
             this.prevPercent = value.getPercent();
             return valid;
         }
+    }
+
+    Issue findIssueWithFirstSuggestion(List<Issue> issues, String suggestionSurface) {
+        for (Issue issue : issues) {
+            Issue.Suggestion suggestion = issue.getSuggestions().get(0);
+            if (suggestion != null && suggestion.getSurface().equals(suggestionSurface)) {
+                return issue;
+            }
+        }
+
+        return null;
     }
 }
