@@ -32,7 +32,7 @@ public class CheckResult {
         return reports.get(reportType.toString());
     }
 
-    public class Report {
+    public static class Report {
         private final String displayName;
         private final String link;
 
