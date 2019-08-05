@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.*;
 
@@ -96,6 +95,36 @@ public class CheckTest extends IntegrationTestBase {
         CheckResult.Report scorecard = checkResult.getReport(ReportType.scorecard);
         assertEquals("Score Card", scorecard.getDisplayName());
         assertThat(scorecard.getLink(), startsWith(ACROLINX_URL));
+    }
+
+    @Test
+    public void checkResultContainsIssues() throws AcrolinxException, InterruptedException {
+        CheckResult checkResult = endpoint.checkAndGetResult(ACROLINX_API_TOKEN,
+                CheckRequest.ofDocumentContent("Textt")
+                        .setDocument(new DocumentDescriptorRequest("file.txt"))
+                        .setCheckOptions(new CheckOptions(guidanceProfileEn.getId()))
+                        .build(),
+                progressListener
+        );
+
+        assertEquals(1, checkResult.getIssues().size());
+        Issue issue = checkResult.getIssues().get(0);
+
+        assertThat(issue.getDisplayNameHtml(), not(emptyOrNullString()));
+        assertThat(issue.getGuidanceHtml(), not(emptyOrNullString()));
+        assertEquals("Textt", issue.getDisplaySurface());
+        assertEquals("Textt", issue.getDisplaySurface());
+
+        Issue.Suggestion suggestion = issue.getSuggestions().get(0);
+        assertEquals("Text", suggestion.getSurface());
+
+        List<Issue.Match> matches = issue.getPositionalInformation().getMatches();
+        assertThat(matches, hasSize(1));
+        Issue.Match match = matches.get(0);
+
+        assertEquals(0, match.getOriginalBegin());
+        assertEquals(5, match.getOriginalEnd());
+        assertEquals("Textt", match.getOriginalPart());
     }
 
     @Test

@@ -3,17 +3,20 @@
  */
 package com.acrolinx.client.sdk.check;
 
+import java.util.List;
 import java.util.Map;
 
 public class CheckResult {
     private final String id;
     private final Quality quality;
     private final Map<String, Report> reports;
+    private final List<Issue> issues;
 
-    public CheckResult(String id, Quality quality, Map<String, Report> reports) {
+    public CheckResult(String id, Quality quality, Map<String, Report> reports, List<Issue> issues) {
         this.id = id;
         this.quality = quality;
         this.reports = reports;
+        this.issues = issues;
     }
 
     public String getId() {
@@ -30,6 +33,10 @@ public class CheckResult {
 
     public Report getReport(ReportType reportType) {
         return reports.get(reportType.toString());
+    }
+
+    public List<Issue> getIssues() {
+        return issues;
     }
 
     public static class Report {
