@@ -99,7 +99,15 @@ dependencies {
     //Apache http dependencies
     implementation group: 'org.apache.httpcomponents', name: 'httpasyncclient', version: '4.1.4'
 
+    //Google gson
     implementation 'com.google.code.gson:gson:2.8.5'
+
+    //logback logging
+    compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+    compile group: 'ch.qos.logback', name: 'logback-core', version: '1.2.3'
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.26'
+
+
 }
 
 task sourcesJar(type: Jar) {
