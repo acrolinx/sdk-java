@@ -192,11 +192,9 @@ public class CheckTest extends IntegrationTestBase {
 
     @Test
     public void testFireMultipleChecksWithoutWaitingForResult() throws AcrolinxException {
-
-        int numberOfChecks = 10;
+        int numberOfChecks = 5;
 
         for (int i = 0; i < numberOfChecks; i++) {
-
             String uuid = UUID.randomUUID().toString();
 
             CheckResponse checkResponse = endpoint.check(ACROLINX_API_TOKEN,
@@ -211,17 +209,13 @@ public class CheckTest extends IntegrationTestBase {
             assertThat(checkResponse.getLinks().getResult(), startsWith(ACROLINX_URL));
             assertThat(checkResponse.getLinks().getCancel(), startsWith(ACROLINX_URL));
         }
-
-
     }
 
     @Test
     public void testFireMultipleChecksWaitingForResult() throws AcrolinxException, InterruptedException {
-
         int numberOfChecks = 5;
 
         for (int i = 0; i < numberOfChecks; i++) {
-
             String uuid = UUID.randomUUID().toString();
 
             CheckResult checkResult = endpoint.checkAndGetResult(ACROLINX_API_TOKEN,
@@ -233,6 +227,39 @@ public class CheckTest extends IntegrationTestBase {
             );
 
             final Quality quality = checkResult.getQuality();
+            assertThat(quality.getScore(), lessThanOrEqualTo(100));
+            assertThat(quality.getScore(), not(lessThan(40)));
+            assertNotNull(quality.getStatus());
+        }
+    }
+
+    @Test
+    public void testMultipleChecksParallelWaitingForResult() throws InterruptedException, ExecutionException {
+        int numberOfChecks = 5;
+
+        ExecutorService executorService = Executors.newFixedThreadPool(numberOfChecks);
+
+        List<Future<CheckResult>> checks = Lists.newArrayList();
+
+        for (int i = 0; i < numberOfChecks; i++) {
+            final String uuid = UUID.randomUUID().toString();
+            Future<CheckResult> futureResult = executorService.submit(new Callable<CheckResult>() {
+                @Override
+                public CheckResult call() throws Exception {
+                    return endpoint.checkAndGetResult(ACROLINX_API_TOKEN,
+                            CheckRequest.ofDocumentContent(uuid)
+                                    .setDocument(new DocumentDescriptorRequest(uuid + ".txt"))
+                                    .setCheckOptions(new CheckOptions(guidanceProfileEn.getId()))
+                                    .build(),
+                            progressListener
+                    );
+                }
+            });
+            checks.add(futureResult);
+        }
+
+        for(Future<CheckResult> futureCheckResult: checks) {
+            final Quality quality = futureCheckResult.get().getQuality();
             assertThat(quality.getScore(), lessThanOrEqualTo(100));
             assertThat(quality.getScore(), not(lessThan(40)));
             assertNotNull(quality.getStatus());
