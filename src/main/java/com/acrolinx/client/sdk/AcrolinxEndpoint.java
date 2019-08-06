@@ -126,8 +126,8 @@ public class AcrolinxEndpoint {
     }
 
     public CheckResult checkAndGetResult(AccessToken accessToken, CheckRequest checkRequest, ProgressListener progressListener) throws AcrolinxException, InterruptedException {
+        CheckResponse checkResponse = this.check(accessToken, checkRequest);
         try {
-            CheckResponse checkResponse = this.check(accessToken, checkRequest);
             return pollForResultWithCancelHandling(accessToken, progressListener, checkResponse);
         } catch (URISyntaxException | IOException e) {
             throw new AcrolinxException(e);

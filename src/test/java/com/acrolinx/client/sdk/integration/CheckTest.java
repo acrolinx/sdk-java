@@ -184,9 +184,12 @@ public class CheckTest extends IntegrationTestBase {
             }
         });
 
-        Thread.sleep(500); // Give some time to start the check
+        Thread.sleep(100); // Give some time to start the check
 
         future.cancel(true);
+
+        Thread.sleep(100);  // TODO: Without waiting the Connection pool will shut down before we can send cancel.
+
         future.get();
     }
 
