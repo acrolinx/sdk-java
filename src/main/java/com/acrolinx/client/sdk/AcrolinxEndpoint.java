@@ -68,13 +68,13 @@ public class AcrolinxEndpoint {
         }
     }
 
-    public Future<SignInSuccess> signInWithSSO(String genericToken, String username) throws AcrolinxException {
+    public SignInSuccess signInWithSSO(String genericToken, String username) throws AcrolinxException {
         HashMap<String, String> extraHeaders = new HashMap<>();
         extraHeaders.put("password", genericToken);
         extraHeaders.put("username", username);
 
         try {
-            return fetchDataFromApiPath("auth/sign-ins", SignInSuccess.class, HttpMethod.POST, null, null, extraHeaders);
+            return fetchDataFromApiPath("auth/sign-ins", SignInSuccess.class, HttpMethod.POST, null, null, extraHeaders).get();
         } catch (Exception e) {
             throw new AcrolinxException(e);
         }

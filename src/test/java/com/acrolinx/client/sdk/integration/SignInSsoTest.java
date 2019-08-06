@@ -18,15 +18,15 @@ import static org.junit.Assume.assumeTrue;
 
 public class SignInSsoTest extends IntegrationTestBase {
     @Test
-    public void testSignInWithSSO() throws AcrolinxException, ExecutionException, InterruptedException {
+    public void testSignInWithSSO() throws AcrolinxException {
         assumeTrue(ACROLINX_API_USERNAME != null && ACROLINX_API_SSO_TOKEN != null);
 
-        SignInSuccess signInSuccess = endpoint.signInWithSSO(ACROLINX_API_SSO_TOKEN, ACROLINX_API_USERNAME).get();
+        SignInSuccess signInSuccess = endpoint.signInWithSSO(ACROLINX_API_SSO_TOKEN, ACROLINX_API_USERNAME);
         assertEquals(ACROLINX_API_USERNAME, signInSuccess.getUser().getUsername());
     }
 
-    @Test(expected = AcrolinxRuntimeException.class)
-    public void testSignInWithSsoThrowsException() throws AcrolinxException, ExecutionException, InterruptedException {
-        endpoint.signInWithSSO("invalidGenericToken", "invalidUserName").get();
+    @Test(expected = AcrolinxException.class)
+    public void testSignInWithSsoThrowsException() throws AcrolinxException {
+        endpoint.signInWithSSO("invalidGenericToken", "invalidUserName");
     }
 }
