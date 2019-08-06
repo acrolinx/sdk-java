@@ -128,9 +128,13 @@ public class AcrolinxEndpoint {
         }
     }
 
-    public Future<CheckResponse> check(AccessToken accessToken, CheckRequest checkRequest) throws AcrolinxException {
-        return fetchFromApiPath("checking/checks", JsonUtils.getSerializer(CheckResponse.class), HttpMethod.POST,
-                accessToken, JsonUtils.toJson(checkRequest), null);
+    public CheckResponse check(AccessToken accessToken, CheckRequest checkRequest) throws AcrolinxException {
+        try {
+            return fetchFromApiPath("checking/checks", JsonUtils.getSerializer(CheckResponse.class), HttpMethod.POST,
+                    accessToken, JsonUtils.toJson(checkRequest), null).get();
+        } catch (ExecutionException | InterruptedException e) {
+            throw new AcrolinxException(e);
+        }
     }
 
     public String getContentAnalysisDashboard(AccessToken accessToken, String batchId) throws AcrolinxException {
@@ -153,7 +157,7 @@ public class AcrolinxEndpoint {
 
     public CheckResult checkAndGetResult(AccessToken accessToken, CheckRequest checkRequest, ProgressListener progressListener) throws AcrolinxException, InterruptedException {
         try {
-            CheckResponse checkResponse = this.check(accessToken, checkRequest).get();
+            CheckResponse checkResponse = this.check(accessToken, checkRequest);
             return pollForResultWithCancelHandling(accessToken, progressListener, checkResponse);
         } catch (ExecutionException | URISyntaxException | IOException e) {
             throw new AcrolinxException(e);

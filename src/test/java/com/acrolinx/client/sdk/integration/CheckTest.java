@@ -18,8 +18,6 @@ import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -62,13 +60,13 @@ public class CheckTest extends IntegrationTestBase {
     }
 
     @Test
-    public void startACheck() throws AcrolinxException, InterruptedException, ExecutionException, IOException, URISyntaxException {
+    public void startACheck() throws AcrolinxException {
         CheckResponse checkResponse = endpoint.check(ACROLINX_API_TOKEN,
                 CheckRequest.ofDocumentContent("This textt has ann erroor.")
                         .setDocument(new DocumentDescriptorRequest("file.txt"))
                         .setCheckOptions(new CheckOptions(guidanceProfileEn.getId()))
                         .build()
-        ).get();
+        );
 
         assertNotNull(checkResponse);
         assertThat(checkResponse.getData().getId(), not(isEmptyOrNullString()));
@@ -150,7 +148,7 @@ public class CheckTest extends IntegrationTestBase {
      * we should rewrite it using a mocked server.
      */
     @Test
-    public void checkALargeTextAndGetProgress() throws AcrolinxException, InterruptedException, ExecutionException, IOException, URISyntaxException {
+    public void checkALargeTextAndGetProgress() throws AcrolinxException, InterruptedException {
         CheckResult checkResult = endpoint.checkAndGetResult(ACROLINX_API_TOKEN,
                 CheckRequest.ofDocumentContent(longTestText)
                         .setDocument(new DocumentDescriptorRequest("file.txt"))
@@ -193,7 +191,7 @@ public class CheckTest extends IntegrationTestBase {
     }
 
     @Test
-    public void testFireMultipleChecksWithoutWaitingForResult() throws AcrolinxException, ExecutionException, InterruptedException {
+    public void testFireMultipleChecksWithoutWaitingForResult() throws AcrolinxException {
 
         int numberOfChecks = 10;
 
@@ -206,7 +204,7 @@ public class CheckTest extends IntegrationTestBase {
                             .setDocument(new DocumentDescriptorRequest(uuid + ".txt"))
                             .setCheckOptions(new CheckOptions(guidanceProfileEn.getId()))
                             .build()
-            ).get();
+            );
 
             assertNotNull(checkResponse);
             assertThat(checkResponse.getData().getId(), not(isEmptyOrNullString()));
@@ -218,7 +216,7 @@ public class CheckTest extends IntegrationTestBase {
     }
 
     @Test
-    public void testFireMultipleChecksWaitingForResult() throws AcrolinxException, InterruptedException, ExecutionException, IOException, URISyntaxException {
+    public void testFireMultipleChecksWaitingForResult() throws AcrolinxException, InterruptedException {
 
         int numberOfChecks = 5;
 
@@ -242,7 +240,7 @@ public class CheckTest extends IntegrationTestBase {
     }
 
     @Test
-    public void checkWithOptions() throws AcrolinxException, ExecutionException, InterruptedException {
+    public void checkWithOptions() throws AcrolinxException {
         CheckOptions checkOptions = new CheckOptions(guidanceProfileEn.getId());
         checkOptions.setBatchId(UUID.randomUUID().toString());
         checkOptions.setCheckType(CheckType.baseline);
@@ -258,24 +256,12 @@ public class CheckTest extends IntegrationTestBase {
                         .setDocument(new DocumentDescriptorRequest("file.txt"))
                         .setCheckOptions(new CheckOptions(guidanceProfileEn.getId()))
                         .build()
-        ).get();
+        );
 
         assertNotNull(checkResponse);
         assertThat(checkResponse.getData().getId(), not(isEmptyOrNullString()));
         assertThat(checkResponse.getLinks().getResult(), startsWith(ACROLINX_URL));
         assertThat(checkResponse.getLinks().getCancel(), startsWith(ACROLINX_URL));
-    }
-
-
-    public static class ProgressMatcher implements ArgumentMatcher<Progress> {
-        private double prevPercent = 0;
-
-        @Override
-        public boolean matches(Progress value) {
-            boolean valid = value.getPercent() >= this.prevPercent && value.getMessage() != null;
-            this.prevPercent = value.getPercent();
-            return valid;
-        }
     }
 
     Issue findIssueWithFirstSuggestion(List<Issue> issues, String suggestionSurface) {
@@ -287,5 +273,16 @@ public class CheckTest extends IntegrationTestBase {
         }
 
         return null;
+    }
+
+    public static class ProgressMatcher implements ArgumentMatcher<Progress> {
+        private double prevPercent = 0;
+
+        @Override
+        public boolean matches(Progress value) {
+            boolean valid = value.getPercent() >= this.prevPercent && value.getMessage() != null;
+            this.prevPercent = value.getPercent();
+            return valid;
+        }
     }
 }
