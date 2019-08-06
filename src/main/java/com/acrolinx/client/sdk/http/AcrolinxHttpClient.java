@@ -11,5 +11,6 @@ import java.util.Map;
 
 public interface AcrolinxHttpClient {
     AcrolinxResponse fetch(URI url, HttpMethod method, Map<String, String> headers, String body) throws IOException, AcrolinxException;
+
     void close() throws IOException;
 }

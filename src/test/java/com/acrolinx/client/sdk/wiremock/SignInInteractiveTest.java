@@ -20,8 +20,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.concurrent.ExecutionException;
-
 import static com.acrolinx.client.sdk.wiremock.common.WireMockUtils.*;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;

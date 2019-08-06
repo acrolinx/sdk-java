@@ -258,7 +258,7 @@ public class CheckTest extends IntegrationTestBase {
             checks.add(futureResult);
         }
 
-        for(Future<CheckResult> futureCheckResult: checks) {
+        for (Future<CheckResult> futureCheckResult : checks) {
             final Quality quality = futureCheckResult.get().getQuality();
             assertThat(quality.getScore(), lessThanOrEqualTo(100));
             assertThat(quality.getScore(), not(lessThan(40)));

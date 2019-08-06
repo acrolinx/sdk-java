@@ -12,7 +12,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.ACROLINX_API_TOKEN;
 import static org.junit.Assert.assertNotNull;

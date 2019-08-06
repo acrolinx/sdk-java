@@ -7,7 +7,6 @@ import com.acrolinx.client.sdk.AcrolinxEndpoint;
 import com.acrolinx.client.sdk.InteractiveCallback;
 import com.acrolinx.client.sdk.SignInSuccess;
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
-import com.acrolinx.client.sdk.exceptions.SignInException;
 
 import java.net.URISyntaxException;
 import java.util.concurrent.ExecutionException;

@@ -22,7 +22,7 @@ import java.nio.file.Paths;
 import java.util.Iterator;
 
 public class LoggingUtils {
-    private LoggingUtils(){
+    private LoggingUtils() {
         // This class just holds some static methods, you can't instantiate it.
     }
 

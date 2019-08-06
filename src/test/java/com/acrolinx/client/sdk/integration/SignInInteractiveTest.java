@@ -6,7 +6,6 @@ package com.acrolinx.client.sdk.integration;
 import com.acrolinx.client.sdk.AccessToken;
 import com.acrolinx.client.sdk.InteractiveCallback;
 import com.acrolinx.client.sdk.SignInSuccess;
-import com.acrolinx.client.sdk.check.CheckResult;
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import com.acrolinx.client.sdk.exceptions.SignInException;
 import com.acrolinx.client.sdk.integration.common.IntegrationTestBase;

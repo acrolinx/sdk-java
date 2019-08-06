@@ -5,11 +5,8 @@ package com.acrolinx.client.sdk.integration;
 
 import com.acrolinx.client.sdk.SignInSuccess;
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
-import com.acrolinx.client.sdk.exceptions.AcrolinxRuntimeException;
 import com.acrolinx.client.sdk.integration.common.IntegrationTestBase;
 import org.junit.Test;
-
-import java.util.concurrent.ExecutionException;
 
 import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.ACROLINX_API_SSO_TOKEN;
 import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.ACROLINX_API_USERNAME;
