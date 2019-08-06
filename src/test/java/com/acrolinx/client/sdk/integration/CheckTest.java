@@ -48,9 +48,9 @@ public class CheckTest extends IntegrationTestBase {
     private ProgressListener progressListener;
 
     @Before
-    public void beforeTest() throws AcrolinxException, ExecutionException, InterruptedException {
+    public void beforeTest() throws AcrolinxException {
         assumeTrue(ACROLINX_API_TOKEN != null);
-        Capabilities capabilities = endpoint.getCapabilities(ACROLINX_API_TOKEN).get();
+        Capabilities capabilities = endpoint.getCapabilities(ACROLINX_API_TOKEN);
 
         for (GuidanceProfile profile : capabilities.getCheckingCapabilities().getGuidanceProfiles()) {
             if (profile.getLanguage().getId().equals("en")) {

@@ -26,8 +26,8 @@ public class GetCapabilitiesTest extends IntegrationTestBase {
     }
 
     @Test
-    public void testGetCapabilities() throws AcrolinxException, InterruptedException, ExecutionException {
-        Capabilities capabilities = endpoint.getCapabilities(ACROLINX_API_TOKEN).get();
+    public void testGetCapabilities() throws AcrolinxException {
+        Capabilities capabilities = endpoint.getCapabilities(ACROLINX_API_TOKEN);
         assertNotNull("", capabilities.getCheckingCapabilities());
 
         List<GuidanceProfile> guidanceProfiles = capabilities.getCheckingCapabilities().getGuidanceProfiles();
@@ -45,9 +45,9 @@ public class GetCapabilitiesTest extends IntegrationTestBase {
     }
 
     @Test
-    public void testGetCapablitiesExtended() throws AcrolinxException, ExecutionException, InterruptedException {
+    public void testGetCapablitiesExtended() throws AcrolinxException {
 
-        Capabilities capabilities = endpoint.getCapabilities(ACROLINX_API_TOKEN).get();
+        Capabilities capabilities = endpoint.getCapabilities(ACROLINX_API_TOKEN);
         assertNotNull("", capabilities.getCheckingCapabilities());
 
         assertNotNull("", capabilities.getCheckingCapabilities().getCheckTypes());

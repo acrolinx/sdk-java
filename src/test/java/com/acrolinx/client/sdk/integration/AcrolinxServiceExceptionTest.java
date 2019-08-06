@@ -10,8 +10,6 @@ import com.acrolinx.client.sdk.http.HttpMethod;
 import com.acrolinx.client.sdk.integration.common.IntegrationTestBase;
 import org.junit.Test;
 
-import java.util.concurrent.ExecutionException;
-
 import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.ACROLINX_URL;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -20,9 +18,9 @@ import static org.junit.Assert.fail;
 
 public class AcrolinxServiceExceptionTest extends IntegrationTestBase {
     @Test
-    public void testGetCapabilitiesWithInvalidAccessToken() throws AcrolinxException, InterruptedException, ExecutionException {
+    public void testGetCapabilitiesWithInvalidAccessToken() throws AcrolinxException {
         try {
-            endpoint.getCapabilities(new AccessToken("invalid")).get();
+            endpoint.getCapabilities(new AccessToken("invalid"));
             fail("getCapabilities should fail because of invalid AccessToken");
         } catch (AcrolinxServiceException e) {
             assertEquals(AcrolinxServiceException.Type.auth.toString(), e.getType());

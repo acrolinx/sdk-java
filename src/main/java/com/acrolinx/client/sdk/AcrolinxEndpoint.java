@@ -96,8 +96,12 @@ public class AcrolinxEndpoint {
         return signInSuccessFuture;
     }
 
-    public Future<Capabilities> getCapabilities(AccessToken accessToken) throws AcrolinxException {
-        return fetchDataFromApiPath("capabilities", Capabilities.class, HttpMethod.GET, accessToken, null, null);
+    public Capabilities getCapabilities(AccessToken accessToken) throws AcrolinxException {
+        try {
+            return fetchDataFromApiPath("capabilities", Capabilities.class, HttpMethod.GET, accessToken, null, null).get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new AcrolinxException(e.getCause());
+        }
     }
 
     public Future<CheckResponse> check(AccessToken accessToken, CheckRequest checkRequest) throws AcrolinxException {
