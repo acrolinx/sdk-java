@@ -54,24 +54,24 @@ public class SignInInteractiveTest extends MockedTestBase {
     }
 
     @Test
-    public void signInWithImmediatePollSuccess() throws AcrolinxException, ExecutionException, InterruptedException {
+    public void signInWithImmediatePollSuccess() throws AcrolinxException {
         mockSuccessResponse(mockedPollPath, expectedSignInSuccess);
 
-        SignInSuccess signInSuccess = endpoint.signInInteractive(interactiveCallback, null).get();
+        SignInSuccess signInSuccess = endpoint.signInInteractive(interactiveCallback);
 
         verify(interactiveCallback).onInteractiveUrl(mockedInteractiveUrl);
         assertEquals(expectedSignInSuccess.getAccessToken(), signInSuccess.getAccessToken());
     }
 
     @Test
-    public void signInWithLaterPollSuccess() throws ExecutionException, InterruptedException {
+    public void signInWithLaterPollSuccess() throws AcrolinxException {
         final String scenario = "laterPollSuccess";
         final String SIGNED_IN_STATE = "SIGNED_IN_STATE";
 
         mockGetResponseInScenario(mockedPollPath, mockedSignInPollMoreResponse, scenario, Scenario.STARTED, SIGNED_IN_STATE);
         mockSuccessResponseInScenario(mockedPollPath, expectedSignInSuccess, scenario, SIGNED_IN_STATE);
 
-        SignInSuccess signInSuccess = endpoint.signInInteractive(interactiveCallback, null).get();
+        SignInSuccess signInSuccess = endpoint.signInInteractive(interactiveCallback);
 
         verify(interactiveCallback).onInteractiveUrl(mockedInteractiveUrl);
         assertEquals(expectedSignInSuccess.getAccessToken().getAccessToken(), signInSuccess.getAccessToken().getAccessToken());
