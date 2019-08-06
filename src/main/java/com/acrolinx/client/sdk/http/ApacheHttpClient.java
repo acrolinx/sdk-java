@@ -4,7 +4,6 @@
 package com.acrolinx.client.sdk.http;
 
 import com.acrolinx.client.sdk.exceptions.AcrolinxRuntimeException;
-import com.acrolinx.client.sdk.internal.FutureMapper;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.ParseException;
@@ -13,8 +12,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
-import org.apache.http.impl.nio.client.HttpAsyncClients;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
 import javax.annotation.Nullable;
@@ -22,49 +21,36 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.Map;
-import java.util.concurrent.Future;
 
 public class ApacheHttpClient implements AcrolinxHttpClient {
-
-    private CloseableHttpAsyncClient httpAsyncClient = HttpAsyncClients.createDefault();
+    private CloseableHttpClient httpClient = HttpClients.createDefault();
 
 
     @Override
-    public Future<AcrolinxResponse> fetch(URI uri, HttpMethod httpMethod, Map<String, String> headers, String jsonBody) throws IOException {
+    public AcrolinxResponse fetch(URI uri, HttpMethod httpMethod, Map<String, String> headers, String jsonBody) throws IOException {
         HttpRequestBase request = createRequests(uri, httpMethod, jsonBody);
 
         setHeaders(request, headers);
 
-        final Future<HttpResponse> responseFuture = httpAsyncClient.execute(request, null);
+        final HttpResponse response = httpClient.execute(request);
 
-        return new FutureMapper<HttpResponse, AcrolinxResponse>(responseFuture) {
-            @Override
-            protected AcrolinxResponse map(HttpResponse response) {
-                AcrolinxResponse acrolinxResponse = new AcrolinxResponse();
-                int statusCode = response.getStatusLine().getStatusCode();
-                acrolinxResponse.setStatus(statusCode);
+        AcrolinxResponse acrolinxResponse = new AcrolinxResponse();
+        int statusCode = response.getStatusLine().getStatusCode();
+        acrolinxResponse.setStatus(statusCode);
 
-                HttpEntity responseEntity = response.getEntity();
-                try {
-                    acrolinxResponse.setResult(EntityUtils.toString(responseEntity));
-                } catch (ParseException | IOException e) {
-                    throw new AcrolinxRuntimeException(e);
-                }
-                return acrolinxResponse;
-            }
-        };
+        HttpEntity responseEntity = response.getEntity();
+        try {
+            acrolinxResponse.setResult(EntityUtils.toString(responseEntity));
+        } catch (ParseException | IOException e) {
+            throw new AcrolinxRuntimeException(e);
+        }
+        return acrolinxResponse;
     }
 
     @Override
     public void close() throws IOException {
-        this.httpAsyncClient.close();
+        this.httpClient.close();
     }
-
-    @Override
-    public void start() {
-        this.httpAsyncClient.start();
-    }
-
 
     private HttpRequestBase createRequests(URI uri, HttpMethod httpMethod, @Nullable String jsonBody) throws UnsupportedEncodingException {
         switch (httpMethod) {

@@ -35,7 +35,7 @@ public class SignInInteractiveTest extends IntegrationTestBase {
     }
 
     @Test
-    public void testSignInWithNoAccessToken() throws AcrolinxException {
+    public void testSignInWithNoAccessToken() throws AcrolinxException, InterruptedException {
         try {
             SignInSuccess ss = endpoint.signInInteractive(interactiveCallback, null, 400L);
             fail("It should fail due to timeout.");
@@ -46,7 +46,7 @@ public class SignInInteractiveTest extends IntegrationTestBase {
     }
 
     @Test
-    public void testSignInWithPollingWithValidAccessToken() throws AcrolinxException {
+    public void testSignInWithPollingWithValidAccessToken() throws AcrolinxException, InterruptedException {
         SignInSuccess signInSuccess = endpoint.signInInteractive(interactiveCallback, ACROLINX_API_TOKEN, 500L);
 
         assertEquals(ACROLINX_API_USERNAME, signInSuccess.getUser().getUsername());

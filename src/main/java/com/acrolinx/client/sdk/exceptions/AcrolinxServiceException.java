@@ -13,7 +13,7 @@ import java.net.URI;
 /**
  * An exception that is thrown by the Acrolinx web service.
  */
-public class AcrolinxServiceException extends AcrolinxRuntimeException {
+public class AcrolinxServiceException extends AcrolinxException {
     public enum Type {
         auth
     }

@@ -24,9 +24,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 import static com.acrolinx.client.sdk.internal.JsonUtils.parseJson;
 
@@ -40,12 +37,7 @@ public class AcrolinxEndpoint {
     private AcrolinxHttpClient httpClient;
 
     public AcrolinxEndpoint(URI acrolinxURL, String clientSignature, String clientVersion, String clientLocale) {
-        this.clientSignature = clientSignature;
-        this.clientVersion = clientVersion;
-        this.clientLocale = clientLocale;
-        this.acrolinxUri = acrolinxURL;
-        this.httpClient = new ApacheHttpClient();
-        this.httpClient.start();
+        this(new ApacheHttpClient(), acrolinxURL, clientSignature, clientVersion, clientLocale);
     }
 
     public AcrolinxEndpoint(AcrolinxHttpClient httpClient, URI acrolinxURL, String clientSignature, String clientVersion, String clientLocale) {
@@ -54,20 +46,14 @@ public class AcrolinxEndpoint {
         this.clientLocale = clientLocale;
         this.acrolinxUri = acrolinxURL;
         this.httpClient = httpClient;
-        this.httpClient.start();
-
     }
 
     public void close() throws IOException {
         this.httpClient.close();
     }
 
-    public PlatformInformation getPlatformInformation() throws AcrolinxException, InterruptedException {
-        try {
-            return fetchDataFromApiPath("", PlatformInformation.class, HttpMethod.GET, null, null, null).get();
-        } catch (ExecutionException e) {
-            throw new AcrolinxException(e);
-        }
+    public PlatformInformation getPlatformInformation() throws AcrolinxException {
+        return fetchDataFromApiPath("", PlatformInformation.class, HttpMethod.GET, null, null, null);
     }
 
     public SignInSuccess signInWithSSO(String genericToken, String username) throws AcrolinxException {
@@ -75,22 +61,18 @@ public class AcrolinxEndpoint {
         extraHeaders.put("password", genericToken);
         extraHeaders.put("username", username);
 
-        try {
-            return fetchDataFromApiPath("auth/sign-ins", SignInSuccess.class, HttpMethod.POST, null, null, extraHeaders).get();
-        } catch (Exception e) {
-            throw new AcrolinxException(e);
-        }
+        return fetchDataFromApiPath("auth/sign-ins", SignInSuccess.class, HttpMethod.POST, null, null, extraHeaders);
     }
 
-    public SignInSuccess signInInteractive(InteractiveCallback callback) throws AcrolinxException {
+    public SignInSuccess signInInteractive(InteractiveCallback callback) throws AcrolinxException, InterruptedException {
         return signInInteractive(callback, null, 15L * 60L * 1000L);
     }
 
-    public SignInSuccess signInInteractive(final InteractiveCallback callback, AccessToken accessToken, Long timeoutMs) throws AcrolinxException {
+    public SignInSuccess signInInteractive(final InteractiveCallback callback, AccessToken accessToken, Long timeoutMs) throws AcrolinxException, InterruptedException {
         final SignInResponse signInResponse;
         try {
             signInResponse = fetchFromApiPath("auth/sign-ins",
-                    JsonUtils.getSerializer(SignInResponse.class), HttpMethod.POST, accessToken, null, null).get();
+                    JsonUtils.getSerializer(SignInResponse.class), HttpMethod.POST, accessToken, null, null);
 
             if (signInResponse instanceof SignInResponse.Success) {
                 return ((SignInResponse.Success) signInResponse).data;
@@ -104,7 +86,7 @@ public class AcrolinxEndpoint {
 
             while (System.currentTimeMillis() < endTime) {
                 SignInPollResponse pollResponse = fetchFromUrl(new URI(signInLinks.links.getPoll()), JsonUtils.getSerializer(SignInPollResponse.class),
-                        HttpMethod.GET, null, null, null).get();
+                        HttpMethod.GET, null, null, null);
                 if (pollResponse instanceof SignInPollResponse.Success) {
                     return ((SignInPollResponse.Success) pollResponse).data;
                 }
@@ -114,57 +96,45 @@ public class AcrolinxEndpoint {
                 long sleepTimeMs = progress.getRetryAfterMs();
                 Thread.sleep(sleepTimeMs);
             }
-        } catch (InterruptedException | AcrolinxException | ExecutionException | URISyntaxException | IOException e) {
+        } catch (AcrolinxException | URISyntaxException | IOException e) {
             throw new AcrolinxException(e);
         }
         throw new SignInException("Timeout");
     }
 
     public Capabilities getCapabilities(AccessToken accessToken) throws AcrolinxException {
-        try {
-            return fetchDataFromApiPath("capabilities", Capabilities.class, HttpMethod.GET, accessToken, null, null).get();
-        } catch (InterruptedException | ExecutionException e) {
-            throw new AcrolinxException(e);
-        }
+        return fetchDataFromApiPath("capabilities", Capabilities.class, HttpMethod.GET, accessToken, null, null);
     }
 
     public CheckResponse check(AccessToken accessToken, CheckRequest checkRequest) throws AcrolinxException {
-        try {
-            return fetchFromApiPath("checking/checks", JsonUtils.getSerializer(CheckResponse.class), HttpMethod.POST,
-                    accessToken, JsonUtils.toJson(checkRequest), null).get();
-        } catch (ExecutionException | InterruptedException e) {
-            throw new AcrolinxException(e);
-        }
+        return fetchFromApiPath("checking/checks", JsonUtils.getSerializer(CheckResponse.class), HttpMethod.POST,
+                accessToken, JsonUtils.toJson(checkRequest), null);
     }
 
     public String getContentAnalysisDashboard(AccessToken accessToken, String batchId) throws AcrolinxException {
-        try {
-            ContentAnalysisDashboard contentAnalysisDashboard = fetchDataFromApiPath("checking/" + batchId + "/contentanalysis",
-                    ContentAnalysisDashboard.class, HttpMethod.GET, accessToken, null, null).get();
+        ContentAnalysisDashboard contentAnalysisDashboard = fetchDataFromApiPath("checking/" + batchId + "/contentanalysis",
+                ContentAnalysisDashboard.class, HttpMethod.GET, accessToken, null, null);
 
 
-            for (Link link : contentAnalysisDashboard.getLinks()) {
-                if (link.getLinkType().equals("shortWithoutAccessToken")) {
-                    return link.getLink();
-                }
+        for (Link link : contentAnalysisDashboard.getLinks()) {
+            if (link.getLinkType().equals("shortWithoutAccessToken")) {
+                return link.getLink();
             }
-
-            throw new AcrolinxException("Could not fetch content analysis dashboard");
-        } catch (InterruptedException | ExecutionException | AcrolinxException e) {
-            throw new AcrolinxException(e);
         }
+
+        throw new AcrolinxException("Could not fetch content analysis dashboard");
     }
 
     public CheckResult checkAndGetResult(AccessToken accessToken, CheckRequest checkRequest, ProgressListener progressListener) throws AcrolinxException, InterruptedException {
         try {
             CheckResponse checkResponse = this.check(accessToken, checkRequest);
             return pollForResultWithCancelHandling(accessToken, progressListener, checkResponse);
-        } catch (ExecutionException | URISyntaxException | IOException e) {
+        } catch (URISyntaxException | IOException e) {
             throw new AcrolinxException(e);
         }
     }
 
-    private CheckResult pollForResultWithCancelHandling(AccessToken accessToken, ProgressListener progressListener, CheckResponse checkResponse) throws AcrolinxException, URISyntaxException, IOException, ExecutionException, InterruptedException {
+    private CheckResult pollForResultWithCancelHandling(AccessToken accessToken, ProgressListener progressListener, CheckResponse checkResponse) throws AcrolinxException, URISyntaxException, IOException, InterruptedException {
         try {
             return pollForCheckResult(accessToken, checkResponse, progressListener);
         } catch (InterruptedException e) {
@@ -174,11 +144,11 @@ public class AcrolinxEndpoint {
     }
 
     private CheckResult pollForCheckResult(AccessToken accessToken, CheckResponse checkResponse, ProgressListener progressListener)
-            throws AcrolinxException, URISyntaxException, IOException, ExecutionException, InterruptedException {
+            throws AcrolinxException, URISyntaxException, IOException, InterruptedException {
         URI pollUrl = new URI(checkResponse.getLinks().getResult());
         while (true) {
             CheckPollResponse pollResponse = fetchFromUrl(pollUrl, JsonUtils.getSerializer(CheckPollResponse.class),
-                    HttpMethod.GET, accessToken, null, null).get();
+                    HttpMethod.GET, accessToken, null, null);
             if (pollResponse instanceof CheckPollResponse.Success) {
                 return ((CheckPollResponse.Success) pollResponse).data;
             }
@@ -190,30 +160,24 @@ public class AcrolinxEndpoint {
         }
     }
 
-    private CheckCancelledResponse cancelCheck(AccessToken accessToken, CheckResponse checkResponse) throws URISyntaxException, IOException, AcrolinxException, ExecutionException, InterruptedException {
-        return this.fetchFromUrl(new URI(checkResponse.getLinks().getCancel()), JsonUtils.getSerializer(CheckCancelledResponse.class), HttpMethod.DELETE, accessToken, null, null).get();
+    private CheckCancelledResponse cancelCheck(AccessToken accessToken, CheckResponse checkResponse) throws URISyntaxException, IOException, AcrolinxException {
+        return this.fetchFromUrl(new URI(checkResponse.getLinks().getCancel()), JsonUtils.getSerializer(CheckCancelledResponse.class), HttpMethod.DELETE, accessToken, null, null);
     }
 
     @SuppressWarnings("unchecked")
-    private <T> Future<T> fetchDataFromApiPath(String apiPath,
-                                               Class<T> clazz,
-                                               HttpMethod method,
-                                               AccessToken accessToken,
-                                               String body,
-                                               Map<String, String> extraHeaders
+    private <T> T fetchDataFromApiPath(String apiPath,
+                                       Class<T> clazz,
+                                       HttpMethod method,
+                                       AccessToken accessToken,
+                                       String body,
+                                       Map<String, String> extraHeaders
     ) throws AcrolinxException {
-        final Future<SuccessResponse> successResponse = fetchFromApiPath(apiPath, JsonUtils.getSerializer(SuccessResponse.class, clazz), method, accessToken,
-                body, extraHeaders);
+        return (T) fetchFromApiPath(apiPath, JsonUtils.getSerializer(SuccessResponse.class, clazz), method, accessToken,
+                body, extraHeaders).data;
 
-        return new FutureMapper<SuccessResponse, T>(successResponse) {
-            @Override
-            protected T map(SuccessResponse wrappedFutureResult) {
-                return (T) wrappedFutureResult.data;
-            }
-        };
     }
 
-    private <T> Future<T> fetchFromApiPath(
+    private <T> T fetchFromApiPath(
             String apiPath,
             JsonDeserializer<T> deserializer,
             HttpMethod method,
@@ -230,7 +194,7 @@ public class AcrolinxEndpoint {
         }
     }
 
-    private <T> Future<T> fetchFromUrl(
+    private <T> T fetchFromUrl(
             final URI uri,
             final JsonDeserializer<T> deserializer,
             final HttpMethod method,
@@ -243,15 +207,9 @@ public class AcrolinxEndpoint {
             headers.putAll(extraHeaders);
         }
 
-        final Future<AcrolinxResponse> acrolinxResponse = httpClient.fetch(uri, method, headers, body);
-
-        return new FutureMapper<AcrolinxResponse, T>(acrolinxResponse) {
-            @Override
-            protected T map(AcrolinxResponse acrolinxHttpResponse) {
-                validateHttpResponse(acrolinxHttpResponse, uri, method);
-                return deserializer.deserialize(acrolinxHttpResponse.getResult());
-            }
-        };
+        final AcrolinxResponse acrolinxHttpResponse = httpClient.fetch(uri, method, headers, body);
+        validateHttpResponse(acrolinxHttpResponse, uri, method);
+        return deserializer.deserialize(acrolinxHttpResponse.getResult());
     }
 
     /**
@@ -260,7 +218,7 @@ public class AcrolinxEndpoint {
      * @throws AcrolinxServiceException
      * @throws RuntimeException
      */
-    private static void validateHttpResponse(AcrolinxResponse acrolinxHttpResponse, URI uri, HttpMethod method) {
+    private static void validateHttpResponse(AcrolinxResponse acrolinxHttpResponse, URI uri, HttpMethod method) throws AcrolinxServiceException {
         int statusCode = acrolinxHttpResponse.getStatus();
         if (statusCode >= 200 && statusCode < 300) {
             // Should we still check if there is an error?
@@ -295,51 +253,5 @@ public class AcrolinxEndpoint {
         headersMap.put("X-Acrolinx-Client", this.clientSignature + "; " + this.clientVersion);
 
         return headersMap;
-    }
-
-    private class SignInInteractiveWithPolling implements Callable<SignInSuccess> {
-        private final long timeoutMs;
-        private AccessToken accessToken;
-        private InteractiveCallback callback;
-
-        public SignInInteractiveWithPolling(AccessToken accessToken, InteractiveCallback callback, long timeoutMs) {
-            this.accessToken = accessToken;
-            this.callback = callback;
-            this.timeoutMs = timeoutMs;
-        }
-
-        @Override
-        public SignInSuccess call() throws AcrolinxException, InterruptedException, ExecutionException, URISyntaxException, IOException {
-
-            final SignInResponse signInResponse = fetchFromApiPath("auth/sign-ins",
-                    JsonUtils.getSerializer(SignInResponse.class), HttpMethod.POST, this.accessToken, null, null).get();
-
-            if (signInResponse instanceof SignInResponse.Success) {
-                return ((SignInResponse.Success) signInResponse).data;
-            }
-
-            SignInResponse.SignInLinks signInLinks = (SignInResponse.SignInLinks) signInResponse;
-            callback.onInteractiveUrl(signInLinks.links.getInteractive());
-
-            //An upper limit for polling.
-            long endTime = System.currentTimeMillis() + timeoutMs;
-
-            while (System.currentTimeMillis() < endTime) {
-                SignInPollResponse pollResponse = fetchFromUrl(new URI(signInLinks.links.getPoll()), JsonUtils.getSerializer(SignInPollResponse.class),
-                        HttpMethod.GET, null, null, null).get();
-                if (pollResponse instanceof SignInPollResponse.Success) {
-                    return ((SignInPollResponse.Success) pollResponse).data;
-                }
-
-                Progress progress = ((SignInPollResponse.Progress) pollResponse).progress;
-
-                long sleepTimeMs = progress.getRetryAfterMs();
-                Thread.sleep(sleepTimeMs);
-            }
-            throw new SignInException("Timeout");
-
-        }
-
-
     }
 }

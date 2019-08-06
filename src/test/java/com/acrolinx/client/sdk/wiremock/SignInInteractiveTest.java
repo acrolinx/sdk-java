@@ -54,7 +54,7 @@ public class SignInInteractiveTest extends MockedTestBase {
     }
 
     @Test
-    public void signInWithImmediatePollSuccess() throws AcrolinxException {
+    public void signInWithImmediatePollSuccess() throws AcrolinxException, InterruptedException {
         mockSuccessResponse(mockedPollPath, expectedSignInSuccess);
 
         SignInSuccess signInSuccess = endpoint.signInInteractive(interactiveCallback);
@@ -64,7 +64,7 @@ public class SignInInteractiveTest extends MockedTestBase {
     }
 
     @Test
-    public void signInWithLaterPollSuccess() throws AcrolinxException {
+    public void signInWithLaterPollSuccess() throws AcrolinxException, InterruptedException {
         final String scenario = "laterPollSuccess";
         final String SIGNED_IN_STATE = "SIGNED_IN_STATE";
 

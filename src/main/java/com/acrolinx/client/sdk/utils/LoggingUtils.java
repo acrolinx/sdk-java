@@ -17,15 +17,17 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Iterator;
 
-@SuppressWarnings("WeakerAccess")
 public class LoggingUtils {
+    private LoggingUtils(){
+        // This class just holds some static methods, you can't instantiate it.
+    }
 
-    private static Path getLogFilePathOSSpecific(String applicationName) throws URISyntaxException {
+
+    private static Path getLogFilePathOSSpecific(String applicationName) {
         Path userTempDirLocation = getUserTempDirLocation();
         String s = System.getProperty("os.name").toLowerCase();
         if (s.contains("mac")) {
@@ -49,7 +51,7 @@ public class LoggingUtils {
     }
 
     private static void loadLogFileConfig(InputStream configStream, String applicationName)
-            throws JoranException, IOException, URISyntaxException {
+            throws JoranException, IOException {
         if (!(LoggerFactory.getILoggerFactory() instanceof LoggerContext)) {
             if (configStream != null) {
                 configStream.close();
@@ -70,12 +72,12 @@ public class LoggingUtils {
     }
 
 
-    public static void setupLogging(String applicationName) throws IOException, JoranException, URISyntaxException {
+    public static void setupLogging(String applicationName) throws IOException, JoranException {
         useDefaultLoggingConfig(applicationName);
     }
 
     private static void useDefaultLoggingConfig(String applicationName)
-            throws IOException, JoranException, URISyntaxException {
+            throws IOException, JoranException {
         Preconditions.checkNotNull(applicationName, "application name should be set");
         InputStream configStream = LoggingUtils.class.getResourceAsStream("/logback_default.xml");
         loadLogFileConfig(configStream, applicationName);
