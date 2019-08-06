@@ -32,7 +32,7 @@ public class GetCapabilitiesTest extends IntegrationTestBase {
 
         List<GuidanceProfile> guidanceProfiles = capabilities.getCheckingCapabilities().getGuidanceProfiles();
         assertNotNull(guidanceProfiles);
-        assertTrue(guidanceProfiles.size() > 0);
+        assertTrue("There should be some guidance profiles", guidanceProfiles.size() > 0);
 
         GuidanceProfile guidanceProfile = guidanceProfiles.get(0);
         assertNotNull(guidanceProfile.getId());
