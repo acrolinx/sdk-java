@@ -1,4 +1,6 @@
-# Acrolinx Java SDK
+# Acrolinx Java SDK Alpha Version
+
+This library is in heavy development and shouldn’t yet be used for production.
 
 This library is meant to be used to interact with the Acrolinx Platform API in Java integrations. 
 It does NOT offer an interface to work with the Acrolinx Sidebar (see [Sidebar Java SDK](https://github.com/acrolinx/sidebar-sdk-java)).
@@ -22,16 +24,15 @@ Before you start developing your own integration, you might benefit from looking
 * the [Acrolinx SDKs](https://github.com/acrolinx?q=sdk), and
 * the [Acrolinx Demo Projects](https://github.com/acrolinx?q=demo).
 
-## How to start
+## How to Start
 
 Have a look at [AcrolinxEndpoint](./src/main/java/com/acrolinx/client/sdk/AcrolinxEndpoint.java) and use it.
-Check out the [SDK Java API Reference](https://acrolinx.github.io/sdk-java/) for more details.
 
-## Integration tests
+## Integration Tests
 
 In order to run the integration tests:
-* You need an Acrolinx server
-* You need to create an .env file similar to the [.env.template](.env.template) file. Alternately you can set the corresponding env variables in a different way.
+* You need access to the Acrolinx Platform
+* You need to create an .env file similar to the [.env.template](.env.template) file. Alternately you can set the corresponding environment variables in a different way.
 
 ## License
 
