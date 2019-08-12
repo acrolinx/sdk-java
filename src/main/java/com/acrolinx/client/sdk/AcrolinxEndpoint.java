@@ -239,9 +239,12 @@ public class AcrolinxEndpoint {
         ErrorResponse.AcrolinxServiceError acrolinxServiceError;
         try {
             acrolinxServiceError = parseJson(responseText, ErrorResponse.class).error;
+            if (acrolinxServiceError == null) {
+                throw new AcrolinxRuntimeException("Invalid error class generated");
+            }
         } catch (RuntimeException e) {
             throw new AcrolinxRuntimeException("Fetch failed with status " + statusCode +
-                    " and unexpected result\"" + responseText + "\".");
+                    " and unexpected result\"" + responseText + "\"." + e.getMessage() + "\".");
         }
 
         throw new AcrolinxServiceException(acrolinxServiceError, new AcrolinxServiceException.HttpRequest(uri, method));

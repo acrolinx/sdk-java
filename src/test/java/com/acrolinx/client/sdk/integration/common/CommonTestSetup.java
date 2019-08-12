@@ -28,4 +28,8 @@ public class CommonTestSetup {
         return new AcrolinxEndpoint(new URI(ACROLINX_URL), DEVELOPMENT_SIGNATURE, "1.2.3.4", "en");
     }
 
+    public static AcrolinxEndpoint createInvalidPlatformTestEndpoint() throws URISyntaxException {
+        return new AcrolinxEndpoint(new URI("http://acrolinx.berlin"), DEVELOPMENT_SIGNATURE, "1.2.3.4", "en");
+    }
+
 }
