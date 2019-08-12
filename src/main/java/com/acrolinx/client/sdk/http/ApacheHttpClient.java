@@ -45,8 +45,9 @@ public class ApacheHttpClient implements AcrolinxHttpClient {
 
         HttpEntity responseEntity = response.getEntity();
         try {
-            acrolinxResponse.setResult(EntityUtils.toString(responseEntity));
-            logger.debug("Entity response: " + EntityUtils.toString(responseEntity));
+            String result = EntityUtils.toString(responseEntity);
+            acrolinxResponse.setResult(result);
+            logger.debug("Entity response: " + result);
         } catch (ParseException | IOException e) {
             throw new AcrolinxRuntimeException(e);
         }
