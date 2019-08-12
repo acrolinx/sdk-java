@@ -25,6 +25,7 @@ import java.util.concurrent.*;
 
 import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.ACROLINX_API_TOKEN;
 import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.ACROLINX_URL;
+import static com.acrolinx.client.sdk.testutils.IssueUtils.findIssueWithSurface;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertEquals;
@@ -93,6 +94,20 @@ public class CheckTest extends IntegrationTestBase {
         CheckResult.Report scorecard = checkResult.getReport(ReportType.scorecard);
         assertEquals("Score Card", scorecard.getDisplayName());
         assertThat(scorecard.getLink(), startsWith(ACROLINX_URL));
+    }
+
+    @Test
+    public void checkUtf8() throws AcrolinxException, InterruptedException {
+        CheckResult checkResult = endpoint.checkAndGetResult(ACROLINX_API_TOKEN,
+                CheckRequest.ofDocumentContent("an naïve approach")
+                        .setDocument(new DocumentDescriptorRequest("file.txt"))
+                        .setCheckOptions(new CheckOptions(guidanceProfileEn.getId()))
+                        .build(),
+                progressListener
+        );
+
+        Issue issue = findIssueWithSurface(checkResult.getIssues(), "an naïve");
+        assertNotNull(issue);
     }
 
     @Test
