@@ -178,6 +178,7 @@ publishing {
     }
     publications {
         mavenJava(MavenPublication) {
+            groupId = 'com.acrolinx.client'
             from components.java
             artifact sourcesJar
             artifact javadocJar
