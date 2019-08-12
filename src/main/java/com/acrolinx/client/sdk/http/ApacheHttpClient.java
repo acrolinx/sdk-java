@@ -15,6 +15,8 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
@@ -24,6 +26,7 @@ import java.util.Map;
 
 public class ApacheHttpClient implements AcrolinxHttpClient {
     private CloseableHttpClient httpClient = HttpClients.createDefault();
+    private static final Logger logger = LoggerFactory.getLogger(ApacheHttpClient.class);
 
 
     @Override
@@ -32,15 +35,18 @@ public class ApacheHttpClient implements AcrolinxHttpClient {
 
         setHeaders(request, headers);
 
+        logger.debug("Executing request for API: " + uri.toString());
         final HttpResponse response = httpClient.execute(request);
 
         AcrolinxResponse acrolinxResponse = new AcrolinxResponse();
         int statusCode = response.getStatusLine().getStatusCode();
+        logger.debug("Response status code: " + statusCode);
         acrolinxResponse.setStatus(statusCode);
 
         HttpEntity responseEntity = response.getEntity();
         try {
             acrolinxResponse.setResult(EntityUtils.toString(responseEntity));
+            logger.debug("Entity response: " + EntityUtils.toString(responseEntity));
         } catch (ParseException | IOException e) {
             throw new AcrolinxRuntimeException(e);
         }
@@ -49,6 +55,7 @@ public class ApacheHttpClient implements AcrolinxHttpClient {
 
     @Override
     public void close() throws IOException {
+        logger.info("Disconnected http client");
         this.httpClient.close();
     }
 
