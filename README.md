@@ -1,4 +1,4 @@
-# Acrolinx Java SDK Alpha Version
+# Acrolinx Java SDK Alpha Version [![Build Status](https://travis-ci.org/acrolinx/sdk-java.svg?branch=master)](https://travis-ci.org/acrolinx/sdk-java)
 
 This library is in heavy development and shouldn’t yet be used for production.
 
