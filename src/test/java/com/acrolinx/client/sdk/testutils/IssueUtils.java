@@ -16,4 +16,15 @@ public class IssueUtils {
         }
         return null;
     }
+
+    public static Issue findIssueWithFirstSuggestion(List<Issue> issues, String suggestionSurface) {
+        for (Issue issue : issues) {
+            Issue.Suggestion suggestion = issue.getSuggestions().get(0);
+            if (suggestion != null && suggestion.getSurface().equals(suggestionSurface)) {
+                return issue;
+            }
+        }
+
+        return null;
+    }
 }
