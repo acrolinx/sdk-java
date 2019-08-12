@@ -17,6 +17,8 @@ import com.acrolinx.client.sdk.platform.Capabilities;
 import com.acrolinx.client.sdk.platform.Link;
 import com.google.common.base.Strings;
 import org.apache.http.client.utils.URIBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
@@ -35,6 +37,7 @@ public class AcrolinxEndpoint {
     private URI acrolinxUri;
 
     private AcrolinxHttpClient httpClient;
+    private static final Logger logger = LoggerFactory.getLogger(AcrolinxEndpoint.class);
 
     public AcrolinxEndpoint(URI acrolinxURL, String clientSignature, String clientVersion, String clientLocale) {
         this(new ApacheHttpClient(), acrolinxURL, clientSignature, clientVersion, clientLocale);
@@ -49,6 +52,7 @@ public class AcrolinxEndpoint {
     }
 
     public void close() throws IOException {
+        logger.info("Endpoint terminated");
         this.httpClient.close();
     }
 
@@ -90,8 +94,9 @@ public class AcrolinxEndpoint {
                 if (pollResponse instanceof SignInPollResponse.Success) {
                     return ((SignInPollResponse.Success) pollResponse).data;
                 }
-
+                logger.debug("Poll response:" + pollResponse.toString());
                 Progress progress = ((SignInPollResponse.Progress) pollResponse).progress;
+                logger.debug("SignIn polling: " + progress.percent);
 
                 long sleepTimeMs = progress.getRetryAfterMs();
                 Thread.sleep(sleepTimeMs);
