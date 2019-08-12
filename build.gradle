@@ -32,9 +32,10 @@ def devId = "Acrolinx Open Source"
 def devName = "Acrolinx"
 def devEmail = "opensource@acrolinx.com"
 
-// def buildNumber = System.getenv('TRAVIS_BUILD_NUMBER');
+def buildNumber = System.getenv('TRAVIS_BUILD_NUMBER') || System.getenv('BUILD_NUMBER');
 
-def buildNumber = System.getenv('BUILD_NUMBER')
+// def buildNumber = System.getenv('BUILD_NUMBER')
+
 def buildVersion = buildNumber != null ? buildNumber : 123
 
 def artifactName = 'sdk'
@@ -106,9 +107,9 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.5'
 
     //logback logging
-    compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
-    compile group: 'ch.qos.logback', name: 'logback-core', version: '1.2.3'
-    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.26'
+    implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+    implementation group: 'ch.qos.logback', name: 'logback-core', version: '1.2.3'
+    api group: 'org.slf4j', name: 'slf4j-api', version: '1.7.26'
 
 
 }
