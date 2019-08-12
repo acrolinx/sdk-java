@@ -11,6 +11,7 @@ import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -68,9 +69,8 @@ public class ApacheHttpClient implements AcrolinxHttpClient {
                 return new HttpDelete(uri);
             case POST:
                 HttpPost httpPost = new HttpPost(uri);
-                httpPost.setHeader("Content-type", "application/json");
                 if (jsonBody != null) {
-                    StringEntity entity = new StringEntity(jsonBody);
+                    StringEntity entity = new StringEntity(jsonBody, ContentType.APPLICATION_JSON);
                     httpPost.setEntity(entity);
                 }
                 return httpPost;

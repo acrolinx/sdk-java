@@ -25,6 +25,8 @@ import java.util.concurrent.*;
 
 import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.ACROLINX_API_TOKEN;
 import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.ACROLINX_URL;
+import static com.acrolinx.client.sdk.testutils.IssueUtils.findIssueWithFirstSuggestion;
+import static com.acrolinx.client.sdk.testutils.IssueUtils.findIssueWithSurface;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertEquals;
@@ -76,13 +78,7 @@ public class CheckTest extends IntegrationTestBase {
 
     @Test
     public void checkAndGetResult() throws AcrolinxException, InterruptedException {
-        CheckResult checkResult = endpoint.checkAndGetResult(ACROLINX_API_TOKEN,
-                CheckRequest.ofDocumentContent("This textt has ann erroor.")
-                        .setDocument(new DocumentDescriptorRequest("file.txt"))
-                        .setCheckOptions(new CheckOptions(guidanceProfileEn.getId()))
-                        .build(),
-                progressListener
-        );
+        CheckResult checkResult = checkEnglishText("This textt has ann erroor.");
 
         final Quality quality = checkResult.getQuality();
         assertThat(quality.getScore(), lessThan(100));
@@ -96,14 +92,17 @@ public class CheckTest extends IntegrationTestBase {
     }
 
     @Test
+    public void checkUtf8() throws AcrolinxException, InterruptedException {
+        String documentContent = "an naïve approach";
+        CheckResult checkResult = checkEnglishText(documentContent);
+
+        Issue issue = findIssueWithSurface(checkResult.getIssues(), "an naïve");
+        assertNotNull(issue);
+    }
+
+    @Test
     public void checkResultContainsIssues() throws AcrolinxException, InterruptedException {
-        CheckResult checkResult = endpoint.checkAndGetResult(ACROLINX_API_TOKEN,
-                CheckRequest.ofDocumentContent("A textt")
-                        .setDocument(new DocumentDescriptorRequest("file.txt"))
-                        .setCheckOptions(new CheckOptions(guidanceProfileEn.getId()))
-                        .build(),
-                progressListener
-        );
+        CheckResult checkResult = checkEnglishText("A textt");
 
         Issue issue = findIssueWithFirstSuggestion(checkResult.getIssues(), "text");
 
@@ -149,13 +148,7 @@ public class CheckTest extends IntegrationTestBase {
      */
     @Test
     public void checkALargeTextAndGetProgress() throws AcrolinxException, InterruptedException {
-        CheckResult checkResult = endpoint.checkAndGetResult(ACROLINX_API_TOKEN,
-                CheckRequest.ofDocumentContent(longTestText)
-                        .setDocument(new DocumentDescriptorRequest("file.txt"))
-                        .setCheckOptions(new CheckOptions(guidanceProfileEn.getId()))
-                        .build(),
-                progressListener
-        );
+        CheckResult checkResult = checkEnglishText(longTestText);
 
         verify(progressListener, atLeast(2)).onProgress(argThat(new ProgressMatcher()));
 
@@ -177,10 +170,7 @@ public class CheckTest extends IntegrationTestBase {
         Future<CheckResult> future = executorService.submit(new Callable<CheckResult>() {
             @Override
             public CheckResult call() throws Exception {
-                return endpoint.checkAndGetResult(ACROLINX_API_TOKEN,
-                        checkRequest,
-                        progressListener
-                );
+                return checkEnglishText(longTestText);
             }
         });
 
@@ -294,15 +284,14 @@ public class CheckTest extends IntegrationTestBase {
         assertThat(checkResponse.getLinks().getCancel(), startsWith(ACROLINX_URL));
     }
 
-    Issue findIssueWithFirstSuggestion(List<Issue> issues, String suggestionSurface) {
-        for (Issue issue : issues) {
-            Issue.Suggestion suggestion = issue.getSuggestions().get(0);
-            if (suggestion != null && suggestion.getSurface().equals(suggestionSurface)) {
-                return issue;
-            }
-        }
-
-        return null;
+    private CheckResult checkEnglishText(String documentContent) throws AcrolinxException, InterruptedException {
+        return endpoint.checkAndGetResult(ACROLINX_API_TOKEN,
+                CheckRequest.ofDocumentContent(documentContent)
+                        .setDocument(new DocumentDescriptorRequest("file.txt"))
+                        .setCheckOptions(new CheckOptions(guidanceProfileEn.getId()))
+                        .build(),
+                progressListener
+        );
     }
 
     public static class ProgressMatcher implements ArgumentMatcher<Progress> {
