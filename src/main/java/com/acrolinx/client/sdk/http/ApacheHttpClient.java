@@ -14,7 +14,8 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,8 +27,18 @@ import java.net.URI;
 import java.util.Map;
 
 public class ApacheHttpClient implements AcrolinxHttpClient {
-    private CloseableHttpClient httpClient = HttpClients.createDefault();
+    private CloseableHttpClient httpClient;
     private static final Logger logger = LoggerFactory.getLogger(ApacheHttpClient.class);
+
+    public ApacheHttpClient() {
+        this.httpClient = createHttpClient();
+    }
+
+    private CloseableHttpClient createHttpClient() {
+        final PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
+        final HttpClientBuilder httpClientBuilder = HttpClientBuilder.create().setConnectionManager(cm);
+        return httpClientBuilder.build();
+    }
 
 
     @Override
