@@ -26,6 +26,56 @@ public class WireMockUtils {
         mockSuccessResponseWithDelay(path, data, 0);
     }
 
+    public static void httpClientMockTimeOut(String path) {
+        httpClientMockTimeOutwithDelay(path, 5000);
+    }
+
+    public static void httpClientMockTimeOutwithDelay(String path, int delayMs) {
+        stubFor(get(urlEqualTo(path))
+                .willReturn(aResponse()
+                        .withStatus(408)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("{\n" +
+                                "\"statusCode\": 408,\n" +
+                                "\"description\": \"Request Timed Out\"\n" +
+                                "}")
+                        .withFixedDelay(delayMs)));
+    }
+
+
+    public static void httpClientMockSuccess(String path) {
+        httpClientMockSuccesswithDelay(path, 0);
+    }
+
+    public static void httpClientMockSuccesswithDelay(String path, int delayMs) {
+        stubFor(get(urlEqualTo(path))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("{\n" +
+                                "\"statusCode\": 200,\n" +
+                                "\"description\": \"Request Timed Out\"\n" +
+                                "}")
+                        .withFixedDelay(delayMs)));
+    }
+
+
+    public static void httpClientMockNotFoundResponse(String path) {
+        httpClientMockNotFoundResponsewithDelay(path, 0);
+    }
+
+    public static void httpClientMockNotFoundResponsewithDelay(String path, int delayMs) {
+        stubFor(get(urlEqualTo(path))
+                .willReturn(aResponse()
+                        .withStatus(404)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("{\n" +
+                                "\"statusCode\": 404,\n" +
+                                "\"description\": \"Not Found\"\n" +
+                                "}")
+                        .withFixedDelay(delayMs)));
+    }
+
     public static <T> void mockSuccessResponseWithDelay(String path, T data, int delayMs) {
         stubFor(get(urlEqualTo(API_PATH_PREFIX + path))
                 .willReturn(aResponse()
