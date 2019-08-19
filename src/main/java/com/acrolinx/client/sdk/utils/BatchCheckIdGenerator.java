@@ -7,7 +7,7 @@ import java.util.UUID;
 
 public class BatchCheckIdGenerator {
 
-    private BatchCheckIdGenerator(String integrationShortName) {
+    private BatchCheckIdGenerator() {
 
     }
 
