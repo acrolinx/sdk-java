@@ -6,6 +6,7 @@ package com.acrolinx.client.sdk.integration;
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import com.acrolinx.client.sdk.integration.common.IntegrationTestBase;
 import com.acrolinx.client.sdk.platform.Capabilities;
+import com.acrolinx.client.sdk.platform.CustomFieldDescriptor;
 import com.acrolinx.client.sdk.platform.GuidanceProfile;
 import com.acrolinx.client.sdk.platform.Language;
 import org.junit.Before;
@@ -54,6 +55,18 @@ public class GetCapabilitiesTest extends IntegrationTestBase {
         assertNotNull("", capabilities.getCheckingCapabilities().getContentFormats());
         assertNotNull("", capabilities.getCheckingCapabilities().getReferencePattern());
         assertNotNull("", capabilities.getCheckingCapabilities().getReportTypes());
+        assertNotNull("", capabilities.getDocument());
+        assertNotNull("", capabilities.getDocument().getCustomFields());
+
+        for (CustomFieldDescriptor cf : capabilities.getDocument().getCustomFields()) {
+            assertNotNull(cf.getDisplayName());
+            assertNotNull(cf.getInputType());
+            assertNotNull(cf.getKey());
+            assertNotNull(cf.getPossibleValues());
+            assertNotNull(cf.getType());
+        }
+
 
     }
+
 }
