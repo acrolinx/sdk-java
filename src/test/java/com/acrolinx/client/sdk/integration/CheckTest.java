@@ -294,6 +294,27 @@ public class CheckTest extends IntegrationTestBase {
         );
     }
 
+    @Test
+    public void testCheckWithDocumentMetaData() throws AcrolinxException, InterruptedException {
+        DocumentDescriptorRequest documentDescriptorRequest = new DocumentDescriptorRequest("file.txt");
+        documentDescriptorRequest.setCustomField(new CustomField("Text Field", "Item"));
+        documentDescriptorRequest.setCustomField(new CustomField("List Field", "List Item 1"));
+
+        try {
+            CheckResult checkResult = endpoint.checkAndGetResult(ACROLINX_API_TOKEN,
+                    CheckRequest.ofDocumentContent("Thee sentencee contains errors")
+                            .setDocument(documentDescriptorRequest)
+                            .setCheckOptions(new CheckOptions(guidanceProfileEn.getId()))
+                            .build(),
+                    progressListener
+            );
+
+            assertNotNull(checkResult);
+        } catch (AcrolinxException e) {
+            assertEquals(e.getMessage(), "Custom field values are incorrect");
+        }
+    }
+
     public static class ProgressMatcher implements ArgumentMatcher<Progress> {
         private double prevPercent = 0;
 
