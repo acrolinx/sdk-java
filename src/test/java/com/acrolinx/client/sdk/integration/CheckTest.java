@@ -84,6 +84,8 @@ public class CheckTest extends IntegrationTestBase {
         assertThat(quality.getScore(), lessThan(100));
         assertThat(quality.getScore(), not(lessThan(40)));
         assertNotNull(quality.getStatus());
+        assertNotNull(quality.getScoresByGoal());
+
 
         assertEquals(1, checkResult.getReports().size());
         CheckResult.Report scorecard = checkResult.getReport(ReportType.scorecard);
