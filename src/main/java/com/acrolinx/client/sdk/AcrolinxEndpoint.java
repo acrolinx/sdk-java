@@ -250,6 +250,12 @@ public class AcrolinxEndpoint {
         throw new AcrolinxServiceException(acrolinxServiceError, new AcrolinxServiceException.HttpRequest(uri, method));
     }
 
+    public boolean isDocumentTypeCheckable(String documentType, AccessToken accessToken) throws AcrolinxException {
+        Capabilities capabilities = this.getCapabilities(accessToken);
+        String referencePattern = capabilities.getCheckingCapabilities().getReferencePattern();
+        return documentType.matches(referencePattern);
+    }
+
     private Map<String, String> getCommonHeaders(AccessToken accessToken) {
         HashMap<String, String> headersMap = new HashMap<>();
 
