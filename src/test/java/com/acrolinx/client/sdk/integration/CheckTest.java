@@ -103,6 +103,21 @@ public class CheckTest extends IntegrationTestBase {
     }
 
     @Test
+    public void testSetCheckBaseline() throws AcrolinxException {
+        CheckOptions checkOptions = new CheckOptions(guidanceProfileEn.getId());
+        checkOptions.setCheckType(CheckType.baseline);
+
+        CheckResponse checkResponse = endpoint.check(ACROLINX_API_TOKEN,
+                CheckRequest.ofDocumentContent("This textt has ann erroor.")
+                        .setDocument(new DocumentDescriptorRequest("file.txt"))
+                        .setCheckOptions(checkOptions)
+                        .build()
+        );
+
+        assertNotNull(checkResponse);
+    }
+
+    @Test
     public void checkResultContainsIssues() throws AcrolinxException, InterruptedException {
         CheckResult checkResult = checkEnglishText("A textt");
 
