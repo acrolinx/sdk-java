@@ -3,10 +3,12 @@
  */
 package com.acrolinx.client.sdk.check;
 
+import com.acrolinx.client.sdk.exceptions.AcrolinxException;
+
 import javax.annotation.Nullable;
 
 public class CheckRequest {
-    public static CheckRequestBuilder ofDocumentContent(String content) {
+    public static CheckRequestBuilder ofDocumentContent(AcrolinxDocument content) {
         return new CheckRequestBuilder(content);
     }
 
@@ -33,7 +35,7 @@ public class CheckRequest {
         this.document = document;
     }
 
-    public String getContent() {
+    public String getContent() throws AcrolinxException {
         return content;
     }
 

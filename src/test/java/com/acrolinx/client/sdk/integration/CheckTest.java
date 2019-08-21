@@ -64,7 +64,7 @@ public class CheckTest extends IntegrationTestBase {
     @Test
     public void startACheck() throws AcrolinxException {
         CheckResponse checkResponse = endpoint.check(ACROLINX_API_TOKEN,
-                CheckRequest.ofDocumentContent("This textt has ann erroor.")
+                CheckRequest.ofDocumentContent(new SimpleAcrolinxDocument("This textt has ann erroor."))
                         .setDocument(new DocumentDescriptorRequest("file.txt"))
                         .setCheckOptions(new CheckOptions(guidanceProfileEn.getId()))
                         .build()
@@ -108,7 +108,7 @@ public class CheckTest extends IntegrationTestBase {
         checkOptions.setCheckType(CheckType.baseline);
 
         CheckResponse checkResponse = endpoint.check(ACROLINX_API_TOKEN,
-                CheckRequest.ofDocumentContent("This textt has ann erroor.")
+                CheckRequest.ofDocumentContent(new SimpleAcrolinxDocument("This textt has ann erroor."))
                         .setDocument(new DocumentDescriptorRequest("file.txt"))
                         .setCheckOptions(checkOptions)
                         .build()
@@ -146,7 +146,7 @@ public class CheckTest extends IntegrationTestBase {
     public void getTermHarvestingReport() throws AcrolinxException, InterruptedException {
         ArrayList<ReportType> reportTypes = Lists.newArrayList(ReportType.termHarvesting);
         CheckResult checkResult = endpoint.checkAndGetResult(ACROLINX_API_TOKEN,
-                CheckRequest.ofDocumentContent("This textt has ann erroor.")
+                CheckRequest.ofDocumentContent(new SimpleAcrolinxDocument("This textt has ann erroor."))
                         .setDocument(new DocumentDescriptorRequest("file.txt"))
                         .setCheckOptions(new CheckOptions(guidanceProfileEn.getId()).setReportTypes(reportTypes))
                         .build(),
@@ -177,8 +177,8 @@ public class CheckTest extends IntegrationTestBase {
      * we should rewrite it using a mocked server.
      */
     @Test(expected = CancellationException.class)
-    public void cancelCheck() throws InterruptedException, ExecutionException {
-        final CheckRequest checkRequest = CheckRequest.ofDocumentContent(longTestText)
+    public void cancelCheck() throws InterruptedException, ExecutionException, AcrolinxException {
+        final CheckRequest checkRequest = CheckRequest.ofDocumentContent(new SimpleAcrolinxDocument(longTestText))
                 .setDocument(new DocumentDescriptorRequest("file.txt"))
                 .setCheckOptions(new CheckOptions(guidanceProfileEn.getId()))
                 .build();
@@ -208,7 +208,7 @@ public class CheckTest extends IntegrationTestBase {
             String uuid = UUID.randomUUID().toString();
 
             CheckResponse checkResponse = endpoint.check(ACROLINX_API_TOKEN,
-                    CheckRequest.ofDocumentContent(uuid)
+                    CheckRequest.ofDocumentContent(new SimpleAcrolinxDocument(uuid))
                             .setDocument(new DocumentDescriptorRequest(uuid + ".txt"))
                             .setCheckOptions(new CheckOptions(guidanceProfileEn.getId()))
                             .build()
@@ -229,7 +229,7 @@ public class CheckTest extends IntegrationTestBase {
             String uuid = UUID.randomUUID().toString();
 
             CheckResult checkResult = endpoint.checkAndGetResult(ACROLINX_API_TOKEN,
-                    CheckRequest.ofDocumentContent(uuid)
+                    CheckRequest.ofDocumentContent(new SimpleAcrolinxDocument(uuid))
                             .setDocument(new DocumentDescriptorRequest(uuid + ".txt"))
                             .setCheckOptions(new CheckOptions(guidanceProfileEn.getId()))
                             .build(),
@@ -257,7 +257,7 @@ public class CheckTest extends IntegrationTestBase {
                 @Override
                 public CheckResult call() throws Exception {
                     return endpoint.checkAndGetResult(ACROLINX_API_TOKEN,
-                            CheckRequest.ofDocumentContent(uuid)
+                            CheckRequest.ofDocumentContent(new SimpleAcrolinxDocument(uuid))
                                     .setDocument(new DocumentDescriptorRequest(uuid + ".txt"))
                                     .setCheckOptions(new CheckOptions(guidanceProfileEn.getId()))
                                     .build(),
@@ -289,7 +289,7 @@ public class CheckTest extends IntegrationTestBase {
         rtl.add(ReportType.scorecard);
         rtl.add((ReportType.termHarvesting));
         CheckResponse checkResponse = endpoint.check(ACROLINX_API_TOKEN,
-                CheckRequest.ofDocumentContent("This textt has ann erroor.")
+                CheckRequest.ofDocumentContent(new SimpleAcrolinxDocument("This textt has ann erroor."))
                         .setDocument(new DocumentDescriptorRequest("file.txt"))
                         .setCheckOptions(new CheckOptions(guidanceProfileEn.getId()))
                         .build()
@@ -303,7 +303,7 @@ public class CheckTest extends IntegrationTestBase {
 
     private CheckResult checkEnglishText(String documentContent) throws AcrolinxException, InterruptedException {
         return endpoint.checkAndGetResult(ACROLINX_API_TOKEN,
-                CheckRequest.ofDocumentContent(documentContent)
+                CheckRequest.ofDocumentContent(new SimpleAcrolinxDocument(documentContent))
                         .setDocument(new DocumentDescriptorRequest("file.txt"))
                         .setCheckOptions(new CheckOptions(guidanceProfileEn.getId()))
                         .build(),
@@ -319,7 +319,7 @@ public class CheckTest extends IntegrationTestBase {
 
         try {
             CheckResult checkResult = endpoint.checkAndGetResult(ACROLINX_API_TOKEN,
-                    CheckRequest.ofDocumentContent("Thee sentencee contains errors")
+                    CheckRequest.ofDocumentContent(new SimpleAcrolinxDocument("Thee sentencee contains errors"))
                             .setDocument(documentDescriptorRequest)
                             .setCheckOptions(new CheckOptions(guidanceProfileEn.getId()))
                             .build(),
@@ -341,7 +341,7 @@ public class CheckTest extends IntegrationTestBase {
         documentDescriptorRequest.setCustomFields(customFieldList);
 
         endpoint.checkAndGetResult(ACROLINX_API_TOKEN,
-                CheckRequest.ofDocumentContent("Thee sentencee contains errors")
+                CheckRequest.ofDocumentContent(new SimpleAcrolinxDocument("Thee sentencee contains errors"))
                         .setDocument(documentDescriptorRequest)
                         .setCheckOptions(new CheckOptions(guidanceProfileEn.getId()))
                         .build(),

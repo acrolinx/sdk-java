@@ -12,7 +12,7 @@ import java.util.UUID;
 import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.ACROLINX_API_TOKEN;
 import static org.junit.Assert.assertEquals;
 
-public class DocumentTypeCompatibilityTest extends IntegrationTestBase {
+public class AcrolinxDocumentTypeCompatibilityTest extends IntegrationTestBase {
 
     @Test
     public void testSimpleValidFile() throws AcrolinxException {
