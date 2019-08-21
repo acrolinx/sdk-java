@@ -7,7 +7,6 @@ import com.acrolinx.client.sdk.AccessToken;
 import com.acrolinx.client.sdk.AcrolinxEndpoint;
 import com.acrolinx.client.sdk.PlatformInformation;
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
-import com.acrolinx.client.sdk.exceptions.AcrolinxRuntimeException;
 import com.acrolinx.client.sdk.exceptions.AcrolinxServiceException;
 import com.acrolinx.client.sdk.http.HttpMethod;
 import com.acrolinx.client.sdk.integration.common.IntegrationTestBase;
@@ -47,7 +46,7 @@ public class AcrolinxServiceExceptionTest extends IntegrationTestBase {
         try {
             PlatformInformation information = endpoint.getPlatformInformation();
             fail("test should fail due to 404");
-        } catch (AcrolinxRuntimeException ae) {
+        } catch (AcrolinxException ae) {
             assertTrue(ae.getMessage().contains("404"));
         } finally {
             endpoint.close();

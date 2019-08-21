@@ -5,7 +5,6 @@ package com.acrolinx.client.sdk;
 
 import com.acrolinx.client.sdk.check.*;
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
-import com.acrolinx.client.sdk.exceptions.AcrolinxRuntimeException;
 import com.acrolinx.client.sdk.exceptions.AcrolinxServiceException;
 import com.acrolinx.client.sdk.exceptions.SignInException;
 import com.acrolinx.client.sdk.http.AcrolinxHttpClient;
@@ -31,13 +30,12 @@ import static com.acrolinx.client.sdk.internal.JsonUtils.parseJson;
 
 public class AcrolinxEndpoint {
 
+    private static final Logger logger = LoggerFactory.getLogger(AcrolinxEndpoint.class);
     private String clientSignature;
     private String clientVersion;
     private String clientLocale;
     private URI acrolinxUri;
-
     private AcrolinxHttpClient httpClient;
-    private static final Logger logger = LoggerFactory.getLogger(AcrolinxEndpoint.class);
 
     public AcrolinxEndpoint(URI acrolinxURL, String clientSignature, String clientVersion, String clientLocale) {
         this(new ApacheHttpClient(), acrolinxURL, clientSignature, clientVersion, clientLocale);
@@ -49,6 +47,40 @@ public class AcrolinxEndpoint {
         this.clientLocale = clientLocale;
         this.acrolinxUri = acrolinxURL;
         this.httpClient = httpClient;
+    }
+
+    /**
+     * Throws an exception if the acrolinxHttpResponse indicates an error.
+     *
+     * @throws AcrolinxServiceException
+     * @throws RuntimeException
+     */
+    private static void validateHttpResponse(AcrolinxResponse acrolinxHttpResponse, URI uri, HttpMethod method) throws AcrolinxException {
+        int statusCode = acrolinxHttpResponse.getStatus();
+
+        if (statusCode >= 200 && statusCode < 300) {
+            // Should we still check if there is an error?
+            return;
+        }
+
+        String responseText = acrolinxHttpResponse.getResult();
+
+        if (Strings.isNullOrEmpty(responseText)) {
+            throw new AcrolinxException("Fetch failed with status " + statusCode + " and no result.");
+        }
+
+        ErrorResponse.AcrolinxServiceError acrolinxServiceError;
+        try {
+            acrolinxServiceError = parseJson(responseText, ErrorResponse.class).error;
+            if (acrolinxServiceError == null) {
+                throw new AcrolinxException("Invalid error class generated");
+            }
+        } catch (RuntimeException e) {
+            throw new AcrolinxException("Fetch failed with status " + statusCode +
+                    " and unexpected result\"" + responseText + "\"." + e.getMessage() + "\".");
+        }
+
+        throw new AcrolinxServiceException(acrolinxServiceError, new AcrolinxServiceException.HttpRequest(uri, method));
     }
 
     public void close() throws IOException {
@@ -130,7 +162,7 @@ public class AcrolinxEndpoint {
         throw new AcrolinxException("Could not fetch content analysis dashboard");
     }
 
-    public CheckResult checkAndGetResult(AccessToken accessToken, CheckRequest checkRequest, ProgressListener progressListener) throws AcrolinxException, InterruptedException {
+    public CheckResult checkAndGetResult(AccessToken accessToken, CheckRequest checkRequest, ProgressListener progressListener) throws AcrolinxException {
         CheckResponse checkResponse = this.check(accessToken, checkRequest);
         try {
             return pollForResultWithCancelHandling(accessToken, progressListener, checkResponse);
@@ -139,12 +171,14 @@ public class AcrolinxEndpoint {
         }
     }
 
-    private CheckResult pollForResultWithCancelHandling(AccessToken accessToken, ProgressListener progressListener, CheckResponse checkResponse) throws AcrolinxException, URISyntaxException, IOException, InterruptedException {
+    private CheckResult pollForResultWithCancelHandling(AccessToken accessToken, ProgressListener progressListener, CheckResponse checkResponse) throws AcrolinxException, URISyntaxException, IOException {
         try {
             return pollForCheckResult(accessToken, checkResponse, progressListener);
         } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            logger.error("Polling interrupted");
             cancelCheck(accessToken, checkResponse);
-            throw e;
+            throw new AcrolinxException("Polling interrupted");
         }
     }
 
@@ -215,39 +249,6 @@ public class AcrolinxEndpoint {
         final AcrolinxResponse acrolinxHttpResponse = httpClient.fetch(uri, method, headers, body);
         validateHttpResponse(acrolinxHttpResponse, uri, method);
         return deserializer.deserialize(acrolinxHttpResponse.getResult());
-    }
-
-    /**
-     * Throws an exception if the acrolinxHttpResponse indicates an error.
-     *
-     * @throws AcrolinxServiceException
-     * @throws RuntimeException
-     */
-    private static void validateHttpResponse(AcrolinxResponse acrolinxHttpResponse, URI uri, HttpMethod method) throws AcrolinxServiceException {
-        int statusCode = acrolinxHttpResponse.getStatus();
-        if (statusCode >= 200 && statusCode < 300) {
-            // Should we still check if there is an error?
-            return;
-        }
-
-        String responseText = acrolinxHttpResponse.getResult();
-
-        if (Strings.isNullOrEmpty(responseText)) {
-            throw new AcrolinxRuntimeException("Fetch failed with status " + statusCode + " and no result.");
-        }
-
-        ErrorResponse.AcrolinxServiceError acrolinxServiceError;
-        try {
-            acrolinxServiceError = parseJson(responseText, ErrorResponse.class).error;
-            if (acrolinxServiceError == null) {
-                throw new AcrolinxRuntimeException("Invalid error class generated");
-            }
-        } catch (RuntimeException e) {
-            throw new AcrolinxRuntimeException("Fetch failed with status " + statusCode +
-                    " and unexpected result\"" + responseText + "\"." + e.getMessage() + "\".");
-        }
-
-        throw new AcrolinxServiceException(acrolinxServiceError, new AcrolinxServiceException.HttpRequest(uri, method));
     }
 
     public boolean isDocumentTypeCheckable(String documentType, AccessToken accessToken) throws AcrolinxException {

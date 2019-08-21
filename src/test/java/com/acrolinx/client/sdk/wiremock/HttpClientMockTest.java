@@ -3,6 +3,7 @@
  */
 package com.acrolinx.client.sdk.wiremock;
 
+import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import com.acrolinx.client.sdk.http.AcrolinxResponse;
 import com.acrolinx.client.sdk.http.ApacheHttpClient;
 import com.acrolinx.client.sdk.http.HttpMethod;
@@ -24,7 +25,7 @@ public class HttpClientMockTest extends MockedTestBase {
     public static final String acrolinxUrl = "http://localhost:" + PLATFORM_PORT_MOCKED;
 
     @Test
-    public void test404HttpClient() throws URISyntaxException, IOException {
+    public void test404HttpClient() throws URISyntaxException, IOException, AcrolinxException {
         String api = "/api/v1/";
         httpClientMockNotFoundResponse(api);
         HashMap<String, String> headersHashMap = new HashMap<>();
@@ -36,7 +37,7 @@ public class HttpClientMockTest extends MockedTestBase {
     }
 
     @Test
-    public void testTimeout() throws URISyntaxException, IOException {
+    public void testTimeout() throws URISyntaxException, IOException, AcrolinxException {
 
         String api = "/api/v1/";
         httpClientMockTimeOut(api);
@@ -49,7 +50,7 @@ public class HttpClientMockTest extends MockedTestBase {
     }
 
     @Test
-    public void testTimeoutParallelConections() throws URISyntaxException, IOException, ExecutionException, InterruptedException {
+    public void testTimeoutParallelConections() throws URISyntaxException, IOException, ExecutionException, InterruptedException, AcrolinxException {
 
         final String api = "/api/v1/";
         httpClientMockTimeOut(api);

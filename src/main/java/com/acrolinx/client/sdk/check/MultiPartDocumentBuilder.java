@@ -68,7 +68,7 @@ public class MultiPartDocumentBuilder {
 
     public void addDocumentNode(String xml, @Nullable String encoding) throws AcrolinxException {
 
-        Element node = null;
+        Element node;
         try {
             node = DocumentBuilderFactory
                     .newInstance()
