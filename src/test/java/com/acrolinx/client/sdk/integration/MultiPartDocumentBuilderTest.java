@@ -71,7 +71,7 @@ public class MultiPartDocumentBuilderTest extends IntegrationTestBase {
                 "<p>Another acrooo paraa</p>\n" +
                 "\n" +
                 "</body>\n" +
-                "</html>");
+                "</html>", "UTF-8");
         String content = multiPartDocument.getDocument().getContent();
 
         assertNotNull(content);

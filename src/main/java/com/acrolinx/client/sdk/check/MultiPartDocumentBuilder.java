@@ -66,13 +66,14 @@ public class MultiPartDocumentBuilder {
         this.root.appendChild(element);
     }
 
-    public void addDocumentNode(String xml) throws AcrolinxException {
+    public void addDocumentNode(String xml, @Nullable String encoding) throws AcrolinxException {
+
         Element node = null;
         try {
             node = DocumentBuilderFactory
                     .newInstance()
                     .newDocumentBuilder()
-                    .parse(new ByteArrayInputStream(xml.getBytes()))
+                    .parse(new ByteArrayInputStream(xml.getBytes(encoding)))
                     .getDocumentElement();
         } catch (SAXException | IOException | ParserConfigurationException e) {
             throw new AcrolinxException(e);
