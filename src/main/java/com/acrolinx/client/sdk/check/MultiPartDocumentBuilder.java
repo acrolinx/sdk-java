@@ -27,9 +27,14 @@ public class MultiPartDocumentBuilder {
     private org.w3c.dom.Document document;
     private Element root;
 
-    public MultiPartDocumentBuilder(String rootElement, String publicId, String systemId) throws ParserConfigurationException {
+    public MultiPartDocumentBuilder(String rootElement, String publicId, String systemId) throws AcrolinxException {
         DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
+        DocumentBuilder documentBuilder = null;
+        try {
+            documentBuilder = documentFactory.newDocumentBuilder();
+        } catch (ParserConfigurationException e) {
+            throw new AcrolinxException(e);
+        }
         this.document = documentBuilder.newDocument();
 
         if (publicId != null || systemId != null) {
@@ -43,7 +48,7 @@ public class MultiPartDocumentBuilder {
 
     }
 
-    public MultiPartDocumentBuilder(String rootElement) throws ParserConfigurationException {
+    public MultiPartDocumentBuilder(String rootElement) throws AcrolinxException {
         this(rootElement, null, null);
     }
 
@@ -61,12 +66,17 @@ public class MultiPartDocumentBuilder {
         this.root.appendChild(element);
     }
 
-    public void addDocumentNode(String xml) throws ParserConfigurationException, IOException, SAXException {
-        Element node = DocumentBuilderFactory
-                .newInstance()
-                .newDocumentBuilder()
-                .parse(new ByteArrayInputStream(xml.getBytes()))
-                .getDocumentElement();
+    public void addDocumentNode(String xml) throws AcrolinxException {
+        Element node = null;
+        try {
+            node = DocumentBuilderFactory
+                    .newInstance()
+                    .newDocumentBuilder()
+                    .parse(new ByteArrayInputStream(xml.getBytes()))
+                    .getDocumentElement();
+        } catch (SAXException | IOException | ParserConfigurationException e) {
+            throw new AcrolinxException(e);
+        }
 
         Node importedNode = this.document.importNode(node, true);
         this.root.appendChild(importedNode);

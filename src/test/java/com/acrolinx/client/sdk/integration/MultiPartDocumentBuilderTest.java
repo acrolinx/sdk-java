@@ -7,10 +7,7 @@ import com.acrolinx.client.sdk.check.MultiPartDocumentBuilder;
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import com.acrolinx.client.sdk.integration.common.IntegrationTestBase;
 import org.junit.Test;
-import org.xml.sax.SAXException;
 
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,7 +17,7 @@ import static junit.framework.TestCase.assertTrue;
 public class MultiPartDocumentBuilderTest extends IntegrationTestBase {
 
     @Test
-    public void testMultiPartDocumentCreation() throws ParserConfigurationException, AcrolinxException {
+    public void testMultiPartDocumentCreation() throws AcrolinxException {
         MultiPartDocumentBuilder multiPartDocument = new MultiPartDocumentBuilder("test");
         multiPartDocument.addDocumentPart("element", "This text contains errorss", null);
         String content = multiPartDocument.getDocument().getContent();
@@ -29,7 +26,7 @@ public class MultiPartDocumentBuilderTest extends IntegrationTestBase {
     }
 
     @Test
-    public void testMultiPartDocumentCreationWithAttributes() throws ParserConfigurationException, AcrolinxException {
+    public void testMultiPartDocumentCreationWithAttributes() throws AcrolinxException {
         MultiPartDocumentBuilder multiPartDocument = new MultiPartDocumentBuilder("test");
         Map<String, String> attributes = new HashMap<>();
         attributes.put("attr", "val");
@@ -44,7 +41,7 @@ public class MultiPartDocumentBuilderTest extends IntegrationTestBase {
     }
 
     @Test
-    public void testDoctypeIsSetCorrectly() throws ParserConfigurationException, AcrolinxException {
+    public void testDoctypeIsSetCorrectly() throws AcrolinxException {
         String publicId = "-//Acrolinx/DTD Acrolinx Integration v2//EN";
         String systemId = "https://acrolinx,com/dtd/acrolinx.dtd";
         MultiPartDocumentBuilder multiPartDocument =
@@ -59,7 +56,7 @@ public class MultiPartDocumentBuilderTest extends IntegrationTestBase {
     }
 
     @Test
-    public void testAddHTMLPart() throws ParserConfigurationException, AcrolinxException, IOException, SAXException {
+    public void testAddHTMLPart() throws AcrolinxException {
         String publicId = "-//Acrolinx/DTD Acrolinx Integration v2//EN";
         String systemId = "https://acrolinx,com/dtd/acrolinx.dtd";
         MultiPartDocumentBuilder multiPartDocument =
