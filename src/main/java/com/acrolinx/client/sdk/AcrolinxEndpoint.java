@@ -176,9 +176,9 @@ public class AcrolinxEndpoint {
             return pollForCheckResult(accessToken, checkResponse, progressListener);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            logger.error("Polling interrupted");
+            logger.error("Polling interrupted. Check will be cancelled");
             cancelCheck(accessToken, checkResponse);
-            throw new AcrolinxException("Polling interrupted");
+            throw new AcrolinxException("Polling interrupted. Cancelled check.");
         }
     }
 
