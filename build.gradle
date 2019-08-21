@@ -228,7 +228,10 @@ nexusPublishing {
 }
 
 signing {
-    required { isReleaseBuild }
+    // required { isReleaseBuild }
+    def signingKey = new File('./codesigning.pgp').text
+    def signingPassword = findProperty("signingPassword")
+    useInMemoryPgpKeys(signingKey, signingPassword)
     sign publishing.publications.mavenJava
 }
 
