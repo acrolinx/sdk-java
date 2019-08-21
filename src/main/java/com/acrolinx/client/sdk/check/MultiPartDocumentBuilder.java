@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Map;
 
-public class MultiPartDocumentBuilder implements Document {
+public class MultiPartDocumentBuilder {
 
     private org.w3c.dom.Document document;
     private Element root;
@@ -73,8 +73,7 @@ public class MultiPartDocumentBuilder implements Document {
     }
 
 
-    @Override
-    public String getContent() throws AcrolinxException {
+    public Document getDocument() throws AcrolinxException {
         TransformerFactory tf = TransformerFactory.newInstance();
         Transformer transformer;
         try {
@@ -93,7 +92,7 @@ public class MultiPartDocumentBuilder implements Document {
 
             StringWriter writer = new StringWriter();
             transformer.transform(new DOMSource(this.document), new StreamResult(writer));
-            return writer.getBuffer().toString();
+            return new SimpleDocument(writer.getBuffer().toString());
         } catch (TransformerException e) {
             throw new AcrolinxException(e);
         }
