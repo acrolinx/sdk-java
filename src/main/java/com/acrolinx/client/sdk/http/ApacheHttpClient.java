@@ -3,7 +3,7 @@
  */
 package com.acrolinx.client.sdk.http;
 
-import com.acrolinx.client.sdk.exceptions.AcrolinxRuntimeException;
+import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.ParseException;
@@ -42,7 +42,7 @@ public class ApacheHttpClient implements AcrolinxHttpClient {
 
 
     @Override
-    public AcrolinxResponse fetch(URI uri, HttpMethod httpMethod, Map<String, String> headers, String jsonBody) throws IOException {
+    public AcrolinxResponse fetch(URI uri, HttpMethod httpMethod, Map<String, String> headers, String jsonBody) throws IOException, AcrolinxException {
         HttpRequestBase request = createRequests(uri, httpMethod, jsonBody);
 
         setHeaders(request, headers);
@@ -61,7 +61,7 @@ public class ApacheHttpClient implements AcrolinxHttpClient {
             acrolinxResponse.setResult(result);
             logger.debug("Entity response: " + result);
         } catch (ParseException | IOException e) {
-            throw new AcrolinxRuntimeException(e);
+            throw new AcrolinxException(e);
         }
         return acrolinxResponse;
     }
