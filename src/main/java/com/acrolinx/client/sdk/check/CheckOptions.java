@@ -1,81 +1,69 @@
 /**
  * Copyright (c) 2019-present Acrolinx GmbH
  */
+
 package com.acrolinx.client.sdk.check;
 
 import java.util.List;
 
-public class CheckOptions {
-    private String guidanceProfileId;
-    private String batchId;
-    private List<ReportType> reportTypes;
-    private CheckType checkType;
-    private String contentFormat;
-    private String languageId;
-    private boolean disableCustomFieldValidation;
+public class CheckOptions
+{
+    final private String guidanceProfileId;
+    final private String batchId;
+    final private List<ReportType> reportTypes;
+    final private CheckType checkType;
+    final private String contentFormat;
+    final private String languageId;
+    final private boolean disableCustomFieldValidation;
 
-    public CheckOptions() {
+    CheckOptions(CheckOptionsBuilder checkOptionsBuilder)
+    {
+        this.guidanceProfileId = checkOptionsBuilder.getGuidanceProfileId();
+        this.batchId = checkOptionsBuilder.getBatchId();
+        this.reportTypes = checkOptionsBuilder.getReportTypes();
+        this.checkType = checkOptionsBuilder.getCheckType();
+        this.contentFormat = checkOptionsBuilder.getContentFormat();
+        this.languageId = checkOptionsBuilder.getLanguageId();
+        this.disableCustomFieldValidation = checkOptionsBuilder.isDisableCustomFieldValidation();
     }
 
-    public CheckOptions(String guidanceProfileId) {
-        this.guidanceProfileId = guidanceProfileId;
+    public static CheckOptionsBuilder getBuilder()
+    {
+        return new CheckOptionsBuilder();
     }
 
-    public String getGuidanceProfileId() {
+    public String getGuidanceProfileId()
+    {
         return guidanceProfileId;
     }
 
-
-    public void setGuidanceProfileId(String guidanceProfileId) {
-        this.guidanceProfileId = guidanceProfileId;
-    }
-
-    public String getBatchId() {
+    public String getBatchId()
+    {
         return batchId;
     }
 
-    public void setBatchId(String batchId) {
-        this.batchId = batchId;
-    }
-
-    public List<ReportType> getReportTypes() {
+    public List<ReportType> getReportTypes()
+    {
         return reportTypes;
     }
 
-    public CheckOptions setReportTypes(List<ReportType> reportTypes) {
-        this.reportTypes = reportTypes;
-        return this;
-    }
-
-    public CheckType getCheckType() {
+    public CheckType getCheckType()
+    {
         return checkType;
     }
 
-    public void setCheckType(CheckType checkType) {
-        this.checkType = checkType;
-    }
-
-    public String getContentFormat() {
+    public String getContentFormat()
+    {
         return contentFormat;
     }
 
-    public void setContentFormat(String contentFormat) {
-        this.contentFormat = contentFormat;
-    }
-
-    public String getLanguageId() {
+    public String getLanguageId()
+    {
         return languageId;
     }
 
-    public void setLanguageId(String languageId) {
-        this.languageId = languageId;
-    }
-
-    public boolean isDisableCustomFieldValidation() {
+    public boolean isDisableCustomFieldValidation()
+    {
         return disableCustomFieldValidation;
-    }
-
-    public void setDisableCustomFieldValidation(boolean disableCustomFieldValidation) {
-        this.disableCustomFieldValidation = disableCustomFieldValidation;
     }
 }
