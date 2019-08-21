@@ -1,23 +1,28 @@
 /**
  * Copyright (c) 2019-present Acrolinx GmbH
  */
+
 package com.acrolinx.client.sdk.platform;
 
-public class ContentFormat {
+public class ContentFormat
+{
 
     private String id;
     private String displayName;
 
-    public ContentFormat(String id, String displayName) {
+    public ContentFormat(String id, String displayName)
+    {
         this.id = id;
         this.displayName = displayName;
     }
 
-    public String getId() {
+    public String getId()
+    {
         return id;
     }
 
-    public String getDisplayName() {
+    public String getDisplayName()
+    {
         return displayName;
     }
 

@@ -4,23 +4,27 @@
 
 package com.acrolinx.client.sdk.utils;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.LoggerContext;
-import com.google.common.base.Charsets;
-import org.junit.Assert;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static org.junit.Assert.assertTrue;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
-import static org.junit.Assert.assertTrue;
+import org.junit.Assert;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class LoggingUtilsTest {
+import com.google.common.base.Charsets;
+
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.LoggerContext;
+
+public class LoggingUtilsTest
+{
     @Test
-    public void setupLogging() throws Exception {
+    public void setupLogging() throws Exception
+    {
         LoggingUtils.setupLogging("TEST");
         final String logFileLocation = LoggingUtils.getLogFileLocation();
         Assert.assertTrue(logFileLocation != null);
@@ -30,7 +34,8 @@ public class LoggingUtilsTest {
     }
 
     @Test
-    public void defaultTestLevelIsINFO() throws Exception {
+    public void defaultTestLevelIsINFO() throws Exception
+    {
         LoggingUtils.setupLogging("TEST01");
         final Logger logger = LoggerFactory.getLogger("LoggingUtilsTest");
         final ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(
@@ -52,7 +57,8 @@ public class LoggingUtilsTest {
     }
 
     @Test
-    public void setLevelToDEBUG() throws Exception {
+    public void setLevelToDEBUG() throws Exception
+    {
         System.setProperty("acrolog.level", "debug");
         LoggingUtils.setupLogging("TEST02");
         final ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(
@@ -74,7 +80,8 @@ public class LoggingUtilsTest {
     }
 
     @Test
-    public void turnLoggingOff() throws Exception {
+    public void turnLoggingOff() throws Exception
+    {
         System.setProperty("acrolog.level", "off");
         LoggingUtils.setupLogging("TEST03");
         final Logger logger = LoggerFactory.getLogger("LoggingUtilsTest");
@@ -96,7 +103,8 @@ public class LoggingUtilsTest {
     }
 
     @Test
-    public void getLogFileWhenNoLoggingIsConfiguredReturnsNull() {
+    public void getLogFileWhenNoLoggingIsConfiguredReturnsNull()
+    {
         LoggingUtils.resetLoggingContext();
         final String logFileLocation = LoggingUtils.getLogFileLocation();
         assertTrue(logFileLocation == null);

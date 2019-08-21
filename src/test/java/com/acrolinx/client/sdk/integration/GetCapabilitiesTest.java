@@ -1,7 +1,18 @@
 /**
  * Copyright (c) 2019-present Acrolinx GmbH
  */
+
 package com.acrolinx.client.sdk.integration;
+
+import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.ACROLINX_API_TOKEN;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
+
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import com.acrolinx.client.sdk.integration.common.IntegrationTestBase;
@@ -9,24 +20,18 @@ import com.acrolinx.client.sdk.platform.Capabilities;
 import com.acrolinx.client.sdk.platform.CustomFieldDescriptor;
 import com.acrolinx.client.sdk.platform.GuidanceProfile;
 import com.acrolinx.client.sdk.platform.Language;
-import org.junit.Before;
-import org.junit.Test;
 
-import java.util.List;
-
-import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.ACROLINX_API_TOKEN;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeTrue;
-
-public class GetCapabilitiesTest extends IntegrationTestBase {
+public class GetCapabilitiesTest extends IntegrationTestBase
+{
     @Before
-    public void beforeTest() {
+    public void beforeTest()
+    {
         assumeTrue(ACROLINX_API_TOKEN != null);
     }
 
     @Test
-    public void testGetCapabilities() throws AcrolinxException {
+    public void testGetCapabilities() throws AcrolinxException
+    {
         Capabilities capabilities = endpoint.getCapabilities(ACROLINX_API_TOKEN);
         assertNotNull("", capabilities.getCheckingCapabilities());
 
@@ -45,7 +50,8 @@ public class GetCapabilitiesTest extends IntegrationTestBase {
     }
 
     @Test
-    public void testGetCapablitiesExtended() throws AcrolinxException {
+    public void testGetCapablitiesExtended() throws AcrolinxException
+    {
 
         Capabilities capabilities = endpoint.getCapabilities(ACROLINX_API_TOKEN);
         assertNotNull("", capabilities.getCheckingCapabilities());
@@ -65,7 +71,6 @@ public class GetCapabilitiesTest extends IntegrationTestBase {
             assertNotNull(cf.getPossibleValues());
             assertNotNull(cf.getType());
         }
-
 
     }
 

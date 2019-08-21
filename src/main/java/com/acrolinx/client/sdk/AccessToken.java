@@ -1,23 +1,28 @@
 /**
  * Copyright (c) 2019-present Acrolinx GmbH
  */
+
 package com.acrolinx.client.sdk;
 
 import java.util.Objects;
 
-public class AccessToken {
+public class AccessToken
+{
     private String token;
 
-    public AccessToken(String token) {
+    public AccessToken(String token)
+    {
         this.token = token;
     }
 
-    public String getAccessToken() {
+    public String getAccessToken()
+    {
         return token;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(Object o)
+    {
         if (this == o) {
             return true;
         }
@@ -29,16 +34,19 @@ public class AccessToken {
     }
 
     @Override
-    public int hashCode() {
+    public int hashCode()
+    {
         return Objects.hash(token);
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "Access token is hidden for security reason";
     }
 
-    public boolean isEmpty() {
+    public boolean isEmpty()
+    {
         return this.token == null || this.token.isEmpty();
     }
 }

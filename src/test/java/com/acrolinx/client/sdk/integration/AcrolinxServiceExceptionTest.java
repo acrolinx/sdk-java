@@ -1,7 +1,19 @@
 /**
  * Copyright (c) 2019-present Acrolinx GmbH
  */
+
 package com.acrolinx.client.sdk.integration;
+
+import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.ACROLINX_URL;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import org.junit.Test;
 
 import com.acrolinx.client.sdk.AccessToken;
 import com.acrolinx.client.sdk.AcrolinxEndpoint;
@@ -10,20 +22,12 @@ import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import com.acrolinx.client.sdk.exceptions.AcrolinxServiceException;
 import com.acrolinx.client.sdk.http.HttpMethod;
 import com.acrolinx.client.sdk.integration.common.IntegrationTestBase;
-import org.junit.Test;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-
-import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.ACROLINX_URL;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-
-public class AcrolinxServiceExceptionTest extends IntegrationTestBase {
+public class AcrolinxServiceExceptionTest extends IntegrationTestBase
+{
     @Test
-    public void testGetCapabilitiesWithInvalidAccessToken() throws AcrolinxException {
+    public void testGetCapabilitiesWithInvalidAccessToken() throws AcrolinxException
+    {
         try {
             endpoint.getCapabilities(new AccessToken("invalid"));
             fail("getCapabilities should fail because of invalid AccessToken");
@@ -40,9 +44,9 @@ public class AcrolinxServiceExceptionTest extends IntegrationTestBase {
     }
 
     @Test
-    public void test404ErrorCodeCheckApi() throws URISyntaxException, AcrolinxException, IOException {
-        AcrolinxEndpoint endpoint = new AcrolinxEndpoint(new URI("http://acrolinx.berlin"), "invlaid",
-                "1.2.3.4", "en");
+    public void test404ErrorCodeCheckApi() throws URISyntaxException, AcrolinxException, IOException
+    {
+        AcrolinxEndpoint endpoint = new AcrolinxEndpoint(new URI("http://acrolinx.berlin"), "invlaid", "1.2.3.4", "en");
         try {
             PlatformInformation information = endpoint.getPlatformInformation();
             fail("test should fail due to 404");

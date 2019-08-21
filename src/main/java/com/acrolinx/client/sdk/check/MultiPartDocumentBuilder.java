@@ -1,11 +1,13 @@
 /**
  * Copyright (c) 2019-present Acrolinx GmbH
  */
+
 package com.acrolinx.client.sdk.check;
 
-import com.acrolinx.client.sdk.exceptions.AcrolinxException;
-import org.w3c.dom.*;
-import org.xml.sax.SAXException;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.Map;
 
 import javax.annotation.Nullable;
 import javax.xml.parsers.DocumentBuilder;
@@ -17,17 +19,20 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.Map;
 
-public class MultiPartDocumentBuilder {
+import org.w3c.dom.*;
+import org.xml.sax.SAXException;
+
+import com.acrolinx.client.sdk.exceptions.AcrolinxException;
+
+public class MultiPartDocumentBuilder
+{
 
     private org.w3c.dom.Document document;
     private Element root;
 
-    public MultiPartDocumentBuilder(String rootElement, String publicId, String systemId) throws AcrolinxException {
+    public MultiPartDocumentBuilder(String rootElement, String publicId, String systemId) throws AcrolinxException
+    {
         DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder documentBuilder = null;
         try {
@@ -48,11 +53,13 @@ public class MultiPartDocumentBuilder {
 
     }
 
-    public MultiPartDocumentBuilder(String rootElement) throws AcrolinxException {
+    public MultiPartDocumentBuilder(String rootElement) throws AcrolinxException
+    {
         this(rootElement, null, null);
     }
 
-    public void addDocumentPart(String partName, String content, @Nullable Map<String, String> attributes) {
+    public void addDocumentPart(String partName, String content, @Nullable Map<String, String> attributes)
+    {
         Element element = this.document.createElement(partName);
         if (attributes != null) {
             for (Map.Entry<String, String> entry : attributes.entrySet()) {
@@ -66,15 +73,13 @@ public class MultiPartDocumentBuilder {
         this.root.appendChild(element);
     }
 
-    public void addDocumentNode(String xml, @Nullable String encoding) throws AcrolinxException {
+    public void addDocumentNode(String xml, @Nullable String encoding) throws AcrolinxException
+    {
 
         Element node;
         try {
-            node = DocumentBuilderFactory
-                    .newInstance()
-                    .newDocumentBuilder()
-                    .parse(new ByteArrayInputStream(xml.getBytes(encoding)))
-                    .getDocumentElement();
+            node = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(
+                    new ByteArrayInputStream(xml.getBytes(encoding))).getDocumentElement();
         } catch (SAXException | IOException | ParserConfigurationException e) {
             throw new AcrolinxException(e);
         }
@@ -83,8 +88,8 @@ public class MultiPartDocumentBuilder {
         this.root.appendChild(importedNode);
     }
 
-
-    public Document getDocument() throws AcrolinxException {
+    public Document getDocument() throws AcrolinxException
+    {
         TransformerFactory tf = TransformerFactory.newInstance();
         Transformer transformer;
         try {
