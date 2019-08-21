@@ -5,11 +5,11 @@ package com.acrolinx.client.sdk.check;
 
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 
-public class SimpleAcrolinxDocument implements AcrolinxDocument {
+public class SimpleDocument implements Document {
 
     private String content;
 
-    public SimpleAcrolinxDocument(String content) {
+    public SimpleDocument(String content) {
         this.content = content;
     }
 

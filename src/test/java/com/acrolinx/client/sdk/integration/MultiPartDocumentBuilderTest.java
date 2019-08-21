@@ -3,7 +3,7 @@
  */
 package com.acrolinx.client.sdk.integration;
 
-import com.acrolinx.client.sdk.check.MultiPartAcrolinxDocument;
+import com.acrolinx.client.sdk.check.MultiPartDocumentBuilder;
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import com.acrolinx.client.sdk.integration.common.IntegrationTestBase;
 import org.junit.Test;
@@ -17,26 +17,26 @@ import java.util.Map;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
 
-public class MultiPartDocumentTest extends IntegrationTestBase {
+public class MultiPartDocumentBuilderTest extends IntegrationTestBase {
 
     @Test
     public void testMultiPartDocumentCreation() throws ParserConfigurationException, AcrolinxException {
-        MultiPartAcrolinxDocument multiPartAcrolinxDocument = new MultiPartAcrolinxDocument("test");
-        multiPartAcrolinxDocument.addDocumentPart("element", "This text contains errorss", null);
-        String content = multiPartAcrolinxDocument.getContent();
+        MultiPartDocumentBuilder multiPartDocument = new MultiPartDocumentBuilder("test");
+        multiPartDocument.addDocumentPart("element", "This text contains errorss", null);
+        String content = multiPartDocument.getContent();
 
         assertNotNull(content);
     }
 
     @Test
     public void testMultiPartDocumentCreationWithAttributes() throws ParserConfigurationException, AcrolinxException {
-        MultiPartAcrolinxDocument multiPartAcrolinxDocument = new MultiPartAcrolinxDocument("test");
+        MultiPartDocumentBuilder multiPartDocument = new MultiPartDocumentBuilder("test");
         Map<String, String> attributes = new HashMap<>();
         attributes.put("attr", "val");
         attributes.put("attr2", "val2");
 
-        multiPartAcrolinxDocument.addDocumentPart("element", "This text contains errorss", attributes);
-        String content = multiPartAcrolinxDocument.getContent();
+        multiPartDocument.addDocumentPart("element", "This text contains errorss", attributes);
+        String content = multiPartDocument.getContent();
 
         assertNotNull(content);
         assertTrue(content.contains("val2"));
@@ -47,11 +47,11 @@ public class MultiPartDocumentTest extends IntegrationTestBase {
     public void testDoctypeIsSetCorrectly() throws ParserConfigurationException, AcrolinxException {
         String publicId = "-//Acrolinx/DTD Acrolinx Integration v2//EN";
         String systemId = "https://acrolinx,com/dtd/acrolinx.dtd";
-        MultiPartAcrolinxDocument multiPartAcrolinxDocument =
-                new MultiPartAcrolinxDocument("test", publicId, systemId);
+        MultiPartDocumentBuilder multiPartDocument =
+                new MultiPartDocumentBuilder("test", publicId, systemId);
 
-        multiPartAcrolinxDocument.addDocumentPart("element", "This text contains errorss", null);
-        String content = multiPartAcrolinxDocument.getContent();
+        multiPartDocument.addDocumentPart("element", "This text contains errorss", null);
+        String content = multiPartDocument.getContent();
 
         assertNotNull(content);
         assertTrue(content.contains(publicId));
@@ -62,10 +62,10 @@ public class MultiPartDocumentTest extends IntegrationTestBase {
     public void testAddHTMLPart() throws ParserConfigurationException, AcrolinxException, IOException, SAXException {
         String publicId = "-//Acrolinx/DTD Acrolinx Integration v2//EN";
         String systemId = "https://acrolinx,com/dtd/acrolinx.dtd";
-        MultiPartAcrolinxDocument multiPartAcrolinxDocument =
-                new MultiPartAcrolinxDocument("test", publicId, systemId);
+        MultiPartDocumentBuilder multiPartDocument =
+                new MultiPartDocumentBuilder("test", publicId, systemId);
 
-        multiPartAcrolinxDocument.addDocumentNode("<!DOCTYPE html>\n" +
+        multiPartDocument.addDocumentNode("<!DOCTYPE html>\n" +
                 "<html>\n" +
                 "<body>\n" +
                 "\n" +
@@ -75,7 +75,7 @@ public class MultiPartDocumentTest extends IntegrationTestBase {
                 "\n" +
                 "</body>\n" +
                 "</html>");
-        String content = multiPartAcrolinxDocument.getContent();
+        String content = multiPartDocument.getContent();
 
         assertNotNull(content);
         assertTrue(content.contains("A saample acro para"));

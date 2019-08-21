@@ -22,13 +22,12 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Map;
 
-public class MultiPartAcrolinxDocument implements AcrolinxDocument {
+public class MultiPartDocumentBuilder implements Document {
 
-    private Document document;
-    private DocumentBuilder documentBuilder;
+    private org.w3c.dom.Document document;
     private Element root;
 
-    public MultiPartAcrolinxDocument(String rootElement, String publicId, String systemId) throws ParserConfigurationException {
+    public MultiPartDocumentBuilder(String rootElement, String publicId, String systemId) throws ParserConfigurationException {
         DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
         this.document = documentBuilder.newDocument();
@@ -44,7 +43,7 @@ public class MultiPartAcrolinxDocument implements AcrolinxDocument {
 
     }
 
-    public MultiPartAcrolinxDocument(String rootElement) throws ParserConfigurationException {
+    public MultiPartDocumentBuilder(String rootElement) throws ParserConfigurationException {
         this(rootElement, null, null);
     }
 
