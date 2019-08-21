@@ -6,13 +6,13 @@ package com.acrolinx.client.sdk.check;
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 
 public class CheckRequestBuilder {
-    private AcrolinxDocument acrolinxDocument;
+    private String content;
     private CheckRequest.ContentEncoding contentEncoding;
     private CheckOptions checkOptions;
     private DocumentDescriptorRequest document;
 
-    public CheckRequestBuilder(AcrolinxDocument content) {
-        this.acrolinxDocument = content;
+    public CheckRequestBuilder(String content) {
+        this.content = content;
     }
 
     public CheckRequestBuilder setContentEncoding(CheckRequest.ContentEncoding contentEncoding) {
@@ -31,7 +31,6 @@ public class CheckRequestBuilder {
     }
 
     public CheckRequest build() throws AcrolinxException {
-        String content = acrolinxDocument.getContent();
         return new CheckRequest(content, contentEncoding, checkOptions, document);
     }
 }

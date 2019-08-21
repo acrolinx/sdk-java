@@ -8,7 +8,11 @@ import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import javax.annotation.Nullable;
 
 public class CheckRequest {
-    public static CheckRequestBuilder ofDocumentContent(AcrolinxDocument content) {
+    public static CheckRequestBuilder ofDocumentContent(AcrolinxDocument acrolinxDocument) throws AcrolinxException {
+        return new CheckRequestBuilder(acrolinxDocument.getContent());
+    }
+
+    public static CheckRequestBuilder ofDocumentContent(String content) {
         return new CheckRequestBuilder(content);
     }
 
