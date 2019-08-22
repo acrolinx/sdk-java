@@ -230,7 +230,7 @@ nexusPublishing {
 def signingKeyVar = file('./codesigning.pgp').exists() ? new File('./codesigning.pgp').text : null
 
 signing {
-	required { signingKeyVar }
+	required { signingKeyVar && isReleaseBuild }
 	def signingKey = signingKeyVar
 	def signingPassword = findProperty("signingPassword")
 	useInMemoryPgpKeys(signingKey, signingPassword)

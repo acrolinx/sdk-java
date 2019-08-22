@@ -24,7 +24,7 @@ deploy:
     branch: master
 - provider: pages
   skip-cleanup: true
-  github-token: "$GITHUB_API_TOKEN"
+  github-token: $GITHUB_API_TOKEN
   keep-history: true
   local-dir: "./build/docs/javadoc/"
   on:
