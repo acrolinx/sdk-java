@@ -20,6 +20,9 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import com.acrolinx.client.sdk.AcrolinxEndpoint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
@@ -30,6 +33,7 @@ public class MultiPartDocumentBuilder
 
     private org.w3c.dom.Document document;
     private Element root;
+    private static final Logger logger = LoggerFactory.getLogger(MultiPartDocumentBuilder.class);
 
     public MultiPartDocumentBuilder(String rootElement, @Nullable String publicId, @Nullable String systemId)
             throws AcrolinxException
@@ -39,11 +43,15 @@ public class MultiPartDocumentBuilder
         try {
             documentBuilder = documentFactory.newDocumentBuilder();
         } catch (ParserConfigurationException e) {
+            logger.debug("Unable to create Document Builder Factory.");
             throw new AcrolinxException(e);
         }
         this.document = documentBuilder.newDocument();
 
         if (publicId != null || systemId != null) {
+            logger.debug("Doctype Public Id: " + publicId);
+            logger.debug("Doctype system Id: "+ systemId);
+
             DOMImplementation implementation = this.document.getImplementation();
             DocumentType documentType = implementation.createDocumentType(rootElement, publicId, systemId);
             this.document.appendChild(documentType);
@@ -51,7 +59,6 @@ public class MultiPartDocumentBuilder
 
         this.root = this.document.createElement(rootElement);
         this.document.appendChild(this.root);
-
     }
 
     public MultiPartDocumentBuilder(String rootElement) throws AcrolinxException
@@ -64,6 +71,7 @@ public class MultiPartDocumentBuilder
     {
         Element element = this.document.createElement(partName);
         if (attributes != null) {
+            logger.debug("Adding attributes to node");
             for (Map.Entry<String, String> entry : attributes.entrySet()) {
                 Attr attribute = this.document.createAttribute(entry.getKey());
                 attribute.setValue(entry.getValue());
@@ -82,9 +90,11 @@ public class MultiPartDocumentBuilder
 
         Element node;
         try {
+            logger.debug("Encoding specified? " + (encoding == null ? "Not specified" : encoding));
             node = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(
                     new ByteArrayInputStream(xml.getBytes(encoding == null ? "UTF-8" : encoding))).getDocumentElement();
         } catch (SAXException | IOException | ParserConfigurationException e) {
+            logger.debug("Parsing node content failed.");
             throw new AcrolinxException(e);
         }
 
@@ -99,6 +109,7 @@ public class MultiPartDocumentBuilder
         TransformerFactory tf = TransformerFactory.newInstance();
         Transformer transformer;
         try {
+            logger.debug("Applying transformation to XML.");
             transformer = tf.newTransformer();
             transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
             transformer.setOutputProperty(OutputKeys.METHOD, "xml");
@@ -116,6 +127,7 @@ public class MultiPartDocumentBuilder
             transformer.transform(new DOMSource(this.document), new StreamResult(writer));
             return new SimpleDocument(writer.getBuffer().toString());
         } catch (TransformerException e) {
+            logger.debug("Creating XML string from document failed.");
             throw new AcrolinxException(e);
         }
     }
