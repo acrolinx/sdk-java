@@ -4,24 +4,28 @@
 
 package com.acrolinx.client.sdk.check;
 
-import com.acrolinx.client.sdk.exceptions.AcrolinxException;
-
 import javax.annotation.Nullable;
 
-public class CheckRequest {
+import com.acrolinx.client.sdk.exceptions.AcrolinxException;
+
+public class CheckRequest
+{
     CheckRequest(String content, @Nullable ContentEncoding contentEncoding, @Nullable CheckOptions checkOptions,
-                 @Nullable DocumentDescriptorRequest document) {
+            @Nullable DocumentDescriptorRequest document)
+    {
         this.content = content;
         this.contentEncoding = contentEncoding;
         this.checkOptions = checkOptions;
         this.document = document;
     }
 
-    public static CheckRequestBuilder ofDocumentContent(String content) {
+    public static CheckRequestBuilder ofDocumentContent(String content)
+    {
         return new CheckRequestBuilder(content);
     }
 
-    public static CheckRequestBuilder ofDocument(Document document) throws AcrolinxException {
+    public static CheckRequestBuilder ofDocument(Document document) throws AcrolinxException
+    {
         return new CheckRequestBuilder(document);
     }
 
@@ -36,26 +40,31 @@ public class CheckRequest {
     @Nullable
     private final DocumentDescriptorRequest document;
 
-    public String getContent() {
+    public String getContent()
+    {
         return content;
     }
 
     @Nullable
-    public ContentEncoding getContentEncoding() {
+    public ContentEncoding getContentEncoding()
+    {
         return contentEncoding;
     }
 
     @Nullable
-    public CheckOptions getCheckOptions() {
+    public CheckOptions getCheckOptions()
+    {
         return checkOptions;
     }
 
     @Nullable
-    public DocumentDescriptorRequest getDocument() {
+    public DocumentDescriptorRequest getDocument()
+    {
         return document;
     }
 
-    public enum ContentEncoding {
+    public enum ContentEncoding
+    {
         none, base64,
     }
 }

@@ -4,9 +4,10 @@
 
 package com.acrolinx.client.sdk.check;
 
-import com.acrolinx.client.sdk.exceptions.AcrolinxException;
-import org.w3c.dom.*;
-import org.xml.sax.SAXException;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.Map;
 
 import javax.annotation.Nullable;
 import javax.xml.parsers.DocumentBuilder;
@@ -18,18 +19,21 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.Map;
 
-public class MultiPartDocumentBuilder {
+import org.w3c.dom.*;
+import org.xml.sax.SAXException;
+
+import com.acrolinx.client.sdk.exceptions.AcrolinxException;
+
+public class MultiPartDocumentBuilder
+{
 
     private org.w3c.dom.Document document;
     private Element root;
 
     public MultiPartDocumentBuilder(String rootElement, @Nullable String publicId, @Nullable String systemId)
-            throws AcrolinxException {
+            throws AcrolinxException
+    {
         DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder documentBuilder;
         try {
@@ -50,12 +54,14 @@ public class MultiPartDocumentBuilder {
 
     }
 
-    public MultiPartDocumentBuilder(String rootElement) throws AcrolinxException {
+    public MultiPartDocumentBuilder(String rootElement) throws AcrolinxException
+    {
         this(rootElement, null, null);
     }
 
     public MultiPartDocumentBuilder addDocumentPart(String partName, String content,
-                                                    @Nullable Map<String, String> attributes) {
+            @Nullable Map<String, String> attributes)
+    {
         Element element = this.document.createElement(partName);
         if (attributes != null) {
             for (Map.Entry<String, String> entry : attributes.entrySet()) {
@@ -71,7 +77,8 @@ public class MultiPartDocumentBuilder {
         return this;
     }
 
-    public MultiPartDocumentBuilder addDocumentNode(String xml, @Nullable String encoding) throws AcrolinxException {
+    public MultiPartDocumentBuilder addDocumentNode(String xml, @Nullable String encoding) throws AcrolinxException
+    {
 
         Element node;
         try {
@@ -87,7 +94,8 @@ public class MultiPartDocumentBuilder {
         return this;
     }
 
-    public Document build() throws AcrolinxException {
+    public Document build() throws AcrolinxException
+    {
         TransformerFactory tf = TransformerFactory.newInstance();
         Transformer transformer;
         try {
