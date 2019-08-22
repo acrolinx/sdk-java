@@ -35,7 +35,7 @@ Have a look at [AcrolinxEndpoint](./src/main/java/com/acrolinx/client/sdk/Acroli
 
 ### Integration Tests
 
-In order to run the integration tests:
+In order to run the integration tests locally:
 * You need access to the Acrolinx Platform
 * You need to create an .env file similar to the [.env.template](.env.template) file. Alternately you can set the corresponding environment variables in a different way.
 
@@ -52,6 +52,7 @@ In order to run the integration tests:
     to install dependencies, build and test the project. 
     Also run the same command before pushing your changes to GitHub.
     
+    On Travis the build will be tested against the latest released Acrolinx Platform.
     If your build on Travis was successful, a new snapshot version will be automatically available via [Maven snapshot repository](https://oss.sonatype.org/content/repositories/snapshots/com/acrolinx/client/sdk/).
 
 2. Once you tested your new features, remove the '-SNAPSHOT' from the `CURRENT_VERSION` property in the `gradle.properties` file.
