@@ -4,6 +4,26 @@
 
 package com.acrolinx.client.sdk.integration;
 
+import com.acrolinx.client.sdk.Progress;
+import com.acrolinx.client.sdk.check.*;
+import com.acrolinx.client.sdk.exceptions.AcrolinxException;
+import com.acrolinx.client.sdk.integration.common.IntegrationTestBase;
+import com.acrolinx.client.sdk.platform.Capabilities;
+import com.acrolinx.client.sdk.platform.GuidanceProfile;
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatcher;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.*;
+
 import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.ACROLINX_API_TOKEN;
 import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.ACROLINX_URL;
 import static com.acrolinx.client.sdk.testutils.IssueUtils.findIssueWithFirstSuggestion;
@@ -17,42 +37,19 @@ import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.verify;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.*;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatcher;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-
-import com.acrolinx.client.sdk.Progress;
-import com.acrolinx.client.sdk.check.*;
-import com.acrolinx.client.sdk.exceptions.AcrolinxException;
-import com.acrolinx.client.sdk.integration.common.IntegrationTestBase;
-import com.acrolinx.client.sdk.platform.Capabilities;
-import com.acrolinx.client.sdk.platform.GuidanceProfile;
-import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
-
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
-public class CheckTest extends IntegrationTestBase
-{
+public class CheckTest extends IntegrationTestBase {
     /**
      * This text should should need some seconds to check.
      */
-    static final String longTestText = Strings.repeat("This sentence is nice. \n", 300);
-    GuidanceProfile guidanceProfileEn;
+    private static final String longTestText = Strings.repeat("This sentence is nice. \n", 300);
+    private GuidanceProfile guidanceProfileEn;
 
     @Mock
     private ProgressListener progressListener;
 
     @Before
-    public void beforeTest() throws AcrolinxException
-    {
+    public void beforeTest() throws AcrolinxException {
         assumeTrue(ACROLINX_API_TOKEN != null);
         Capabilities capabilities = endpoint.getCapabilities(ACROLINX_API_TOKEN);
 
@@ -66,13 +63,11 @@ public class CheckTest extends IntegrationTestBase
     }
 
     @Test
-    public void startACheck() throws AcrolinxException
-    {
+    public void startACheck() throws AcrolinxException {
         CheckResponse checkResponse = endpoint.check(ACROLINX_API_TOKEN,
-                CheckRequest.ofDocumentContent(new SimpleDocument("This textt has ann erroor.")).setDocument(
+                CheckRequest.ofDocumentContent("This textt has ann erroor.").setDocument(
                         new DocumentDescriptorRequest("file.txt")).setCheckOptions(
-                                CheckOptions.getBuilder().withGuidanceProfileId(
-                                        guidanceProfileEn.getId()).build()).build());
+                        CheckOptions.getBuilder().withGuidanceProfileId(guidanceProfileEn.getId()).build()).build());
 
         assertNotNull(checkResponse);
         assertThat(checkResponse.getData().getId(), not(isEmptyOrNullString()));
@@ -81,8 +76,7 @@ public class CheckTest extends IntegrationTestBase
     }
 
     @Test
-    public void checkAndGetResult() throws AcrolinxException, InterruptedException
-    {
+    public void checkAndGetResult() throws AcrolinxException {
         CheckResult checkResult = checkEnglishText("This textt has ann erroor.");
 
         final Quality quality = checkResult.getQuality();
@@ -91,6 +85,7 @@ public class CheckTest extends IntegrationTestBase
         assertNotNull(quality.getStatus());
         assertNotNull(quality.getScoresByGoal());
 
+
         assertEquals(1, checkResult.getReports().size());
         CheckResult.Report scorecard = checkResult.getReport(ReportType.scorecard);
         assertEquals("Score Card", scorecard.getDisplayName());
@@ -98,8 +93,7 @@ public class CheckTest extends IntegrationTestBase
     }
 
     @Test
-    public void checkUtf8() throws AcrolinxException, InterruptedException
-    {
+    public void checkUtf8() throws AcrolinxException {
         String documentContent = "an naïve approach";
         CheckResult checkResult = checkEnglishText(documentContent);
 
@@ -120,8 +114,7 @@ public class CheckTest extends IntegrationTestBase
     }
 
     @Test
-    public void checkResultContainsIssues() throws AcrolinxException, InterruptedException
-    {
+    public void checkResultContainsIssues() throws AcrolinxException {
         CheckResult checkResult = checkEnglishText("A textt");
 
         Issue issue = findIssueWithFirstSuggestion(checkResult.getIssues(), "text");
@@ -146,8 +139,7 @@ public class CheckTest extends IntegrationTestBase
     }
 
     @Test
-    public void getTermHarvestingReport() throws AcrolinxException, InterruptedException
-    {
+    public void getTermHarvestingReport() throws AcrolinxException {
         ArrayList<ReportType> reportTypes = Lists.newArrayList(ReportType.termHarvesting);
         CheckOptions checkOptions = CheckOptions.getBuilder().withGuidanceProfileId(
                 guidanceProfileEn.getId()).withGenerateReportTypes(reportTypes).build();
@@ -163,12 +155,11 @@ public class CheckTest extends IntegrationTestBase
     }
 
     /**
-     * This test might become pretty flaky, when the server is faster than expected. When we notice
-     * this problem, we should rewrite it using a mocked server.
+     * This test might become pretty flaky, when the server is faster than expected. When we notice this problem,
+     * we should rewrite it using a mocked server.
      */
     @Test
-    public void checkALargeTextAndGetProgress() throws AcrolinxException, InterruptedException
-    {
+    public void checkALargeTextAndGetProgress() throws AcrolinxException {
         CheckResult checkResult = checkEnglishText(longTestText);
 
         verify(progressListener, atLeast(2)).onProgress(argThat(new ProgressMatcher()));
@@ -177,21 +168,19 @@ public class CheckTest extends IntegrationTestBase
     }
 
     /**
-     * This test might become pretty flaky, when the server is faster than expected. When we notice
-     * this problem, we should rewrite it using a mocked server.
+     * This test might become pretty flaky, when the server is faster than expected. When we notice this problem,
+     * we should rewrite it using a mocked server.
      */
     @Test(expected = CancellationException.class)
-    public void cancelCheck() throws InterruptedException, ExecutionException, AcrolinxException
-    {
-        final CheckRequest checkRequest = CheckRequest.ofDocumentContent(new SimpleDocument(longTestText)).setDocument(
+    public void cancelCheck() throws InterruptedException, ExecutionException {
+        final CheckRequest checkRequest = CheckRequest.ofDocumentContent(longTestText).setDocument(
                 new DocumentDescriptorRequest("file.txt")).setCheckOptions(
-                        CheckOptions.getBuilder().withGuidanceProfileId(guidanceProfileEn.getId()).build()).build();
+                CheckOptions.getBuilder().withGuidanceProfileId(guidanceProfileEn.getId()).build()).build();
 
         ExecutorService executorService = Executors.newFixedThreadPool(1);
         Future<CheckResult> future = executorService.submit(new Callable<CheckResult>() {
             @Override
-            public CheckResult call() throws Exception
-            {
+            public CheckResult call() throws Exception {
                 return checkEnglishText(longTestText);
             }
         });
@@ -200,15 +189,13 @@ public class CheckTest extends IntegrationTestBase
 
         future.cancel(true);
 
-        Thread.sleep(100); // TODO: Without waiting the Connection pool will shut down before we can
-                           // send cancel.
+        Thread.sleep(100);  // TODO: Without waiting the Connection pool will shut down before we can send cancel.
 
         future.get();
     }
 
     @Test
-    public void testFireMultipleChecksWithoutWaitingForResult() throws AcrolinxException
-    {
+    public void testFireMultipleChecksWithoutWaitingForResult() throws AcrolinxException {
         int numberOfChecks = 5;
 
         for (int i = 0; i < numberOfChecks; i++) {
@@ -228,8 +215,7 @@ public class CheckTest extends IntegrationTestBase
     }
 
     @Test
-    public void testFireMultipleChecksWaitingForResult() throws AcrolinxException, InterruptedException
-    {
+    public void testFireMultipleChecksWaitingForResult() throws AcrolinxException {
         int numberOfChecks = 5;
 
         for (int i = 0; i < numberOfChecks; i++) {
@@ -238,8 +224,7 @@ public class CheckTest extends IntegrationTestBase
             CheckResult checkResult = endpoint.checkAndGetResult(ACROLINX_API_TOKEN,
                     CheckRequest.ofDocumentContent(uuid).setDocument(
                             new DocumentDescriptorRequest(uuid + ".txt")).setCheckOptions(
-                                    CheckOptions.getBuilder().withGuidanceProfileId(
-                                            guidanceProfileEn.getId()).build()).build(),
+                            CheckOptions.getBuilder().withGuidanceProfileId(guidanceProfileEn.getId()).build()).build(),
                     progressListener);
 
             final Quality quality = checkResult.getQuality();
@@ -250,8 +235,7 @@ public class CheckTest extends IntegrationTestBase
     }
 
     @Test
-    public void testMultipleChecksParallelWaitingForResult() throws InterruptedException, ExecutionException
-    {
+    public void testMultipleChecksParallelWaitingForResult() throws InterruptedException, ExecutionException {
         int numberOfChecks = 5;
 
         ExecutorService executorService = Executors.newFixedThreadPool(numberOfChecks);
@@ -262,14 +246,12 @@ public class CheckTest extends IntegrationTestBase
             final String uuid = UUID.randomUUID().toString();
             Future<CheckResult> futureResult = executorService.submit(new Callable<CheckResult>() {
                 @Override
-                public CheckResult call() throws Exception
-                {
+                public CheckResult call() throws Exception {
                     return endpoint.checkAndGetResult(ACROLINX_API_TOKEN,
-                            CheckRequest.ofDocumentContent(new SimpleDocument(uuid)).setDocument(
+                            CheckRequest.ofDocumentContent(uuid).setDocument(
                                     new DocumentDescriptorRequest(uuid + ".txt")).setCheckOptions(
-                                            CheckOptions.getBuilder().withGuidanceProfileId(
-                                                    guidanceProfileEn.getId()).build()).build(),
-                            progressListener);
+                                    CheckOptions.getBuilder().withGuidanceProfileId(
+                                            guidanceProfileEn.getId()).build()).build(), progressListener);
                 }
             });
             checks.add(futureResult);
@@ -287,14 +269,14 @@ public class CheckTest extends IntegrationTestBase
     public void checkWithOptions() throws AcrolinxException {
         CheckOptions checkOptions = CheckOptions.getBuilder().withGuidanceProfileId(
                 guidanceProfileEn.getId()).withBatchId(UUID.randomUUID().toString()).withCheckType(
-                        CheckType.baseline).withContentFormat("txt").withCustomFieldValidationDisabled(
-                                true).withLanguageId("en").build();
+                CheckType.baseline).withContentFormat("txt").withCustomFieldValidationDisabled(true).withLanguageId(
+                "en").build();
 
-        List<ReportType> rtl = new ArrayList<ReportType>();
+        List<ReportType> rtl = new ArrayList<>();
         rtl.add(ReportType.scorecard);
         rtl.add((ReportType.termHarvesting));
         CheckResponse checkResponse = endpoint.check(ACROLINX_API_TOKEN,
-                CheckRequest.ofDocumentContent(new SimpleDocument("This textt has ann erroor.")).setDocument(
+                CheckRequest.ofDocumentContent("This textt has ann erroor.").setDocument(
                         new DocumentDescriptorRequest("file.txt")).setCheckOptions(checkOptions).build());
 
         assertNotNull(checkResponse);
@@ -303,29 +285,25 @@ public class CheckTest extends IntegrationTestBase
         assertThat(checkResponse.getLinks().getCancel(), startsWith(ACROLINX_URL));
     }
 
-    private CheckResult checkEnglishText(String documentContent) throws AcrolinxException, InterruptedException
-    {
+    private CheckResult checkEnglishText(String documentContent) throws AcrolinxException {
         return endpoint.checkAndGetResult(ACROLINX_API_TOKEN,
-                CheckRequest.ofDocumentContent(new SimpleDocument(documentContent)).setDocument(
+                CheckRequest.ofDocumentContent(documentContent).setDocument(
                         new DocumentDescriptorRequest("file.txt")).setCheckOptions(
-                                CheckOptions.getBuilder().withGuidanceProfileId(
-                                        guidanceProfileEn.getId()).build()).build(),
+                        CheckOptions.getBuilder().withGuidanceProfileId(guidanceProfileEn.getId()).build()).build(),
                 progressListener);
     }
 
     @Test
-    public void testCheckWithDocumentMetaData() throws AcrolinxException, InterruptedException
-    {
+    public void testCheckWithDocumentMetaData() {
         DocumentDescriptorRequest documentDescriptorRequest = new DocumentDescriptorRequest("file.txt");
         documentDescriptorRequest.setCustomField(new CustomField("Text Field", "Item"));
         documentDescriptorRequest.setCustomField(new CustomField("List Field", "List Item 1"));
 
         try {
-            CheckResult checkResult = endpoint.checkAndGetResult(ACROLINX_API_TOKEN,
-                    CheckRequest.ofDocumentContent(new SimpleDocument("Thee sentencee contains errors")).setDocument(
-                            documentDescriptorRequest).setCheckOptions(
-                                    CheckOptions.getBuilder().withGuidanceProfileId(
-                                            guidanceProfileEn.getId()).build()).build(),
+            CheckResult checkResult = endpoint.checkAndGetResult(ACROLINX_API_TOKEN, CheckRequest.ofDocumentContent(
+                    "Thee sentencee contains errors").setDocument(
+                    documentDescriptorRequest).setCheckOptions(
+                    CheckOptions.getBuilder().withGuidanceProfileId(guidanceProfileEn.getId()).build()).build(),
                     progressListener);
 
             assertNotNull(checkResult);
@@ -335,29 +313,25 @@ public class CheckTest extends IntegrationTestBase
     }
 
     @Test(expected = AcrolinxException.class)
-    public void testCheckWithDocumentMetaDataAsList() throws InterruptedException, AcrolinxException
-    {
+    public void testCheckWithDocumentMetaDataAsList() throws AcrolinxException {
         DocumentDescriptorRequest documentDescriptorRequest = new DocumentDescriptorRequest("file.txt");
         List<CustomField> customFieldList = new ArrayList<>();
         customFieldList.add(new CustomField(UUID.randomUUID().toString(), UUID.randomUUID().toString()));
         customFieldList.add(new CustomField(UUID.randomUUID().toString(), UUID.randomUUID().toString()));
         documentDescriptorRequest.setCustomFields(customFieldList);
 
-        endpoint.checkAndGetResult(ACROLINX_API_TOKEN,
-                CheckRequest.ofDocumentContent(new SimpleDocument("Thee sentencee contains errors")).setDocument(
-                        documentDescriptorRequest).setCheckOptions(
-                                CheckOptions.getBuilder().withGuidanceProfileId(
-                                        guidanceProfileEn.getId()).build()).build(),
+        endpoint.checkAndGetResult(ACROLINX_API_TOKEN, CheckRequest.ofDocumentContent(
+                "Thee sentencee contains errors").setDocument(
+                documentDescriptorRequest).setCheckOptions(
+                CheckOptions.getBuilder().withGuidanceProfileId(guidanceProfileEn.getId()).build()).build(),
                 progressListener);
     }
 
-    public static class ProgressMatcher implements ArgumentMatcher<Progress>
-    {
+    public static class ProgressMatcher implements ArgumentMatcher<Progress> {
         private double prevPercent = 0;
 
         @Override
-        public boolean matches(Progress value)
-        {
+        public boolean matches(Progress value) {
             boolean valid = value.getPercent() >= this.prevPercent && value.getMessage() != null;
             this.prevPercent = value.getPercent();
             return valid;
