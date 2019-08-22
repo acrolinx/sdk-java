@@ -22,7 +22,8 @@ public class CheckRequestBuilder {
         this.content = content;
     }
 
-    public static MultiPartDocumentBuilder getBuilder(String rootElement, @Nullable String publicId, @Nullable String systemId) throws AcrolinxException {
+    public static MultiPartDocumentBuilder getBuilder(String rootElement, @Nullable String publicId,
+                                                      @Nullable String systemId) throws AcrolinxException {
         return new MultiPartDocumentBuilder(rootElement, publicId, systemId);
     }
 

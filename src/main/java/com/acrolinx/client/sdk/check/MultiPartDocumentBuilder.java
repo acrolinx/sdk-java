@@ -28,7 +28,8 @@ public class MultiPartDocumentBuilder {
     private org.w3c.dom.Document document;
     private Element root;
 
-    public MultiPartDocumentBuilder(String rootElement, @Nullable String publicId, @Nullable String systemId) throws AcrolinxException {
+    public MultiPartDocumentBuilder(String rootElement, @Nullable String publicId, @Nullable String systemId)
+            throws AcrolinxException {
         DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder documentBuilder;
         try {
@@ -53,7 +54,8 @@ public class MultiPartDocumentBuilder {
         this(rootElement, null, null);
     }
 
-    public MultiPartDocumentBuilder addDocumentPart(String partName, String content, @Nullable Map<String, String> attributes) {
+    public MultiPartDocumentBuilder addDocumentPart(String partName, String content,
+                                                    @Nullable Map<String, String> attributes) {
         Element element = this.document.createElement(partName);
         if (attributes != null) {
             for (Map.Entry<String, String> entry : attributes.entrySet()) {
@@ -73,11 +75,8 @@ public class MultiPartDocumentBuilder {
 
         Element node;
         try {
-            node = DocumentBuilderFactory
-                    .newInstance()
-                    .newDocumentBuilder()
-                    .parse(new ByteArrayInputStream(xml.getBytes(encoding == null ? "UTF-8" : encoding)))
-                    .getDocumentElement();
+            node = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(
+                    new ByteArrayInputStream(xml.getBytes(encoding == null ? "UTF-8" : encoding))).getDocumentElement();
         } catch (SAXException | IOException | ParserConfigurationException e) {
             throw new AcrolinxException(e);
         }
@@ -87,7 +86,6 @@ public class MultiPartDocumentBuilder {
 
         return this;
     }
-
 
     public Document build() throws AcrolinxException {
         TransformerFactory tf = TransformerFactory.newInstance();

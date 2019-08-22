@@ -45,8 +45,7 @@ public class MultiPartDocumentBuilderTest extends IntegrationTestBase {
     public void testDoctypeIsSetCorrectly() throws AcrolinxException {
         String publicId = "-//Acrolinx/DTD Acrolinx Integration v2//EN";
         String systemId = "https://acrolinx,com/dtd/acrolinx.dtd";
-        MultiPartDocumentBuilder multiPartDocument =
-                new MultiPartDocumentBuilder("test", publicId, systemId);
+        MultiPartDocumentBuilder multiPartDocument = new MultiPartDocumentBuilder("test", publicId, systemId);
 
         multiPartDocument.addDocumentPart("element", "This text contains errorss", null);
         String content = multiPartDocument.build().getContent();
@@ -60,24 +59,16 @@ public class MultiPartDocumentBuilderTest extends IntegrationTestBase {
     public void testAddHTMLPart() throws AcrolinxException {
         String publicId = "-//Acrolinx/DTD Acrolinx Integration v2//EN";
         String systemId = "https://acrolinx,com/dtd/acrolinx.dtd";
-        MultiPartDocumentBuilder multiPartDocument =
-                new MultiPartDocumentBuilder("test", publicId, systemId);
+        MultiPartDocumentBuilder multiPartDocument = new MultiPartDocumentBuilder("test", publicId, systemId);
 
-        multiPartDocument.addDocumentNode("<!DOCTYPE html>\n" +
-                "<html>\n" +
-                "<body>\n" +
-                "\n" +
-                "<h1>A saample acro para</h1>\n" +
-                "\n" +
-                "<p>Another acrooo paraa</p>\n" +
-                "\n" +
-                "</body>\n" +
-                "</html>", "UTF-8");
+        multiPartDocument.addDocumentNode(
+                "<!DOCTYPE html>\n" + "<html>\n" + "<body>\n" + "\n" + "<h1>A saample acro para</h1>\n" + "\n"
+                        + "<p>Another acrooo paraa</p>\n" + "\n" + "</body>\n" + "</html>",
+                "UTF-8");
         String content = multiPartDocument.build().getContent();
 
         assertNotNull(content);
         assertTrue(content.contains("A saample acro para"));
     }
-
 
 }

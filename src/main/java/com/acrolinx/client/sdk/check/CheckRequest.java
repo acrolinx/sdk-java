@@ -9,7 +9,8 @@ import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import javax.annotation.Nullable;
 
 public class CheckRequest {
-    CheckRequest(String content, @Nullable ContentEncoding contentEncoding, @Nullable CheckOptions checkOptions, @Nullable DocumentDescriptorRequest document) {
+    CheckRequest(String content, @Nullable ContentEncoding contentEncoding, @Nullable CheckOptions checkOptions,
+                 @Nullable DocumentDescriptorRequest document) {
         this.content = content;
         this.contentEncoding = contentEncoding;
         this.checkOptions = checkOptions;
@@ -55,7 +56,6 @@ public class CheckRequest {
     }
 
     public enum ContentEncoding {
-        none,
-        base64,
+        none, base64,
     }
 }
