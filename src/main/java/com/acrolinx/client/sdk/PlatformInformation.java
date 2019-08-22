@@ -1,26 +1,31 @@
 /**
  * Copyright (c) 2019-present Acrolinx GmbH
  */
-package com.acrolinx.client.sdk;
 
-import com.acrolinx.client.sdk.platform.Server;
+package com.acrolinx.client.sdk;
 
 import java.util.List;
 
-public class PlatformInformation {
+import com.acrolinx.client.sdk.platform.Server;
+
+public class PlatformInformation
+{
     private final Server server;
     private final List<String> locales;
 
-    public PlatformInformation(Server server, List<String> locales) {
+    public PlatformInformation(Server server, List<String> locales)
+    {
         this.server = server;
         this.locales = locales;
     }
 
-    public Server getServer() {
+    public Server getServer()
+    {
         return server;
     }
 
-    public List<String> getLocales() {
+    public List<String> getLocales()
+    {
         return locales;
     }
 }

@@ -1,23 +1,28 @@
 /**
  * Copyright (c) 2019-present Acrolinx GmbH
  */
+
 package com.acrolinx.client.sdk.platform;
 
-public class Link {
+public class Link
+{
 
     private String linkType;
     private String link;
 
-    public Link(String linkType, String link) {
+    public Link(String linkType, String link)
+    {
         this.linkType = linkType;
         this.link = link;
     }
 
-    public String getLinkType() {
+    public String getLinkType()
+    {
         return linkType;
     }
 
-    public String getLink() {
+    public String getLink()
+    {
         return link;
     }
 

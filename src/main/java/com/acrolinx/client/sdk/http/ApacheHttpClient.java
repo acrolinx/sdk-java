@@ -1,9 +1,16 @@
 /**
  * Copyright (c) 2019-present Acrolinx GmbH
  */
+
 package com.acrolinx.client.sdk.http;
 
-import com.acrolinx.client.sdk.exceptions.AcrolinxException;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.util.Map;
+
+import javax.annotation.Nullable;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.ParseException;
@@ -20,29 +27,29 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nullable;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.util.Map;
+import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 
-public class ApacheHttpClient implements AcrolinxHttpClient {
+public class ApacheHttpClient implements AcrolinxHttpClient
+{
     private CloseableHttpClient httpClient;
     private static final Logger logger = LoggerFactory.getLogger(ApacheHttpClient.class);
 
-    public ApacheHttpClient() {
+    public ApacheHttpClient()
+    {
         this.httpClient = createHttpClient();
     }
 
-    private CloseableHttpClient createHttpClient() {
+    private CloseableHttpClient createHttpClient()
+    {
         final PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
         final HttpClientBuilder httpClientBuilder = HttpClientBuilder.create().setConnectionManager(cm);
         return httpClientBuilder.build();
     }
 
-
     @Override
-    public AcrolinxResponse fetch(URI uri, HttpMethod httpMethod, Map<String, String> headers, String jsonBody) throws IOException, AcrolinxException {
+    public AcrolinxResponse fetch(URI uri, HttpMethod httpMethod, Map<String, String> headers, String jsonBody)
+            throws IOException, AcrolinxException
+    {
         HttpRequestBase request = createRequests(uri, httpMethod, jsonBody);
 
         setHeaders(request, headers);
@@ -67,12 +74,15 @@ public class ApacheHttpClient implements AcrolinxHttpClient {
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() throws IOException
+    {
         logger.info("Disconnected http client");
         this.httpClient.close();
     }
 
-    private HttpRequestBase createRequests(URI uri, HttpMethod httpMethod, @Nullable String jsonBody) throws UnsupportedEncodingException {
+    private HttpRequestBase createRequests(URI uri, HttpMethod httpMethod, @Nullable String jsonBody)
+            throws UnsupportedEncodingException
+    {
         switch (httpMethod) {
             case GET:
                 return new HttpGet(uri);
@@ -90,7 +100,8 @@ public class ApacheHttpClient implements AcrolinxHttpClient {
         }
     }
 
-    private void setHeaders(HttpRequestBase request, Map<String, String> headers) {
+    private void setHeaders(HttpRequestBase request, Map<String, String> headers)
+    {
         for (Map.Entry<String, String> entry : headers.entrySet()) {
             request.setHeader(entry.getKey(), entry.getValue());
         }

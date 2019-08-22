@@ -1,20 +1,24 @@
 /**
  * Copyright (c) 2019-present Acrolinx GmbH
  */
+
 package com.acrolinx.client.sdk.integration;
+
+import static org.junit.Assert.*;
+
+import java.util.Arrays;
+
+import org.junit.Test;
 
 import com.acrolinx.client.sdk.PlatformInformation;
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import com.acrolinx.client.sdk.integration.common.IntegrationTestBase;
-import org.junit.Test;
 
-import java.util.Arrays;
-
-import static org.junit.Assert.*;
-
-public class GetPlatformInformationTest extends IntegrationTestBase {
+public class GetPlatformInformationTest extends IntegrationTestBase
+{
     @Test
-    public void testFetchingPlatformInformation() throws AcrolinxException, InterruptedException {
+    public void testFetchingPlatformInformation() throws AcrolinxException, InterruptedException
+    {
         PlatformInformation platformInformation = endpoint.getPlatformInformation();
 
         assertNotNull(platformInformation);

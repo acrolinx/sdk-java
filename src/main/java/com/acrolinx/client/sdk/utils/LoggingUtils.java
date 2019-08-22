@@ -4,16 +4,6 @@
 
 package com.acrolinx.client.sdk.utils;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.joran.JoranConfigurator;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.Appender;
-import ch.qos.logback.core.FileAppender;
-import ch.qos.logback.core.joran.spi.JoranException;
-import com.google.common.base.Preconditions;
-import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,13 +11,27 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Iterator;
 
-public class LoggingUtils {
-    private LoggingUtils() {
+import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Preconditions;
+
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.Appender;
+import ch.qos.logback.core.FileAppender;
+import ch.qos.logback.core.joran.spi.JoranException;
+
+public class LoggingUtils
+{
+    private LoggingUtils()
+    {
         // This class just holds some static methods, you can't instantiate it.
     }
 
-
-    private static Path getLogFilePathOSSpecific(String applicationName) {
+    private static Path getLogFilePathOSSpecific(String applicationName)
+    {
         Path userTempDirLocation = getUserTempDirLocation();
         String s = System.getProperty("os.name").toLowerCase();
         if (s.contains("mac")) {
@@ -39,7 +43,8 @@ public class LoggingUtils {
         return Paths.get(userTempDirLocation.toString(), "acrolinx", "logs", applicationName);
     }
 
-    private static Path getUserTempDirLocation() {
+    private static Path getUserTempDirLocation()
+    {
         final String s = System.getProperty("os.name").toLowerCase();
         String temDirProp;
         if (s.contains("mac")) {
@@ -51,7 +56,8 @@ public class LoggingUtils {
     }
 
     private static void loadLogFileConfig(InputStream configStream, String applicationName)
-            throws JoranException, IOException {
+            throws JoranException, IOException
+    {
         if (!(LoggerFactory.getILoggerFactory() instanceof LoggerContext)) {
             if (configStream != null) {
                 configStream.close();
@@ -71,19 +77,20 @@ public class LoggingUtils {
         root.setLevel(Level.toLevel(System.getProperty("acrolog.level"), Level.INFO));
     }
 
-
-    public static void setupLogging(String applicationName) throws IOException, JoranException {
+    public static void setupLogging(String applicationName) throws IOException, JoranException
+    {
         useDefaultLoggingConfig(applicationName);
     }
 
-    private static void useDefaultLoggingConfig(String applicationName)
-            throws IOException, JoranException {
+    private static void useDefaultLoggingConfig(String applicationName) throws IOException, JoranException
+    {
         Preconditions.checkNotNull(applicationName, "application name should be set");
         InputStream configStream = LoggingUtils.class.getResourceAsStream("/logback_default.xml");
         loadLogFileConfig(configStream, applicationName);
     }
 
-    public static String getLogFileLocation() {
+    public static String getLogFileLocation()
+    {
         String logFileLocation = null;
         File clientLogFile;
         FileAppender<?> fileAppender = null;
@@ -92,7 +99,7 @@ public class LoggingUtils {
         }
         LoggerContext lContext = (LoggerContext) LoggerFactory.getILoggerFactory();
         for (ch.qos.logback.classic.Logger logger : lContext.getLoggerList()) {
-            for (Iterator<Appender<ILoggingEvent>> index = logger.iteratorForAppenders(); index.hasNext(); ) {
+            for (Iterator<Appender<ILoggingEvent>> index = logger.iteratorForAppenders(); index.hasNext();) {
                 Object enumElement = index.next();
                 if (enumElement instanceof FileAppender) {
                     fileAppender = (FileAppender<?>) enumElement;
@@ -113,7 +120,8 @@ public class LoggingUtils {
         return logFileLocation;
     }
 
-    public static void resetLoggingContext() {
+    public static void resetLoggingContext()
+    {
         if (!(LoggerFactory.getILoggerFactory() instanceof LoggerContext)) {
             return;
         }
@@ -121,4 +129,3 @@ public class LoggingUtils {
         loggerContext.reset();
     }
 }
-

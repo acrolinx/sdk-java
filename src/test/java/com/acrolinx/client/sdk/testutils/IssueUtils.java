@@ -1,15 +1,18 @@
 /**
  * Copyright (c) 2019-present Acrolinx GmbH
  */
-package com.acrolinx.client.sdk.testutils;
 
-import com.acrolinx.client.sdk.check.Issue;
+package com.acrolinx.client.sdk.testutils;
 
 import java.util.List;
 
-public class IssueUtils {
-    public static Issue findIssueWithSurface(List<Issue> issues, String surface) {
-        for(Issue issue: issues) {
+import com.acrolinx.client.sdk.check.Issue;
+
+public class IssueUtils
+{
+    public static Issue findIssueWithSurface(List<Issue> issues, String surface)
+    {
+        for (Issue issue : issues) {
             if (issue.getDisplaySurface().equals(surface)) {
                 return issue;
             }
@@ -17,7 +20,8 @@ public class IssueUtils {
         return null;
     }
 
-    public static Issue findIssueWithFirstSuggestion(List<Issue> issues, String suggestionSurface) {
+    public static Issue findIssueWithFirstSuggestion(List<Issue> issues, String suggestionSurface)
+    {
         for (Issue issue : issues) {
             Issue.Suggestion suggestion = issue.getSuggestions().get(0);
             if (suggestion != null && suggestion.getSurface().equals(suggestionSurface)) {
