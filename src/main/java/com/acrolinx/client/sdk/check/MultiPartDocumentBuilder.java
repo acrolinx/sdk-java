@@ -20,7 +20,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import com.acrolinx.client.sdk.AcrolinxEndpoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.*;
@@ -50,7 +49,7 @@ public class MultiPartDocumentBuilder
 
         if (publicId != null || systemId != null) {
             logger.debug("Doctype Public Id: " + publicId);
-            logger.debug("Doctype system Id: "+ systemId);
+            logger.debug("Doctype system Id: " + systemId);
 
             DOMImplementation implementation = this.document.getImplementation();
             DocumentType documentType = implementation.createDocumentType(rootElement, publicId, systemId);
