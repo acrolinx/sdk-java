@@ -5,7 +5,7 @@ This library is in heavy development and shouldn’t yet be used for production.
 This library is meant to be used to interact with the Acrolinx Platform API in Java integrations. 
 It does NOT offer an interface to work with the Acrolinx Sidebar (see [Sidebar Java SDK](https://github.com/acrolinx/sidebar-sdk-java)).
 
-## Get Started with your Integration
+## Get Started with Your Integration
 
 ### Prerequisites
 
@@ -31,7 +31,7 @@ Before you start developing your own integration, you might benefit from looking
 Have a look at [AcrolinxEndpoint](./src/main/java/com/acrolinx/client/sdk/AcrolinxEndpoint.java) and use it.
 
 
-## Contributing to this SDK 
+## Contributing to This SDK 
 
 ### Integration Tests
 
@@ -40,16 +40,16 @@ In order to run the integration tests locally:
 * You need to create an .env file similar to the [.env.template](.env.template) file. Alternately you can set the corresponding environment variables in a different way.
 
 
-### Adding new Features and Releasing
+### Adding New Features and Releasing
 
-0. Checkout the project, create and configure a .env file as described above.
+0. Check out the project, create, and configure an`` .env file as described above.
 
 1. Please add new features using the master branch, or submit a pull request.
    Run 
    ```bash
     ./gradlew build
    ```
-    to install dependencies, build and test the project. 
+    to install dependencies, build, and test the project. 
     Also run the same command before pushing your changes to GitHub.
     
     On Travis the build will be tested against the latest released Acrolinx Platform.
@@ -58,9 +58,9 @@ In order to run the integration tests locally:
 2. Once you tested your new features, remove the '-SNAPSHOT' from the `CURRENT_VERSION` property in the `gradle.properties` file.
 
 3. Commit and push your changes. If all goes right, the artifact is released to [Maven Central](https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.acrolinx.client%22%20a%3A%22sdk%22%20).
-Note that it might take quite a while until the new version shows up in [Maven Central](https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.acrolinx.client%22%20a%3A%22sdk%22%20), but it will be immediately available in the [oss staging repository](https://oss.sonatype.org/content/groups/staging/com/acrolinx/client/sdk/).
+Note that it might take quite a while until the new version shows up in [Maven Central](https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.acrolinx.client%22%20a%3A%22sdk%22%20). However it will be immediately available in the [oss staging repository](https://oss.sonatype.org/content/groups/staging/com/acrolinx/client/sdk/).
 
-If that build fails, you might have to login into [Nexus Repository Manager](https://oss.sonatype.org/#welcome) and drop falsely created repositories, before triggering a new release build.
+If that build fails, you might have to sign-in into [Nexus Repository Manager](https://oss.sonatype.org/#welcome) and drop falsely created repositories, before starting a new release build.
 
 TravisCI will also automatically create a release tag on GitHub. If that fails run the Gradle Task for creating a release tag and pushing it GitHub:
 
