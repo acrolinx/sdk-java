@@ -4,6 +4,8 @@
 
 package com.acrolinx.client.sdk.check;
 
+import com.acrolinx.client.sdk.exceptions.AcrolinxException;
+
 import javax.annotation.Nullable;
 
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
@@ -66,5 +68,10 @@ public class CheckRequest
     public DocumentDescriptorRequest getDocument()
     {
         return document;
+    }
+
+    public enum ContentEncoding {
+        none,
+        base64,
     }
 }
