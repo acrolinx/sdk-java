@@ -1,7 +1,6 @@
 /**
  * Copyright (c) 2019-present Acrolinx GmbH
  */
-
 package com.acrolinx.client.sdk.check;
 
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
@@ -9,12 +8,12 @@ import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import javax.annotation.Nullable;
 
 public class CheckRequest {
-    public static CheckRequestBuilder ofDocumentContent(String content) {
-        return new CheckRequestBuilder(content);
+    public static CheckRequestBuilder ofDocumentContent(Document document) throws AcrolinxException {
+        return new CheckRequestBuilder(document.getContent());
     }
 
-    public static CheckRequestBuilder ofDocument(Document document) throws AcrolinxException {
-        return new CheckRequestBuilder(document);
+    public static CheckRequestBuilder ofDocumentContent(String content) {
+        return new CheckRequestBuilder(content);
     }
 
     public enum ContentEncoding {
@@ -40,7 +39,7 @@ public class CheckRequest {
         this.document = document;
     }
 
-    public String getContent() {
+    public String getContent() throws AcrolinxException {
         return content;
     }
 

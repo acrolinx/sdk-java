@@ -1,12 +1,9 @@
 /**
  * Copyright (c) 2019-present Acrolinx GmbH
  */
-
 package com.acrolinx.client.sdk.check;
 
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
-
-import javax.annotation.Nullable;
 
 public class CheckRequestBuilder {
     private String content;
@@ -14,16 +11,8 @@ public class CheckRequestBuilder {
     private CheckOptions checkOptions;
     private DocumentDescriptorRequest document;
 
-    CheckRequestBuilder(Document document) throws AcrolinxException {
-        this.content = document.getContent();
-    }
-
-    CheckRequestBuilder(String content) {
+    public CheckRequestBuilder(String content) {
         this.content = content;
-    }
-
-    public static MultiPartDocumentBuilder getBuilder(String rootElement, @Nullable String publicId, @Nullable String systemId) throws AcrolinxException {
-        return new MultiPartDocumentBuilder(rootElement, publicId, systemId);
     }
 
     public CheckRequestBuilder setContentEncoding(CheckRequest.ContentEncoding contentEncoding) {
@@ -36,12 +25,12 @@ public class CheckRequestBuilder {
         return this;
     }
 
-    public CheckRequestBuilder setDocumentDescriptor(DocumentDescriptorRequest document) {
+    public CheckRequestBuilder setDocument(DocumentDescriptorRequest document) {
         this.document = document;
         return this;
     }
 
-    public CheckRequest build() {
+    public CheckRequest build() throws AcrolinxException {
         return new CheckRequest(content, contentEncoding, checkOptions, document);
     }
 }

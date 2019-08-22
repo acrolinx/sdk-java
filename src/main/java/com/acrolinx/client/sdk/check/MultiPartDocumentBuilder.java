@@ -1,7 +1,6 @@
 /**
  * Copyright (c) 2019-present Acrolinx GmbH
  */
-
 package com.acrolinx.client.sdk.check;
 
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
@@ -28,9 +27,9 @@ public class MultiPartDocumentBuilder {
     private org.w3c.dom.Document document;
     private Element root;
 
-    public MultiPartDocumentBuilder(String rootElement, @Nullable String publicId, @Nullable String systemId) throws AcrolinxException {
+    public MultiPartDocumentBuilder(String rootElement, String publicId, String systemId) throws AcrolinxException {
         DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder documentBuilder;
+        DocumentBuilder documentBuilder = null;
         try {
             documentBuilder = documentFactory.newDocumentBuilder();
         } catch (ParserConfigurationException e) {
@@ -53,7 +52,7 @@ public class MultiPartDocumentBuilder {
         this(rootElement, null, null);
     }
 
-    public MultiPartDocumentBuilder addDocumentPart(String partName, String content, @Nullable Map<String, String> attributes) {
+    public void addDocumentPart(String partName, String content, @Nullable Map<String, String> attributes) {
         Element element = this.document.createElement(partName);
         if (attributes != null) {
             for (Map.Entry<String, String> entry : attributes.entrySet()) {
@@ -65,18 +64,16 @@ public class MultiPartDocumentBuilder {
         Text textNode = this.document.createTextNode(content);
         element.appendChild(textNode);
         this.root.appendChild(element);
-
-        return this;
     }
 
-    public MultiPartDocumentBuilder addDocumentNode(String xml, @Nullable String encoding) throws AcrolinxException {
+    public void addDocumentNode(String xml, @Nullable String encoding) throws AcrolinxException {
 
         Element node;
         try {
             node = DocumentBuilderFactory
                     .newInstance()
                     .newDocumentBuilder()
-                    .parse(new ByteArrayInputStream(xml.getBytes(encoding == null ? "UTF-8" : encoding)))
+                    .parse(new ByteArrayInputStream(xml.getBytes(encoding)))
                     .getDocumentElement();
         } catch (SAXException | IOException | ParserConfigurationException e) {
             throw new AcrolinxException(e);
@@ -84,12 +81,10 @@ public class MultiPartDocumentBuilder {
 
         Node importedNode = this.document.importNode(node, true);
         this.root.appendChild(importedNode);
-
-        return this;
     }
 
 
-    public Document build() throws AcrolinxException {
+    public Document getDocument() throws AcrolinxException {
         TransformerFactory tf = TransformerFactory.newInstance();
         Transformer transformer;
         try {

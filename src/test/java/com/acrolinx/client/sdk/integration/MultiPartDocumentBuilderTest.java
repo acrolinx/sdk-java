@@ -1,7 +1,6 @@
 /**
  * Copyright (c) 2019-present Acrolinx GmbH
  */
-
 package com.acrolinx.client.sdk.integration;
 
 import com.acrolinx.client.sdk.check.MultiPartDocumentBuilder;
@@ -21,7 +20,7 @@ public class MultiPartDocumentBuilderTest extends IntegrationTestBase {
     public void testMultiPartDocumentCreation() throws AcrolinxException {
         MultiPartDocumentBuilder multiPartDocument = new MultiPartDocumentBuilder("test");
         multiPartDocument.addDocumentPart("element", "This text contains errorss", null);
-        String content = multiPartDocument.build().getContent();
+        String content = multiPartDocument.getDocument().getContent();
 
         assertNotNull(content);
     }
@@ -34,7 +33,7 @@ public class MultiPartDocumentBuilderTest extends IntegrationTestBase {
         attributes.put("attr2", "val2");
 
         multiPartDocument.addDocumentPart("element", "This text contains errorss", attributes);
-        String content = multiPartDocument.build().getContent();
+        String content = multiPartDocument.getDocument().getContent();
 
         assertNotNull(content);
         assertTrue(content.contains("val2"));
@@ -49,7 +48,7 @@ public class MultiPartDocumentBuilderTest extends IntegrationTestBase {
                 new MultiPartDocumentBuilder("test", publicId, systemId);
 
         multiPartDocument.addDocumentPart("element", "This text contains errorss", null);
-        String content = multiPartDocument.build().getContent();
+        String content = multiPartDocument.getDocument().getContent();
 
         assertNotNull(content);
         assertTrue(content.contains(publicId));
@@ -73,7 +72,7 @@ public class MultiPartDocumentBuilderTest extends IntegrationTestBase {
                 "\n" +
                 "</body>\n" +
                 "</html>", "UTF-8");
-        String content = multiPartDocument.build().getContent();
+        String content = multiPartDocument.getDocument().getContent();
 
         assertNotNull(content);
         assertTrue(content.contains("A saample acro para"));
