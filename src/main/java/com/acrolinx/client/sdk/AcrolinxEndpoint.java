@@ -45,8 +45,7 @@ public class AcrolinxEndpoint
      *
      * @param acrolinxURL URL to your Acrolinx Platform eg: https://yourcompany.acrolinx.com
      * @param clientSignature License to use integration with Acrolinx.
-     * @param clientVersion Version number of your client eg: 1.2.5.37
-     *        <MAJOR.MINOR.MAINTENANCE.BUILD>.
+     * @param clientVersion Version number of your client eg: 1.2.5.34
      * @param clientLocale Locale of environment in which integration is deployed.
      */
     public AcrolinxEndpoint(URI acrolinxURL, String clientSignature, String clientVersion, String clientLocale)
@@ -60,7 +59,6 @@ public class AcrolinxEndpoint
      * @param acrolinxURL URL to your Acrolinx Platform eg: https://yourcompany.acrolinx.com
      * @param clientSignature License to use integration with Acrolinx.
      * @param clientVersion Version number of your client eg: 1.2.5.37
-     *        <MAJOR.MINOR.MAINTENANCE.BUILD>.
      * @param clientLocale Locale of environment in which integration is deployed.
      */
     public AcrolinxEndpoint(AcrolinxHttpClient httpClient, URI acrolinxURL, String clientSignature,
@@ -76,8 +74,8 @@ public class AcrolinxEndpoint
     /**
      * Throws an exception if the acrolinxHttpResponse indicates an error.
      *
-     * @throws AcrolinxServiceException
-     * @throws RuntimeException
+     * @throws AcrolinxServiceException Acrolinx specific to Http Client.
+     * @throws RuntimeException JSON parsing failure.
      */
     private static void validateHttpResponse(AcrolinxResponse acrolinxHttpResponse, URI uri, HttpMethod method)
             throws AcrolinxException
@@ -113,8 +111,6 @@ public class AcrolinxEndpoint
 
     /**
      * Close Endpoint after use.
-     * 
-     * @throws IOException
      */
     public void close() throws IOException
     {
@@ -125,7 +121,6 @@ public class AcrolinxEndpoint
     /**
      *
      * @return Information about Platform version and locales supported
-     * @throws AcrolinxException
      */
     public PlatformInformation getPlatformInformation() throws AcrolinxException
     {
@@ -138,7 +133,6 @@ public class AcrolinxEndpoint
      * @param genericToken Generic SSO token configured on your Acrolinx Platform.
      * @param username User who wants to authenticate
      * @return SignInSuccess holds the access token which is required to initiate check
-     * @throws AcrolinxException
      */
     public SignInSuccess signInWithSSO(String genericToken, String username) throws AcrolinxException
     {
@@ -154,8 +148,6 @@ public class AcrolinxEndpoint
      * 
      * @param callback Provide a method which can be called to open sign in link in the browser.
      * @return SignInSuccess holds the access token which is required to initiate check
-     * @throws AcrolinxException
-     * @throws InterruptedException
      */
     public SignInSuccess signInInteractive(InteractiveCallback callback) throws AcrolinxException, InterruptedException
     {
@@ -169,8 +161,6 @@ public class AcrolinxEndpoint
      * @param accessToken Provide an already available access to check its validity
      * @param timeoutMs Provide timeout in milliseconds
      * @return SignInSuccess holds the access token which is required to initiate check
-     * @throws AcrolinxException
-     * @throws InterruptedException
      */
     public SignInSuccess signInInteractive(final InteractiveCallback callback, AccessToken accessToken, Long timeoutMs)
             throws AcrolinxException, InterruptedException
@@ -215,9 +205,9 @@ public class AcrolinxEndpoint
     /**
      * Get check capabilities of the Platform
      * 
-     * @param accessToken
-     * @return
-     * @throws AcrolinxException
+     * @param accessToken Provide access token obtained from Sign In Success Response or Acrolinx
+     *        dashboard
+     * @return Checking capabilities available for Platform
      */
     public Capabilities getCapabilities(AccessToken accessToken) throws AcrolinxException
     {
@@ -227,10 +217,10 @@ public class AcrolinxEndpoint
     /**
      * Submit a check request
      *
-     * @param accessToken
+     * @param accessToken Provide access token obtained from Sign In Success Response or Acrolinx
+     *        dashboard.
      * @param checkRequest Use CheckRequestBuilder to simplify building check request.
      * @return Check response contains the URL to fetch check result.
-     * @throws AcrolinxException
      */
     public CheckResponse submitCheck(AccessToken accessToken, CheckRequest checkRequest) throws AcrolinxException
     {
@@ -240,11 +230,11 @@ public class AcrolinxEndpoint
 
     /**
      * Get URL to Content Analysis Dashboard
-     * 
-     * @param accessToken
+     *
+     * @param accessToken Provide access token obtained from Sign In Success Response or Acrolinx
+     *        dashboard
      * @param batchId Provide a batch Id submitted for performing a check
      * @return String containg URL to content analysis dashboard.
-     * @throws AcrolinxException
      */
     public String getContentAnalysisDashboard(AccessToken accessToken, String batchId) throws AcrolinxException
     {
@@ -264,11 +254,11 @@ public class AcrolinxEndpoint
     /**
      * Submits a check and waits until result is obtained.
      * 
-     * @param accessToken
+     * @param accessToken Provide access token obtained from Sign In Success Response or Acrolinx
+     *        dashboard
      * @param checkRequest Use CheckRequestBuilder to simplify building check request.
      * @param progressListener Provides statistical information about check progress
-     * @return
-     * @throws AcrolinxException
+     * @return Acrolinx Scorecard for the checked content.
      */
     public CheckResult check(AccessToken accessToken, CheckRequest checkRequest, ProgressListener progressListener)
             throws AcrolinxException
@@ -363,9 +353,9 @@ public class AcrolinxEndpoint
      * Check if document you wish to check is supported by Platform
      * 
      * @param documentType Type of your document eg: .xml, .md, .dita
-     * @param accessToken
-     * @return
-     * @throws AcrolinxException
+     * @param accessToken Provide access token obtained from Sign In Success Response or Acrolinx
+     *        dashboard
+     * @return true if document type is checkable and false if not.
      */
     public boolean isDocumentTypeCheckable(String documentType, AccessToken accessToken) throws AcrolinxException
     {
