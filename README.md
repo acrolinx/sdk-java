@@ -32,7 +32,7 @@ Create instance of AcrolinxEndpoint to begin.
 
 AcrolinxEndpoint offers a single entry point to avail features provided by the SDK.
 
-Refer [CheckTest.java](src/test/java/com/acrolinx/client/sdk/integration/CheckTest.java) for examples.
+See [CheckTest.java](src/test/java/com/acrolinx/client/sdk/integration/CheckTest.java) for examples.
 
 ### Integration Tests
 
@@ -42,7 +42,7 @@ In order to run the integration tests locally:
   
 ## Contributing to This SDK 
 
-Refer [CONTRIBUTING.md](CONTRIBUTING.md)
+[CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## License
 
