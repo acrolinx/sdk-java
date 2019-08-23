@@ -40,4 +40,10 @@ public class Quality
     {
         return scoresByGoal;
     }
+
+    @Override
+    public String toString()
+    {
+        return "Quality{" + "score=" + score + ", status=" + status + ", scoresByGoal=" + scoresByGoal + '}';
+    }
 }

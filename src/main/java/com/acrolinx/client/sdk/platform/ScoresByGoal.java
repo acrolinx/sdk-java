@@ -26,4 +26,9 @@ public class ScoresByGoal
         return score;
     }
 
+    @Override
+    public String toString()
+    {
+        return "ScoresByGoal{" + "id='" + id + '\'' + ", score=" + score + '}';
+    }
 }
