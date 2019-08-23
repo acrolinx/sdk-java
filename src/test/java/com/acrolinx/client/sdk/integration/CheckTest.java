@@ -152,7 +152,7 @@ public class CheckTest extends IntegrationTestBase
         ArrayList<ReportType> reportTypes = Lists.newArrayList(ReportType.termHarvesting);
         CheckOptions checkOptions = CheckOptions.getBuilder().withGuidanceProfileId(
                 guidanceProfileEn.getId()).withGenerateReportTypes(reportTypes).build();
-        CheckResult checkResult = endpoint.checkAndGetResult(ACROLINX_API_TOKEN,
+        CheckResult checkResult = endpoint.check(ACROLINX_API_TOKEN,
                 CheckRequest.ofDocumentContent("This textt has ann erroor.").setDocument(
                         new DocumentDescriptorRequest("file.txt")).setCheckOptions(checkOptions).build(),
                 progressListener);
@@ -236,7 +236,7 @@ public class CheckTest extends IntegrationTestBase
         for (int i = 0; i < numberOfChecks; i++) {
             String uuid = UUID.randomUUID().toString();
 
-            CheckResult checkResult = endpoint.checkAndGetResult(ACROLINX_API_TOKEN,
+            CheckResult checkResult = endpoint.check(ACROLINX_API_TOKEN,
                     CheckRequest.ofDocumentContent(uuid).setDocument(
                             new DocumentDescriptorRequest(uuid + ".txt")).setCheckOptions(
                                     CheckOptions.getBuilder().withGuidanceProfileId(
@@ -265,7 +265,7 @@ public class CheckTest extends IntegrationTestBase
                 @Override
                 public CheckResult call() throws Exception
                 {
-                    return endpoint.checkAndGetResult(ACROLINX_API_TOKEN,
+                    return endpoint.check(ACROLINX_API_TOKEN,
                             CheckRequest.ofDocumentContent(uuid).setDocument(
                                     new DocumentDescriptorRequest(uuid + ".txt")).setCheckOptions(
                                             CheckOptions.getBuilder().withGuidanceProfileId(
@@ -307,11 +307,9 @@ public class CheckTest extends IntegrationTestBase
 
     private CheckResult checkEnglishText(String documentContent) throws AcrolinxException
     {
-        return endpoint.checkAndGetResult(ACROLINX_API_TOKEN,
-                CheckRequest.ofDocumentContent(documentContent).setDocument(
-                        new DocumentDescriptorRequest("file.txt")).setCheckOptions(
-                                CheckOptions.getBuilder().withGuidanceProfileId(
-                                        guidanceProfileEn.getId()).build()).build(),
+        return endpoint.check(ACROLINX_API_TOKEN, CheckRequest.ofDocumentContent(documentContent).setDocument(
+                new DocumentDescriptorRequest("file.txt")).setCheckOptions(
+                        CheckOptions.getBuilder().withGuidanceProfileId(guidanceProfileEn.getId()).build()).build(),
                 progressListener);
     }
 
@@ -323,7 +321,7 @@ public class CheckTest extends IntegrationTestBase
         documentDescriptorRequest.setCustomField(new CustomField("List Field", "List Item 1"));
 
         try {
-            CheckResult checkResult = endpoint.checkAndGetResult(ACROLINX_API_TOKEN,
+            CheckResult checkResult = endpoint.check(ACROLINX_API_TOKEN,
                     CheckRequest.ofDocumentContent("Thee sentencee contains errors").setDocument(
                             documentDescriptorRequest).setCheckOptions(
                                     CheckOptions.getBuilder().withGuidanceProfileId(
@@ -345,11 +343,9 @@ public class CheckTest extends IntegrationTestBase
         customFieldList.add(new CustomField(UUID.randomUUID().toString(), UUID.randomUUID().toString()));
         documentDescriptorRequest.setCustomFields(customFieldList);
 
-        endpoint.checkAndGetResult(ACROLINX_API_TOKEN,
-                CheckRequest.ofDocumentContent("Thee sentencee contains errors").setDocument(
-                        documentDescriptorRequest).setCheckOptions(
-                                CheckOptions.getBuilder().withGuidanceProfileId(
-                                        guidanceProfileEn.getId()).build()).build(),
+        endpoint.check(ACROLINX_API_TOKEN, CheckRequest.ofDocumentContent("Thee sentencee contains errors").setDocument(
+                documentDescriptorRequest).setCheckOptions(
+                        CheckOptions.getBuilder().withGuidanceProfileId(guidanceProfileEn.getId()).build()).build(),
                 progressListener);
     }
 

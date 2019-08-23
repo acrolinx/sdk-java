@@ -164,7 +164,7 @@ public class AcrolinxEndpoint
         return fetchDataFromApiPath("capabilities", Capabilities.class, HttpMethod.GET, accessToken, null, null);
     }
 
-    public CheckResponse check(AccessToken accessToken, CheckRequest checkRequest) throws AcrolinxException
+    public CheckResponse submitCheck(AccessToken accessToken, CheckRequest checkRequest) throws AcrolinxException
     {
         return fetchFromApiPath("checking/checks", JsonUtils.getSerializer(CheckResponse.class), HttpMethod.POST,
                 accessToken, JsonUtils.toJson(checkRequest), null);
@@ -185,10 +185,10 @@ public class AcrolinxEndpoint
         throw new AcrolinxException("Could not fetch content analysis dashboard.");
     }
 
-    public CheckResult checkAndGetResult(AccessToken accessToken, CheckRequest checkRequest,
-            ProgressListener progressListener) throws AcrolinxException
+    public CheckResult check(AccessToken accessToken, CheckRequest checkRequest, ProgressListener progressListener)
+            throws AcrolinxException
     {
-        CheckResponse checkResponse = this.check(accessToken, checkRequest);
+        CheckResponse checkResponse = this.submitCheck(accessToken, checkRequest);
         logger.debug("Submitted check. Polling for result started.");
         try {
             return pollForResultWithCancelHandling(accessToken, progressListener, checkResponse);
