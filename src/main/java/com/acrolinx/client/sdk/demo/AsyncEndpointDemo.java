@@ -85,7 +85,7 @@ public class AsyncEndpointDemo
         @Override
         public CheckResponse call() throws Exception
         {
-            return endpoint.check(accessToken, checkRequest);
+            return endpoint.submitCheck(accessToken, checkRequest);
         }
     }
 

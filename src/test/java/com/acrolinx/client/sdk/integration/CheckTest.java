@@ -68,7 +68,7 @@ public class CheckTest extends IntegrationTestBase
     @Test
     public void startACheck() throws AcrolinxException
     {
-        CheckResponse checkResponse = endpoint.check(ACROLINX_API_TOKEN,
+        CheckResponse checkResponse = endpoint.submitCheck(ACROLINX_API_TOKEN,
                 CheckRequest.ofDocumentContent("This textt has ann erroor.").setDocument(
                         new DocumentDescriptorRequest("file.txt")).setCheckOptions(
                                 CheckOptions.getBuilder().withGuidanceProfileId(
@@ -113,7 +113,7 @@ public class CheckTest extends IntegrationTestBase
         CheckOptions checkOptions = CheckOptions.getBuilder().withGuidanceProfileId(
                 guidanceProfileEn.getId()).withCheckType(CheckType.baseline).build();
 
-        CheckResponse checkResponse = endpoint.check(ACROLINX_API_TOKEN,
+        CheckResponse checkResponse = endpoint.submitCheck(ACROLINX_API_TOKEN,
                 CheckRequest.ofDocumentContent("This textt has ann erroor.").setDocument(
                         new DocumentDescriptorRequest("file.txt")).setCheckOptions(checkOptions).build());
 
@@ -217,7 +217,7 @@ public class CheckTest extends IntegrationTestBase
             CheckOptions checkOptions = CheckOptions.getBuilder().withGuidanceProfileId(
                     guidanceProfileEn.getId()).build();
 
-            CheckResponse checkResponse = endpoint.check(ACROLINX_API_TOKEN,
+            CheckResponse checkResponse = endpoint.submitCheck(ACROLINX_API_TOKEN,
                     CheckRequest.ofDocumentContent(uuid).setDocument(
                             new DocumentDescriptorRequest(uuid + ".txt")).setCheckOptions(checkOptions).build());
 
@@ -295,7 +295,7 @@ public class CheckTest extends IntegrationTestBase
         List<ReportType> rtl = new ArrayList<>();
         rtl.add(ReportType.scorecard);
         rtl.add((ReportType.termHarvesting));
-        CheckResponse checkResponse = endpoint.check(ACROLINX_API_TOKEN,
+        CheckResponse checkResponse = endpoint.submitCheck(ACROLINX_API_TOKEN,
                 CheckRequest.ofDocumentContent("This textt has ann erroor.").setDocument(
                         new DocumentDescriptorRequest("file.txt")).setCheckOptions(checkOptions).build());
 
