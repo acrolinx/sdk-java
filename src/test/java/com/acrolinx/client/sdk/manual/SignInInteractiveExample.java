@@ -30,7 +30,7 @@ public class SignInInteractiveExample
             }
         });
 
-        System.out.println("accessToken = " + signInSuccess.getAccessToken().getAccessToken());
+        System.out.println("accessToken = " + signInSuccess.getAccessToken().getAccessTokenAsString());
         System.out.println("username = " + signInSuccess.getUser().getUsername());
     }
 }

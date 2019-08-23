@@ -77,7 +77,7 @@ public class SignInInteractiveTest extends MockedTestBase
         SignInSuccess signInSuccess = endpoint.signInInteractive(interactiveCallback);
 
         verify(interactiveCallback).onInteractiveUrl(mockedInteractiveUrl);
-        assertEquals(expectedSignInSuccess.getAccessToken().getAccessToken(),
-                signInSuccess.getAccessToken().getAccessToken());
+        assertEquals(expectedSignInSuccess.getAccessToken().getAccessTokenAsString(),
+                signInSuccess.getAccessToken().getAccessTokenAsString());
     }
 }

@@ -370,7 +370,7 @@ public class AcrolinxEndpoint
         HashMap<String, String> headersMap = new HashMap<>();
 
         if (accessToken != null && !accessToken.isEmpty()) {
-            headersMap.put("X-Acrolinx-Auth", accessToken.getAccessToken());
+            headersMap.put("X-Acrolinx-Auth", accessToken.getAccessTokenAsString());
         }
         headersMap.put("X-Acrolinx-Base-Url", this.acrolinxUri.toString());
         headersMap.put("X-Acrolinx-Client-Locale", this.clientLocale);
