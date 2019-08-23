@@ -162,7 +162,7 @@ public class AcrolinxEndpoint
      * @param timeoutMs Provide timeout in milliseconds
      * @return SignInSuccess holds the access token which is required to initiate check
      */
-    public SignInSuccess signInInteractive(final InteractiveCallback callback, AccessToken accessToken, Long timeoutMs)
+    public SignInSuccess signInInteractive(final InteractiveCallback callback, AccessToken accessToken, long timeoutMs)
             throws AcrolinxException, InterruptedException
     {
         final SignInResponse signInResponse;
