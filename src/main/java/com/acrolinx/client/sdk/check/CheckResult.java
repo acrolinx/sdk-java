@@ -67,5 +67,18 @@ public class CheckResult
         {
             return link;
         }
+
+        @Override
+        public String toString()
+        {
+            return "Report{" + "displayName='" + displayName + '\'' + ", link='" + link + '\'' + '}';
+        }
+    }
+
+    @Override
+    public String toString()
+    {
+        return "CheckResult{" + "id='" + id + '\'' + ", quality=" + quality + ", reports=" + reports + ", issues="
+                + issues + '}';
     }
 }
