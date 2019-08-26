@@ -25,12 +25,15 @@ public class CheckRequestBuilder
         this.content = content;
     }
 
+    // TODO (fp) I find it confusing that this Builder is returned here... I talked with Ralf last week,
+    //  and he suggested not to have nested Builder to not confuse SDK users.
     public static MultiPartDocumentBuilder getBuilder(String rootElement, @Nullable String publicId,
             @Nullable String systemId) throws AcrolinxException
     {
         return new MultiPartDocumentBuilder(rootElement, publicId, systemId);
     }
 
+    // TODO (fp) we should decide if we use builder set or with and be consistent about it
     public CheckRequestBuilder setContentEncoding(CheckRequest.ContentEncoding contentEncoding)
     {
         this.contentEncoding = contentEncoding;
