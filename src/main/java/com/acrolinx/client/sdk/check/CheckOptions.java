@@ -13,18 +13,16 @@ public class CheckOptions
     final private List<ReportType> reportTypes;
     final private CheckType checkType;
     final private String contentFormat;
-    final private String languageId;
     final private boolean disableCustomFieldValidation;
 
     CheckOptions(String guidanceProfileId, String batchId, List<ReportType> reportTypes, CheckType checkType,
-            String contentFormat, String languageId, boolean disableCustomFieldValidation)
+            String contentFormat, boolean disableCustomFieldValidation)
     {
         this.guidanceProfileId = guidanceProfileId;
         this.batchId = batchId;
         this.reportTypes = reportTypes;
         this.checkType = checkType;
         this.contentFormat = contentFormat;
-        this.languageId = languageId;
         this.disableCustomFieldValidation = disableCustomFieldValidation;
     }
 
@@ -56,11 +54,6 @@ public class CheckOptions
     public String getContentFormat()
     {
         return contentFormat;
-    }
-
-    public String getLanguageId()
-    {
-        return languageId;
     }
 
     public boolean isDisableCustomFieldValidation()
