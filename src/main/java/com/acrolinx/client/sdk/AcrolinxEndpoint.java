@@ -35,7 +35,7 @@ public class AcrolinxEndpoint
 {
 
     private static final Logger logger = LoggerFactory.getLogger(AcrolinxEndpoint.class);
-    private String clientSignature;
+    private String signature;
     private String clientVersion;
     private String clientLocale;
     private URI acrolinxUri;
@@ -45,13 +45,13 @@ public class AcrolinxEndpoint
      *
      * @param acrolinxURL URL to your Acrolinx Platform for example:
      *        https://yourcompany.acrolinx.com
-     * @param clientSignature License to use integration with Acrolinx.
+     * @param signature License to use integration with Acrolinx.
      * @param clientVersion Version number of your client for example: 1.2.5.34
      * @param clientLocale Locale of environment in which integration is deployed.
      */
-    public AcrolinxEndpoint(URI acrolinxURL, String clientSignature, String clientVersion, String clientLocale)
+    public AcrolinxEndpoint(URI acrolinxURL, String signature, String clientVersion, String clientLocale)
     {
-        this(new ApacheHttpClient(), acrolinxURL, clientSignature, clientVersion, clientLocale);
+        this(new ApacheHttpClient(), acrolinxURL, signature, clientVersion, clientLocale);
     }
 
     /**
@@ -59,14 +59,14 @@ public class AcrolinxEndpoint
      * @param httpClient Provide your own http client implementing AcrolinxHttpClient interface
      * @param acrolinxURL URL to your Acrolinx Platform for example:
      *        https://yourcompany.acrolinx.com
-     * @param clientSignature License to use integration with Acrolinx.
+     * @param signature License to use integration with Acrolinx.
      * @param clientVersion Version number of your client for example: 1.2.5.37
      * @param clientLocale Locale of environment in which integration is deployed.
      */
-    public AcrolinxEndpoint(AcrolinxHttpClient httpClient, URI acrolinxURL, String clientSignature,
-            String clientVersion, String clientLocale)
+    public AcrolinxEndpoint(AcrolinxHttpClient httpClient, URI acrolinxURL, String signature, String clientVersion,
+            String clientLocale)
     {
-        this.clientSignature = clientSignature;
+        this.signature = signature;
         this.clientVersion = clientVersion;
         this.clientLocale = clientLocale;
         this.acrolinxUri = acrolinxURL;
@@ -84,7 +84,6 @@ public class AcrolinxEndpoint
     {
         int statusCode = acrolinxHttpResponse.getStatus();
         if (statusCode >= 200 && statusCode < 300) {
-            // TODO: Should we still check if there's an error?
             return;
         }
 
@@ -392,7 +391,7 @@ public class AcrolinxEndpoint
         }
         headersMap.put("X-Acrolinx-Base-Url", this.acrolinxUri.toString());
         headersMap.put("X-Acrolinx-Client-Locale", this.clientLocale);
-        headersMap.put("X-Acrolinx-Client", this.clientSignature + "; " + this.clientVersion);
+        headersMap.put("X-Acrolinx-Client", this.signature + "; " + this.clientVersion);
 
         return headersMap;
     }

@@ -42,7 +42,7 @@ public class CheckRequestBuilder
         return this;
     }
 
-    public CheckRequestBuilder withDocumentReference(String reference)
+    public CheckRequestBuilder withContentReference(String reference)
     {
         this.reference = reference;
         return this;

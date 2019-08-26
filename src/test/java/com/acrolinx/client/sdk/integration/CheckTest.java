@@ -69,7 +69,7 @@ public class CheckTest extends IntegrationTestBase
     public void startACheck() throws AcrolinxException
     {
         CheckResponse checkResponse = endpoint.submitCheck(ACROLINX_API_TOKEN,
-                CheckRequest.ofDocumentContent("This textt has ann erroor.").withDocumentReference(
+                CheckRequest.ofDocumentContent("This textt has ann erroor.").withContentReference(
                         ("file.txt")).withCheckOptions(
                                 CheckOptions.getBuilder().withGuidanceProfileId(
                                         guidanceProfileEn.getId()).build()).build());
@@ -125,7 +125,7 @@ public class CheckTest extends IntegrationTestBase
                 guidanceProfileEn.getId()).withCheckType(CheckType.baseline).build();
 
         CheckResponse checkResponse = endpoint.submitCheck(ACROLINX_API_TOKEN,
-                CheckRequest.ofDocumentContent("This textt has ann erroor.").withDocumentReference(
+                CheckRequest.ofDocumentContent("This textt has ann erroor.").withContentReference(
                         ("file.txt")).withCheckOptions(checkOptions).build());
 
         assertNotNull(checkResponse);
@@ -178,7 +178,7 @@ public class CheckTest extends IntegrationTestBase
     @Test(expected = CancellationException.class)
     public void cancelCheck() throws InterruptedException, ExecutionException
     {
-        final CheckRequest checkRequest = CheckRequest.ofDocumentContent(longTestText).withDocumentReference(
+        final CheckRequest checkRequest = CheckRequest.ofDocumentContent(longTestText).withContentReference(
                 ("file.txt")).withCheckOptions(
                         CheckOptions.getBuilder().withGuidanceProfileId(guidanceProfileEn.getId()).build()).build();
 
@@ -195,7 +195,7 @@ public class CheckTest extends IntegrationTestBase
 
         future.cancel(true);
 
-        Thread.sleep(100); // TODO: Without waiting the Connection pool will shut down before we can
+        Thread.sleep(100); // Without waiting the Connection pool will shut down before we can
         // send cancel.
 
         future.get();
@@ -212,7 +212,7 @@ public class CheckTest extends IntegrationTestBase
                     guidanceProfileEn.getId()).build();
 
             CheckResponse checkResponse = endpoint.submitCheck(ACROLINX_API_TOKEN,
-                    CheckRequest.ofDocumentContent(uuid).withDocumentReference((uuid + ".txt")).withCheckOptions(
+                    CheckRequest.ofDocumentContent(uuid).withContentReference((uuid + ".txt")).withCheckOptions(
                             checkOptions).build());
 
             assertNotNull(checkResponse);
@@ -231,7 +231,7 @@ public class CheckTest extends IntegrationTestBase
             String uuid = UUID.randomUUID().toString();
 
             CheckResult checkResult = endpoint.check(ACROLINX_API_TOKEN,
-                    CheckRequest.ofDocumentContent(uuid).withDocumentReference((uuid + ".txt")).withCheckOptions(
+                    CheckRequest.ofDocumentContent(uuid).withContentReference((uuid + ".txt")).withCheckOptions(
                             CheckOptions.getBuilder().withGuidanceProfileId(guidanceProfileEn.getId()).build()).build(),
                     progressListener);
 
@@ -258,10 +258,9 @@ public class CheckTest extends IntegrationTestBase
                 public CheckResult call() throws Exception
                 {
                     return endpoint.check(ACROLINX_API_TOKEN,
-                            CheckRequest.ofDocumentContent(uuid).withDocumentReference(
-                                    (uuid + ".txt")).withCheckOptions(
-                                            CheckOptions.getBuilder().withGuidanceProfileId(
-                                                    guidanceProfileEn.getId()).build()).build(),
+                            CheckRequest.ofDocumentContent(uuid).withContentReference((uuid + ".txt")).withCheckOptions(
+                                    CheckOptions.getBuilder().withGuidanceProfileId(
+                                            guidanceProfileEn.getId()).build()).build(),
                             progressListener);
                 }
             });
@@ -288,7 +287,7 @@ public class CheckTest extends IntegrationTestBase
         rtl.add(ReportType.scorecard);
         rtl.add((ReportType.termHarvesting));
         CheckResponse checkResponse = endpoint.submitCheck(ACROLINX_API_TOKEN,
-                CheckRequest.ofDocumentContent("This textt has ann erroor.").withDocumentReference(
+                CheckRequest.ofDocumentContent("This textt has ann erroor.").withContentReference(
                         "file.txt").withCheckOptions(checkOptions).build());
 
         assertNotNull(checkResponse);
@@ -300,7 +299,7 @@ public class CheckTest extends IntegrationTestBase
     private CheckResult checkEnglishText(String documentContent) throws AcrolinxException
     {
         return endpoint.check(ACROLINX_API_TOKEN,
-                CheckRequest.ofDocumentContent(documentContent).withDocumentReference("file.txt").withCheckOptions(
+                CheckRequest.ofDocumentContent(documentContent).withContentReference("file.txt").withCheckOptions(
                         CheckOptions.getBuilder().withGuidanceProfileId(guidanceProfileEn.getId()).build()).build(),
                 progressListener);
     }
@@ -310,7 +309,7 @@ public class CheckTest extends IntegrationTestBase
     {
         try {
             CheckResult checkResult = endpoint.check(ACROLINX_API_TOKEN,
-                    CheckRequest.ofDocumentContent("Thee sentencee contains errors").withDocumentReference(
+                    CheckRequest.ofDocumentContent("Thee sentencee contains errors").withContentReference(
                             "file.txt").withCustomField(new CustomField("Text Field", "Item")).withCustomField(
                                     new CustomField("List Field", "List Item 1")).withCheckOptions(
                                             CheckOptions.getBuilder().withGuidanceProfileId(
@@ -331,7 +330,7 @@ public class CheckTest extends IntegrationTestBase
         customFieldList.add(new CustomField(UUID.randomUUID().toString(), UUID.randomUUID().toString()));
 
         endpoint.check(ACROLINX_API_TOKEN,
-                CheckRequest.ofDocumentContent("Thee sentencee contains errors").withDocumentReference(
+                CheckRequest.ofDocumentContent("Thee sentencee contains errors").withContentReference(
                         "file.txt").withCustomFields(customFieldList).withCheckOptions(
                                 CheckOptions.getBuilder().withGuidanceProfileId(
                                         guidanceProfileEn.getId()).build()).build(),

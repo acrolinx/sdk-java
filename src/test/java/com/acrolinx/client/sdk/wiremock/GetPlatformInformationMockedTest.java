@@ -35,7 +35,6 @@ public class GetPlatformInformationMockedTest extends MockedTestBase
         assertEquals(expectedPlatformInformation.getLocales(), platformInformation.getLocales());
     }
 
-    // TODO: Specify our Exception strategy
     @Test(expected = Exception.class)
     public void testFetchingPlatformInformationFailure() throws AcrolinxException, InterruptedException
     {
