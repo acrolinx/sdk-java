@@ -1,6 +1,6 @@
 # Acrolinx Java SDK Alpha Version [![Build Status](https://travis-ci.org/acrolinx/sdk-java.svg?branch=master)](https://travis-ci.org/acrolinx/sdk-java)
 
-This library is in heavy development and shouldn't’t yet be used for production.
+This library is in heavy development and shouldn't yet be used for production.
 
 This library is meant to be used to interact with the Acrolinx Platform API in automated integrations. 
 It does NOT offer an interface to work with the Acrolinx Sidebar (see [Sidebar Java SDK](https://github.com/acrolinx/sidebar-sdk-java)).
