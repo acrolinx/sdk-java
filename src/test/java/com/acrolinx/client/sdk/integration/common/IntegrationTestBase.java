@@ -15,19 +15,15 @@ import org.junit.After;
 import org.junit.Before;
 
 import com.acrolinx.client.sdk.AcrolinxEndpoint;
-import com.acrolinx.client.sdk.utils.LoggingUtils;
-
-import ch.qos.logback.core.joran.spi.JoranException;
 
 public class IntegrationTestBase
 {
     protected AcrolinxEndpoint endpoint;
 
     @Before
-    public void beforeTestBase() throws URISyntaxException, IOException, JoranException
+    public void beforeTestBase() throws URISyntaxException, IOException
     {
         assumeTrue(ACROLINX_URL != null);
-        LoggingUtils.setupLogging("TEST");
         endpoint = createTestAcrolinxEndpoint();
 
     }
