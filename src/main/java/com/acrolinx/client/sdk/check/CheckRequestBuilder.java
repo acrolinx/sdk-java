@@ -4,6 +4,9 @@
 
 package com.acrolinx.client.sdk.check;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.Nullable;
 
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
@@ -14,6 +17,8 @@ public class CheckRequestBuilder
     private CheckRequest.ContentEncoding contentEncoding;
     private CheckOptions checkOptions;
     private DocumentDescriptorRequest document;
+    private String reference = null;
+    private List<CustomField> customFields = new ArrayList<>();
 
     CheckRequestBuilder(Document document) throws AcrolinxException
     {
@@ -25,35 +30,41 @@ public class CheckRequestBuilder
         this.content = content;
     }
 
-    // TODO (fp) I find it confusing that this Builder is returned here... I talked with Ralf last week,
-    //  and he suggested not to have nested Builder to not confuse SDK users.
-    public static MultiPartDocumentBuilder getBuilder(String rootElement, @Nullable String publicId,
-            @Nullable String systemId) throws AcrolinxException
-    {
-        return new MultiPartDocumentBuilder(rootElement, publicId, systemId);
-    }
-
-    // TODO (fp) we should decide if we use builder set or with and be consistent about it
-    public CheckRequestBuilder setContentEncoding(CheckRequest.ContentEncoding contentEncoding)
+    public CheckRequestBuilder withContentEncoding(CheckRequest.ContentEncoding contentEncoding)
     {
         this.contentEncoding = contentEncoding;
         return this;
     }
 
-    public CheckRequestBuilder setCheckOptions(CheckOptions checkOptions)
+    public CheckRequestBuilder withCheckOptions(CheckOptions checkOptions)
     {
         this.checkOptions = checkOptions;
         return this;
     }
 
-    public CheckRequestBuilder setDocument(DocumentDescriptorRequest document)
+    public CheckRequestBuilder withDocumentReference(String reference)
     {
-        this.document = document;
+        this.reference = reference;
+        return this;
+    }
+
+    public CheckRequestBuilder withCustomFields(List<CustomField> customFields)
+    {
+        this.customFields.addAll(customFields);
+        return this;
+    }
+
+    public CheckRequestBuilder withCustomField(CustomField customField)
+    {
+        this.customFields.add(customField);
         return this;
     }
 
     public CheckRequest build()
     {
+        if (this.reference != null) {
+            this.document = new DocumentDescriptorRequest(this.reference, this.customFields);
+        }
         return new CheckRequest(content, contentEncoding, checkOptions, document);
     }
 }

@@ -7,15 +7,15 @@ package com.acrolinx.client.sdk.check;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DocumentDescriptorRequest
+class DocumentDescriptorRequest
 {
     private final String reference;
-    private List<CustomField> customFields = null;
+    private List<CustomField> customFields;
 
-    public DocumentDescriptorRequest(String reference)
+    DocumentDescriptorRequest(String reference, List<CustomField> customFields)
     {
         this.reference = reference;
-        this.customFields = new ArrayList<>();
+        this.customFields = customFields;
     }
 
     public String getReference()
@@ -28,13 +28,4 @@ public class DocumentDescriptorRequest
         return customFields;
     }
 
-    public void setCustomFields(List<CustomField> customFields)
-    {
-        this.customFields.addAll(customFields);
-    }
-
-    public void setCustomField(CustomField customField)
-    {
-        this.customFields.add(customField);
-    }
 }

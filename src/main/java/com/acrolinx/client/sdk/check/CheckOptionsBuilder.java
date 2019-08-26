@@ -68,39 +68,4 @@ public class CheckOptionsBuilder
         return new CheckOptions(guidanceProfileId, batchId, reportTypes, checkType, contentFormat, languageId,
                 disableCustomFieldValidation);
     }
-
-    String getGuidanceProfileId()
-    {
-        return guidanceProfileId;
-    }
-
-    protected String getBatchId()
-    {
-        return batchId;
-    }
-
-    protected List<ReportType> getReportTypes()
-    {
-        return reportTypes;
-    }
-
-    protected CheckType getCheckType()
-    {
-        return checkType;
-    }
-
-    protected String getContentFormat()
-    {
-        return contentFormat;
-    }
-
-    protected String getLanguageId()
-    {
-        return languageId;
-    }
-
-    protected boolean isDisableCustomFieldValidation()
-    {
-        return disableCustomFieldValidation;
-    }
 }
