@@ -65,7 +65,8 @@ public class CheckOptionsBuilder
 
     public CheckOptions build()
     {
-        return new CheckOptions(this);
+        return new CheckOptions(guidanceProfileId, batchId, reportTypes, checkType, contentFormat, languageId,
+                disableCustomFieldValidation);
     }
 
     String getGuidanceProfileId()

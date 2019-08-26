@@ -16,15 +16,16 @@ public class CheckOptions
     final private String languageId;
     final private boolean disableCustomFieldValidation;
 
-    CheckOptions(CheckOptionsBuilder checkOptionsBuilder)
+    CheckOptions(String guidanceProfileId, String batchId, List<ReportType> reportTypes, CheckType checkType,
+            String contentFormat, String languageId, boolean disableCustomFieldValidation)
     {
-        this.guidanceProfileId = checkOptionsBuilder.getGuidanceProfileId();
-        this.batchId = checkOptionsBuilder.getBatchId();
-        this.reportTypes = checkOptionsBuilder.getReportTypes();
-        this.checkType = checkOptionsBuilder.getCheckType();
-        this.contentFormat = checkOptionsBuilder.getContentFormat();
-        this.languageId = checkOptionsBuilder.getLanguageId();
-        this.disableCustomFieldValidation = checkOptionsBuilder.isDisableCustomFieldValidation();
+        this.guidanceProfileId = guidanceProfileId;
+        this.batchId = batchId;
+        this.reportTypes = reportTypes;
+        this.checkType = checkType;
+        this.contentFormat = contentFormat;
+        this.languageId = languageId;
+        this.disableCustomFieldValidation = disableCustomFieldValidation;
     }
 
     public static CheckOptionsBuilder getBuilder()
