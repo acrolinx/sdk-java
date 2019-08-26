@@ -108,13 +108,12 @@ public class CheckTest extends IntegrationTestBase
     }
 
     @Test
-    public void testCheckWithoutProgressListener() throws AcrolinxException {
-        CheckResult checkResult = endpoint.check(ACROLINX_API_TOKEN, CheckRequest.ofDocumentContent("This text contaanis error")
-                .setCheckOptions(CheckOptions.getBuilder()
-                        .withContentFormat("TEXT")
-                        .withCheckType(CheckType.automated)
-                        .build()
-                ).build());
+    public void testCheckWithoutProgressListener() throws AcrolinxException
+    {
+        CheckResult checkResult = endpoint.check(ACROLINX_API_TOKEN,
+                CheckRequest.ofDocumentContent("This text contaanis error").withCheckOptions(
+                        CheckOptions.getBuilder().withContentFormat("TEXT").withCheckType(
+                                CheckType.automated).build()).build());
 
         assertNotNull(checkResult);
     }

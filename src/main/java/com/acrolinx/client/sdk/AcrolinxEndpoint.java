@@ -275,8 +275,7 @@ public class AcrolinxEndpoint
         }
     }
 
-    public CheckResult check(AccessToken accessToken, CheckRequest checkRequest)
-            throws AcrolinxException
+    public CheckResult check(AccessToken accessToken, CheckRequest checkRequest) throws AcrolinxException
     {
         CheckResponse checkResponse = this.submitCheck(accessToken, checkRequest);
         logger.debug("Submitted check. Polling for result started.");
@@ -288,8 +287,9 @@ public class AcrolinxEndpoint
         }
     }
 
-    private CheckResult pollForResultWithCancelHandling(AccessToken accessToken, @Nullable ProgressListener progressListener,
-            CheckResponse checkResponse) throws AcrolinxException, URISyntaxException, IOException
+    private CheckResult pollForResultWithCancelHandling(AccessToken accessToken,
+            @Nullable ProgressListener progressListener, CheckResponse checkResponse)
+            throws AcrolinxException, URISyntaxException, IOException
     {
         try {
             return pollForCheckResult(accessToken, checkResponse, progressListener);
@@ -313,7 +313,7 @@ public class AcrolinxEndpoint
                 return ((CheckPollResponse.Success) pollResponse).data;
             }
             Progress progress = ((CheckPollResponse.Progress) pollResponse).progress;
-            if(progressListener != null) {
+            if (progressListener != null) {
                 progressListener.onProgress(progress);
             }
 
