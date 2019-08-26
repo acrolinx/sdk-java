@@ -16,7 +16,8 @@ import com.acrolinx.client.sdk.PlatformInformation;
 import com.acrolinx.client.sdk.check.CheckRequest;
 import com.acrolinx.client.sdk.check.CheckResponse;
 
-// Right place for a demo? A separate project? A java 8 demo much be much better
+// TODO (fp) clarify and remove
+// Right place for a demo? A separate project? A java 8 demo might be much better
 // This demo targets Java 7 environment
 public class AsyncEndpointDemo
 {
