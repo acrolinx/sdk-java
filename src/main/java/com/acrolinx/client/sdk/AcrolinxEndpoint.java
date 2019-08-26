@@ -274,7 +274,20 @@ public class AcrolinxEndpoint
         }
     }
 
-    private CheckResult pollForResultWithCancelHandling(AccessToken accessToken, ProgressListener progressListener,
+    public CheckResult check(AccessToken accessToken, CheckRequest checkRequest)
+            throws AcrolinxException
+    {
+        CheckResponse checkResponse = this.submitCheck(accessToken, checkRequest);
+        logger.debug("Submitted check. Polling for result started.");
+        try {
+            return pollForResultWithCancelHandling(accessToken, null, checkResponse);
+        } catch (URISyntaxException | IOException e) {
+            logger.debug("Pollong for check result failed");
+            throw new AcrolinxException(e);
+        }
+    }
+
+    private CheckResult pollForResultWithCancelHandling(AccessToken accessToken, @Nullable ProgressListener progressListener,
             CheckResponse checkResponse) throws AcrolinxException, URISyntaxException, IOException
     {
         try {
@@ -288,7 +301,7 @@ public class AcrolinxEndpoint
     }
 
     private CheckResult pollForCheckResult(AccessToken accessToken, CheckResponse checkResponse,
-            ProgressListener progressListener)
+            @Nullable ProgressListener progressListener)
             throws AcrolinxException, URISyntaxException, IOException, InterruptedException
     {
         URI pollUrl = new URI(checkResponse.getLinks().getResult());
@@ -299,7 +312,10 @@ public class AcrolinxEndpoint
                 return ((CheckPollResponse.Success) pollResponse).data;
             }
             Progress progress = ((CheckPollResponse.Progress) pollResponse).progress;
-            progressListener.onProgress(progress);
+            if(progressListener != null) {
+                progressListener.onProgress(progress);
+            }
+
             logger.debug("Polling for check result. Progress: " + progress.percent);
 
             long sleepTimeMs = progress.getRetryAfterMs();

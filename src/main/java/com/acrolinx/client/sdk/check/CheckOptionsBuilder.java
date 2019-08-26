@@ -16,7 +16,7 @@ public class CheckOptionsBuilder
     private String languageId;
     private boolean disableCustomFieldValidation;
 
-    public CheckOptionsBuilder()
+    CheckOptionsBuilder()
     {
     }
 
