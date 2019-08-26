@@ -12,7 +12,7 @@ public class CheckOptionsBuilder
     private String batchId;
     private List<ReportType> reportTypes;
     private CheckType checkType;
-    private String contentFormat;
+    private String contentFormat = "AUTO";
     private String languageId;
     private boolean disableCustomFieldValidation;
 
