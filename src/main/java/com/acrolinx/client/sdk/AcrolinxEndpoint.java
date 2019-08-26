@@ -43,7 +43,8 @@ public class AcrolinxEndpoint
 
     /**
      *
-     * @param acrolinxURL URL to your Acrolinx Platform for example: https://yourcompany.acrolinx.com
+     * @param acrolinxURL URL to your Acrolinx Platform for example:
+     *        https://yourcompany.acrolinx.com
      * @param clientSignature License to use integration with Acrolinx.
      * @param clientVersion Version number of your client for example: 1.2.5.34
      * @param clientLocale Locale of environment in which integration is deployed.
@@ -56,7 +57,8 @@ public class AcrolinxEndpoint
     /**
      *
      * @param httpClient Provide your own http client implementing AcrolinxHttpClient interface
-     * @param acrolinxURL URL to your Acrolinx Platform for example: https://yourcompany.acrolinx.com
+     * @param acrolinxURL URL to your Acrolinx Platform for example:
+     *        https://yourcompany.acrolinx.com
      * @param clientSignature License to use integration with Acrolinx.
      * @param clientVersion Version number of your client for example: 1.2.5.37
      * @param clientLocale Locale of environment in which integration is deployed.
@@ -82,8 +84,7 @@ public class AcrolinxEndpoint
     {
         int statusCode = acrolinxHttpResponse.getStatus();
         if (statusCode >= 200 && statusCode < 300) {
-            // TODO (fp) clarify
-            // Should we still check if there's an error?
+            // TODO: Should we still check if there's an error?
             return;
         }
 
