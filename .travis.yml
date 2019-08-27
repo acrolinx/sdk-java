@@ -6,7 +6,7 @@ jdk:
 os:
 - linux
 script:
-- "./gradlew build --exclude-task test"
+- "./gradlew build --exclude-task test && ./gradlew javadoc"
 - cd $TRAVIS_BUILD_DIR
 - chmod +x ./deploy.sh
 deploy:
