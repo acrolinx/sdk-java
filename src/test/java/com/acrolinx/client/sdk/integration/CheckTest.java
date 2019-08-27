@@ -280,8 +280,7 @@ public class CheckTest extends IntegrationTestBase
     {
         CheckOptions checkOptions = CheckOptions.getBuilder().withGuidanceProfileId(
                 guidanceProfileEn.getId()).withBatchId(UUID.randomUUID().toString()).withCheckType(
-                        CheckType.baseline).withContentFormat("txt").withCustomFieldValidationDisabled(
-                                true).withLanguageId("en").build();
+                        CheckType.baseline).withContentFormat("txt").withCustomFieldValidationDisabled(true).build();
 
         List<ReportType> rtl = new ArrayList<>();
         rtl.add(ReportType.scorecard);
