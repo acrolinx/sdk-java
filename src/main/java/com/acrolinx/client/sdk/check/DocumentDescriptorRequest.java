@@ -17,11 +17,13 @@ class DocumentDescriptorRequest
         this.customFields = customFields;
     }
 
-    String getReference() {
+    String getReference()
+    {
         return reference;
     }
 
-    List<CustomField> getCustomFields() {
+    List<CustomField> getCustomFields()
+    {
         return customFields;
     }
 }
