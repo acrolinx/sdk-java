@@ -6,16 +6,16 @@ jdk:
 os:
 - linux
 script:
-- "./gradlew build"
 - cd $TRAVIS_BUILD_DIR
 - chmod +x ./deploy.sh
 deploy:
 - provider: script
-  script: "./deploy.sh"
+  script: "./gradlew build && ./deploy.sh"
   skip_cleanup: true
   on:
     branch: master
 - provider: pages
+  script: "./gradlew build -Dskip.tests=true && ./deploy.sh"
   skip-cleanup: true
   github-token: $GITHUB_API_TOKEN
   keep-history: true
