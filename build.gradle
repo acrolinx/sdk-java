@@ -276,6 +276,11 @@ tasks.withType(Javadoc) {
 	options.memberLevel = JavadocMemberLevel.PUBLIC
 }
 
+nexusStaging{
+	username = sonatypeUsername
+	password = sonatypePassword
+}
+
 licenseMain.dependsOn checkLicenseHeaders
 licenseTest.dependsOn checkLicenseHeaders
 jar.dependsOn 'downloadLicenses'
