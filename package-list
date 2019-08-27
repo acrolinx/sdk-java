@@ -1,0 +1,8 @@
+com.acrolinx.client.sdk
+com.acrolinx.client.sdk.check
+com.acrolinx.client.sdk.exceptions
+com.acrolinx.client.sdk.http
+com.acrolinx.client.sdk.internal
+com.acrolinx.client.sdk.platform
+com.acrolinx.client.sdk.platform.configuration
+com.acrolinx.client.sdk.utils
