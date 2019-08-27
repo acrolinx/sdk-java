@@ -32,7 +32,7 @@ if [[ "$PROJECT_VERSION" == *"SNAPSHOT"* ]]; then
     fi
 else
     echo "Publishing release version to staging repo..."
-    if ./gradlew publish; then
+    if ./gradlew publishToSonatype; then
         echo "Done with publish step."
         echo "Starting close and release step"
         if ./gradlew closeAndReleaseRepository; then
