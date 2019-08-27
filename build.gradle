@@ -166,7 +166,21 @@ artifacts {
 publishing {
 	repositories {
 		maven {
-			url "$buildDir/repo"
+			if (sonatypeUsername == null) {
+				url "$buildDir/repo"
+			} else if (isReleaseBuild) {
+				url "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+				credentials {
+					username = sonatypeUsername
+					password = sonatypePassword
+				}
+			} else if (!isReleaseBuild) {
+				url "https://oss.sonatype.org/content/repositories/snapshots/"
+				credentials {
+					username = sonatypeUsername
+					password = sonatypePassword
+				}
+			}
 		}
 	}
 	publications {

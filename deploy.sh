@@ -32,7 +32,7 @@ if [[ "$PROJECT_VERSION" == *"SNAPSHOT"* ]]; then
     fi
 else
     echo "Publishing release version to staging repo..."
-    if ./gradlew publishToSonatype; then
+    if ./gradlew publish; then
         echo "Done with publish step."
         echo "Starting close and release step"
         if ./gradlew closeAndReleaseRepository; then
@@ -41,6 +41,7 @@ else
             export GRGIT_USER=$GITHUB_API_TOKEN
             if ./gradlew createGithubReleaseTag; then
               echo "Done with tagging as release version on Github."
+              exit 0
              fi
         else
             exit 1
