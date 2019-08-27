@@ -6,6 +6,7 @@ jdk:
 os:
 - linux
 script:
+- "./gradlew build -Dskip.tests=true"
 - cd $TRAVIS_BUILD_DIR
 - chmod +x ./deploy.sh
 deploy:
@@ -15,7 +16,6 @@ deploy:
   on:
     branch: master
 - provider: pages
-  script: "./gradlew build -Dskip.tests=true && ./deploy.sh"
   skip-cleanup: true
   github-token: $GITHUB_API_TOKEN
   keep-history: true
