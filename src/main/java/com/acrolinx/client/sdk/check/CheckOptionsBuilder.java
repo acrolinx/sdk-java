@@ -13,7 +13,6 @@ public class CheckOptionsBuilder
     private List<ReportType> reportTypes;
     private CheckType checkType;
     private String contentFormat = "AUTO";
-    private String languageId;
     private boolean disableCustomFieldValidation;
 
     CheckOptionsBuilder()
@@ -86,12 +85,6 @@ public class CheckOptionsBuilder
     public CheckOptionsBuilder withContentFormat(String contentFormat)
     {
         this.contentFormat = contentFormat;
-        return this;
-    }
-
-    public CheckOptionsBuilder withLanguageId(String languageId)
-    {
-        this.languageId = languageId;
         return this;
     }
 
