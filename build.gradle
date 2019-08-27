@@ -193,7 +193,7 @@ publishing {
 
 			pom {
 				name = 'Acrolinx Platform SDK'
-				description 'A library to interact with the Acrolinx Platform.'
+				description = 'A library to interact with the Acrolinx Platform.'
 				url = 'https://github.com/acrolinx/sdk-java'
 				scm {
 					url = 'https://github.com/acrolinx/sdk-java'
