@@ -63,7 +63,9 @@ See [demo](https://github.com/acrolinx/sdk-demo-java/blob/master/src/main/java/c
 
 See [CheckTest.java](src/test/java/com/acrolinx/client/sdk/integration/CheckTest.java) for more examples.
 
-## Integration Tests
+Find the SDKs Documentation [here](https://acrolinx.github.io/sdk-java/). 
+
+### Integration Tests
 
 In order to run the integration tests locally:
 * You need access to the Acrolinx Platform
