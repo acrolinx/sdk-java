@@ -1,6 +1,7 @@
-# Acrolinx Java SDK Alpha Version [![Build Status](https://travis-ci.org/acrolinx/sdk-java.svg?branch=master)](https://travis-ci.org/acrolinx/sdk-java)
+# Acrolinx Java SDK 
 
-This library is in heavy development and shouldn't yet be used for production.
+[![Maven Central](https://img.shields.io/maven-central/v/com.acrolinx.client/sdk)](https://search.maven.org/artifact/com.acrolinx.client/sdk)
+[![Build Status](https://travis-ci.org/acrolinx/sdk-java.svg?branch=master)](https://travis-ci.org/acrolinx/sdk-java)
 
 This library is meant to be used to interact with the Acrolinx Platform API in automated integrations. 
 It does NOT offer an interface to work with the Acrolinx Sidebar (see [Sidebar Java SDK](https://github.com/acrolinx/sidebar-sdk-java)).
@@ -27,7 +28,33 @@ Before you start developing your own integration, you might benefit from looking
 * the [Acrolinx Demo Projects](https://github.com/acrolinx?q=demo).
 
 ### Start Developing
- 
+
+#### Installation
+
+##### Maven
+
+```xml
+<dependency>
+    <groupId>com.acrolinx.client</groupId>
+    <artifactId>sdk</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+
+##### Gradle
+
+```groovy
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'com.acrolinx.client:sdk:1.0.0'
+}
+```
+
+#### First Steps
+
 Create instance of AcrolinxEndpoint to begin.
 
 AcrolinxEndpoint offers a single entry point to avail features provided by the SDK.
@@ -36,7 +63,7 @@ See [demo](https://github.com/acrolinx/sdk-demo-java/blob/master/src/main/java/c
 
 See [CheckTest.java](src/test/java/com/acrolinx/client/sdk/integration/CheckTest.java) for more examples.
 
-### Integration Tests
+## Integration Tests
 
 In order to run the integration tests locally:
 * You need access to the Acrolinx Platform
