@@ -245,7 +245,7 @@ public class CheckTest extends IntegrationTestBase
     @Test
     public void testMultipleChecksParallelWaitingForResult() throws InterruptedException, ExecutionException
     {
-        int numberOfChecks = 3;
+        int numberOfChecks = 5;
 
         ExecutorService executorService = Executors.newFixedThreadPool(numberOfChecks);
 
