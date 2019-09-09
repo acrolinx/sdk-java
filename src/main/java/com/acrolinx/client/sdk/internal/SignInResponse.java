@@ -22,7 +22,7 @@ public abstract class SignInResponse
         @Override
         public Class<? extends SignInResponse> getClassForElement(JsonElement readElement)
         {
-            Boolean isSuccess = readElement.getAsJsonObject().get("data").getAsJsonObject().has("accessToken");
+            boolean isSuccess = readElement.getAsJsonObject().get("data").getAsJsonObject().has("accessToken");
             return isSuccess ? SignInResponse.Success.class : SignInResponse.SignInLinks.class;
         }
     };

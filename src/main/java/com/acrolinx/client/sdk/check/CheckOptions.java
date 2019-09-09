@@ -8,12 +8,12 @@ import java.util.List;
 
 public class CheckOptions
 {
-    final private String guidanceProfileId;
-    final private String batchId;
-    final private List<ReportType> reportTypes;
-    final private CheckType checkType;
-    final private String contentFormat;
-    final private boolean disableCustomFieldValidation;
+    private final String guidanceProfileId;
+    private final String batchId;
+    private final List<ReportType> reportTypes;
+    private final CheckType checkType;
+    private final String contentFormat;
+    private final boolean disableCustomFieldValidation;
 
     CheckOptions(String guidanceProfileId, String batchId, List<ReportType> reportTypes, CheckType checkType,
             String contentFormat, boolean disableCustomFieldValidation)

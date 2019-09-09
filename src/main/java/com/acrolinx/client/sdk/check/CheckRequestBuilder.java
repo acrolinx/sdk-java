@@ -7,8 +7,6 @@ package com.acrolinx.client.sdk.check;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 
 public class CheckRequestBuilder

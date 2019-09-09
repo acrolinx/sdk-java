@@ -9,11 +9,21 @@ import java.util.List;
 class DocumentDescriptorRequest
 {
     private final String reference;
-    private List<CustomField> customFields;
+    private final List<CustomField> customFields;
 
     DocumentDescriptorRequest(String reference, List<CustomField> customFields)
     {
         this.reference = reference;
         this.customFields = customFields;
+    }
+
+    String getReference()
+    {
+        return reference;
+    }
+
+    List<CustomField> getCustomFields()
+    {
+        return customFields;
     }
 }

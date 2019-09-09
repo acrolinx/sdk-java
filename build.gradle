@@ -10,7 +10,7 @@ plugins {
 	id 'org.ajoberstar.grgit' version '3.1.1'
 
 	id 'io.codearte.nexus-staging' version '0.21.0'
-	id 'de.marcphilipp.nexus-publish' version '0.3.0'
+	id 'de.marcphilipp.nexus-publish' version '0.3.1'
 
 	id 'com.github.hierynomus.license' version '0.15.0'
 	id 'com.github.hierynomus.license-report' version '0.15.0'
@@ -166,7 +166,21 @@ artifacts {
 publishing {
 	repositories {
 		maven {
-			url "$buildDir/repo"
+			if (sonatypeUsername == null) {
+				url "$buildDir/repo"
+			} else if (isReleaseBuild) {
+				url "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+				credentials {
+					username = sonatypeUsername
+					password = sonatypePassword
+				}
+			} else if (!isReleaseBuild) {
+				url "https://oss.sonatype.org/content/repositories/snapshots/"
+				credentials {
+					username = sonatypeUsername
+					password = sonatypePassword
+				}
+			}
 		}
 	}
 	publications {
@@ -179,7 +193,7 @@ publishing {
 
 			pom {
 				name = 'Acrolinx Platform SDK'
-				description 'A library to interact with the Acrolinx Platform.'
+				description = 'A library to interact with the Acrolinx Platform.'
 				url = 'https://github.com/acrolinx/sdk-java'
 				scm {
 					url = 'https://github.com/acrolinx/sdk-java'
@@ -260,6 +274,11 @@ task checkLicenseHeaders {
 tasks.withType(Javadoc) {
 	options.addStringOption('Xdoclint:none', '-quiet')
 	options.memberLevel = JavadocMemberLevel.PUBLIC
+}
+
+nexusStaging{
+	username = sonatypeUsername
+	password = sonatypePassword
 }
 
 licenseMain.dependsOn checkLicenseHeaders

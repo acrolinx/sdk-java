@@ -245,7 +245,7 @@ public class CheckTest extends IntegrationTestBase
     @Test
     public void testMultipleChecksParallelWaitingForResult() throws InterruptedException, ExecutionException
     {
-        int numberOfChecks = 3;
+        int numberOfChecks = 5;
 
         ExecutorService executorService = Executors.newFixedThreadPool(numberOfChecks);
 
@@ -280,8 +280,7 @@ public class CheckTest extends IntegrationTestBase
     {
         CheckOptions checkOptions = CheckOptions.getBuilder().withGuidanceProfileId(
                 guidanceProfileEn.getId()).withBatchId(UUID.randomUUID().toString()).withCheckType(
-                        CheckType.baseline).withContentFormat("txt").withCustomFieldValidationDisabled(
-                                true).withLanguageId("en").build();
+                        CheckType.baseline).withContentFormat("txt").withCustomFieldValidationDisabled(true).build();
 
         List<ReportType> rtl = new ArrayList<>();
         rtl.add(ReportType.scorecard);

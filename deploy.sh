@@ -41,6 +41,7 @@ else
             export GRGIT_USER=$GITHUB_API_TOKEN
             if ./gradlew createGithubReleaseTag; then
               echo "Done with tagging as release version on Github."
+              exit 0
              fi
         else
             exit 1
