@@ -13,7 +13,6 @@ public class CheckOptionsBuilder
     private List<ReportType> reportTypes;
     private CheckType checkType;
     private String contentFormat = "AUTO";
-    private boolean disableCustomFieldValidation;
 
     CheckOptionsBuilder()
     {
@@ -88,15 +87,8 @@ public class CheckOptionsBuilder
         return this;
     }
 
-    public CheckOptionsBuilder withCustomFieldValidationDisabled(boolean disableCustomFieldValidation)
-    {
-        this.disableCustomFieldValidation = disableCustomFieldValidation;
-        return this;
-    }
-
     public CheckOptions build()
     {
-        return new CheckOptions(guidanceProfileId, batchId, reportTypes, checkType, contentFormat,
-                disableCustomFieldValidation);
+        return new CheckOptions(guidanceProfileId, batchId, reportTypes, checkType, contentFormat);
     }
 }
