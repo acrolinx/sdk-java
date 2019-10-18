@@ -1,9 +1,9 @@
-# Acrolinx Java SDK 
+# Acrolinx Java SDK
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.acrolinx.client/sdk)](https://search.maven.org/artifact/com.acrolinx.client/sdk)
 [![Build Status](https://travis-ci.org/acrolinx/sdk-java.svg?branch=master)](https://travis-ci.org/acrolinx/sdk-java)
 
-This library is meant to be used to interact with the Acrolinx Platform API in automated integrations. 
+This library is meant to be used to interact with the Acrolinx Platform API in automated integrations.
 It does NOT offer an interface to work with the Acrolinx Sidebar (see [Sidebar Java SDK](https://github.com/acrolinx/sidebar-sdk-java)).
 
 ## Get Started with Your Integration
@@ -61,19 +61,20 @@ AcrolinxEndpoint offers a single entry point to avail features provided by the S
 
 See [demo](https://github.com/acrolinx/sdk-demo-java/blob/master/src/main/java/com/acrolinx/client/demo/SdkDemo.java) for a quickstart example.
 
-See [CheckTest.java](src/test/java/com/acrolinx/client/sdk/integration/CheckTest.java) for more examples.
+See [`CheckTest.java`](src/test/java/com/acrolinx/client/sdk/integration/CheckTest.java) for more examples.
 
 Find the SDKs Documentation [here](https://acrolinx.github.io/sdk-java/). 
 
 ### Integration Tests
 
 In order to run the integration tests locally:
-* You need access to the Acrolinx Platform
-* You need to create an .env file similar to the [.env.template](.env.template) file. Alternately you can set the corresponding environment variables in a different way.
-  
-## Contributing to This SDK 
 
-[CONTRIBUTING.md](CONTRIBUTING.md)
+* You need access to the Acrolinx Platform
+* You need to create an .env file similar to the [`.env.template`](.env.template) file. Alternately you can set the corresponding environment variables in a different way.
+  
+## Contributing to This SDK
+
+See: [`CONTRIBUTING.md`](CONTRIBUTING.md)
 
 ## License
 
