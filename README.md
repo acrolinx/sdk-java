@@ -70,7 +70,7 @@ Find the SDKs Documentation [here](https://acrolinx.github.io/sdk-java/).
 In order to run the integration tests locally:
 
 * You need access to the Acrolinx Platform
-* You need to create an .env file similar to the [`.env.template`](.env.template) file. Alternately you can set the corresponding environment variables in a different way.
+* You need to create an `.env`-file similar to the [`.env.template`](.env.template) file. Alternately you can set the corresponding environment variables in a different way.
   
 ## Contributing to This SDK
 
