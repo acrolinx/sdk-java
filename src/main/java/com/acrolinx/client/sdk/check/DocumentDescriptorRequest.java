@@ -11,7 +11,7 @@ class DocumentDescriptorRequest
     private final String reference;
     private final List<CustomField> customFields;
 
-    DocumentDescriptorRequest(String reference, List<CustomField> customFields)
+    public DocumentDescriptorRequest(String reference, List<CustomField> customFields)
     {
         this.reference = reference;
         this.customFields = customFields;
