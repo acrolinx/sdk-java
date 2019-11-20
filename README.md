@@ -59,11 +59,11 @@ Create instance of AcrolinxEndpoint to begin.
 
 AcrolinxEndpoint offers a single entry point to avail features provided by the SDK.
 
-See [demo](https://github.com/acrolinx/sdk-demo-java/blob/master/src/main/java/com/acrolinx/client/demo/SdkDemo.java) for a quickstart example.
+See the [Acrolinx Java SDK demo](https://github.com/acrolinx/sdk-demo-java/blob/master/src/main/java/com/acrolinx/client/demo/SdkDemo.java) for a quickstart example.
 
 See [`CheckTest.java`](src/test/java/com/acrolinx/client/sdk/integration/CheckTest.java) for more examples.
 
-Find the SDKs Documentation [here](https://acrolinx.github.io/sdk-java/). 
+See the [Java SDK Documentation](https://acrolinx.github.io/sdk-java/).
 
 ### Integration Tests
 

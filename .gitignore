@@ -16,3 +16,6 @@
 .attach_pid*
 /out
 /infer-out
+.classpath
+.project
+.settings
