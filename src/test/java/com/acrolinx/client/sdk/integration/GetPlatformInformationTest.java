@@ -7,6 +7,7 @@ package com.acrolinx.client.sdk.integration;
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
+import java.util.GregorianCalendar;
 
 import org.junit.Test;
 
@@ -14,11 +15,9 @@ import com.acrolinx.client.sdk.PlatformInformation;
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import com.acrolinx.client.sdk.integration.common.IntegrationTestBase;
 
-public class GetPlatformInformationTest extends IntegrationTestBase
-{
+public class GetPlatformInformationTest extends IntegrationTestBase {
     @Test
-    public void testFetchingPlatformInformation() throws AcrolinxException, InterruptedException
-    {
+    public void testFetchingPlatformInformation() throws AcrolinxException, InterruptedException {
         PlatformInformation platformInformation = endpoint.getPlatformInformation();
 
         assertNotNull(platformInformation);
@@ -26,8 +25,10 @@ public class GetPlatformInformationTest extends IntegrationTestBase
         assertEquals("Acrolinx Core Platform", platformInformation.getServer().getName());
         assertEquals(Arrays.asList("en", "fr", "de", "ja", "pt", "sv", "zh"), platformInformation.getLocales());
 
-        String version = platformInformation.getServer().getVersion();
+        final String version = platformInformation.getServer().getVersion();
         assertTrue("Server version set", !version.isEmpty());
-        assertTrue("Server version starts with 2019", version.startsWith("2019"));
+        final int year = GregorianCalendar.getInstance().get(GregorianCalendar.YEAR);
+        assertTrue("Server version starts with " + year + " or " + (year + 1),
+                version.startsWith("" + year) || version.startsWith("" + (year + 1)));
     }
 }
