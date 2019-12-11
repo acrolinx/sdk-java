@@ -28,7 +28,8 @@ public class GetPlatformInformationTest extends IntegrationTestBase {
         final String version = platformInformation.getServer().getVersion();
         assertTrue("Server version set", !version.isEmpty());
         final int year = GregorianCalendar.getInstance().get(GregorianCalendar.YEAR);
-        assertTrue("Server version starts with " + year + " or " + (year + 1),
-                version.startsWith("" + year) || version.startsWith("" + (year + 1)));
+        assertTrue("Server version starts with " + year + " or " + (year + 1) + " or " + (year - 1),
+                version.startsWith("" + year) || version.startsWith("" + (year + 1))
+                        || version.startsWith("" + (year - 1)));
     }
 }
