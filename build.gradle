@@ -66,7 +66,6 @@ jacocoTestReport {
 
 dependencyCheck {
 	formats = ['HTML', 'XML']
-
 	cve {
 		urlModified = 'https://dune.dev.acrolinx.com/~nist-data-mirror/nvdcve-1.0-modified.json.gz'
 		urlBase = 'https://dune.dev.acrolinx.com/~nist-data-mirror/nvdcve-1.0-%d.json.gz'
@@ -289,5 +288,4 @@ licenseTest.dependsOn checkLicenseHeaders
 jar.dependsOn 'downloadLicenses'
 test.dependsOn javadoc
 check.dependsOn 'spotless-sdk-java:spotlessCheck'
-check.dependsOn dependencyCheckAnalyze
 // vim: sw=4 ts=4 noet
