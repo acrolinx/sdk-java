@@ -42,7 +42,10 @@ else
             if ./gradlew createGithubReleaseTag; then
               echo "Done with tagging as release version on Github."
               exit 0
-             fi
+            else
+              echo "Could not create Github Release Tag. Please do manually."
+              exit 1
+            fi
         else
             exit 1
         fi
