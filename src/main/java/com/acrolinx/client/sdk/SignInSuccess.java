@@ -42,8 +42,8 @@ public class SignInSuccess
     }
 
     /**
-     * @return A String value corresponding to {@link AuthorizationType} or something extended in
-     *         future API versions
+     * @return A String value corresponding to {@link AuthorizationType} or something extended in future
+     *         API versions
      */
     public String getAuthorizationType()
     {

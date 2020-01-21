@@ -158,8 +158,8 @@ public class CheckTest extends IntegrationTestBase
     }
 
     /**
-     * This test might become pretty flaky, when the server is faster than expected. When we notice
-     * this problem, we should rewrite it using a mocked server.
+     * This test might become pretty flaky, when the server is faster than expected. When we notice this
+     * problem, we should rewrite it using a mocked server.
      */
     @Test
     public void checkALargeTextAndGetProgress() throws AcrolinxException
@@ -172,8 +172,8 @@ public class CheckTest extends IntegrationTestBase
     }
 
     /**
-     * This test might become pretty flaky, when the server is faster than expected. When we notice
-     * this problem, we should rewrite it using a mocked server.
+     * This test might become pretty flaky, when the server is faster than expected. When we notice this
+     * problem, we should rewrite it using a mocked server.
      */
     @Test(expected = CancellationException.class)
     public void cancelCheck() throws InterruptedException, ExecutionException

@@ -29,3 +29,7 @@ Note that it might take quite a while until the new version shows up in [Maven C
 
 5. Once the tag is pushed to GitHub, TravisCI will automatically update the [API documentation on the GitHub Pages](https://acrolinx.github.io/sidebar-sdk-java/).
 6. Don't forget to commit and push a new SNAPSHOT version.
+
+## Updating dependencies
+
+```./gradlew useLatestVersions && ./gradlew useLatestVersionsCheck```

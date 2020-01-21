@@ -24,7 +24,8 @@ public class CommonTestSetup
     public static final String ACROLINX_API_USERNAME = dotenv.get("ACROLINX_API_USERNAME");
     public static final String ACROLINX_API_TOKEN_STRING = dotenv.get("ACROLINX_API_TOKEN");
     public static final AccessToken ACROLINX_API_TOKEN = ACROLINX_API_TOKEN_STRING != null
-            ? new AccessToken(ACROLINX_API_TOKEN_STRING) : null;
+            ? new AccessToken(ACROLINX_API_TOKEN_STRING)
+            : null;
 
     public static AcrolinxEndpoint createTestAcrolinxEndpoint() throws URISyntaxException
     {

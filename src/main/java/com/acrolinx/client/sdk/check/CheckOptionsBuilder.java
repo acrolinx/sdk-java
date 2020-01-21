@@ -4,10 +4,10 @@
 
 package com.acrolinx.client.sdk.check;
 
+import java.util.List;
+
 import com.acrolinx.client.sdk.AccessToken;
 import com.acrolinx.client.sdk.utils.BatchCheckIdGenerator;
-
-import java.util.List;
 
 public class CheckOptionsBuilder
 {
@@ -25,8 +25,7 @@ public class CheckOptionsBuilder
     }
 
     /**
-     * Optional.
-     * Available guidance profiles depend on your Acrolinx Platform configuration.
+     * Optional. Available guidance profiles depend on your Acrolinx Platform configuration.
      *
      * @param guidanceProfileId
      * @return CheckOptionsBuilder
@@ -39,9 +38,9 @@ public class CheckOptionsBuilder
     }
 
     /**
-     * Optional.
-     * Per default a unique id is generated for each batch check.
-     * If you want to generate your own ids you can use this setting.
+     * Optional. Per default a unique id is generated for each batch check. If you want to generate your
+     * own ids you can use this setting.
+     * 
      * @see BatchCheckIdGenerator
      * @param batchId
      * @return CheckOptionsBuilder
@@ -53,9 +52,8 @@ public class CheckOptionsBuilder
     }
 
     /**
-     * Optional.
-     * Per default a scorecard is generated for each check.
-     * Available report types depend on the current users permission and the Acrolinx Platform configuration.
+     * Optional. Per default a scorecard is generated for each check. Available report types depend on
+     * the current users permission and the Acrolinx Platform configuration.
      *
      * @param reportTypes
      * @return CheckOptionsBuilder
@@ -68,8 +66,7 @@ public class CheckOptionsBuilder
     }
 
     /**
-     * Optional.
-     * Default setting is 'interactive'.
+     * Optional. Default setting is 'interactive'.
      * <p>
      * How to choose a correct Check Type? Following are different use cases of the check with
      * corresponding check type:
@@ -113,9 +110,12 @@ public class CheckOptionsBuilder
     }
 
     /**
-     * Optional.
-     * Per default this is set to "AUTO" which enables the Acrolinx Platforms default mapping for input types to common file extensions.
-     * @see <a  target="_blank" href="https://github.com/acrolinx/acrolinx-coding-guidance/blob/master/topics/text-extraction.md#check-format-and-supporting-multiformat-editors">Check Coding Guidance on Github for more information</a>
+     * Optional. Per default this is set to "AUTO" which enables the Acrolinx Platforms default mapping
+     * for input types to common file extensions.
+     * 
+     * @see <a target="_blank" href=
+     *      "https://github.com/acrolinx/acrolinx-coding-guidance/blob/master/topics/text-extraction.md#check-format-and-supporting-multiformat-editors">Check
+     *      Coding Guidance on Github for more information</a>
      *
      * @param contentFormat
      * @return CheckOptionsBuilder
