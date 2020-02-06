@@ -17,7 +17,6 @@ import org.junit.Test;
 
 import com.acrolinx.client.sdk.AccessToken;
 import com.acrolinx.client.sdk.AcrolinxEndpoint;
-import com.acrolinx.client.sdk.PlatformInformation;
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import com.acrolinx.client.sdk.exceptions.AcrolinxServiceException;
 import com.acrolinx.client.sdk.http.HttpMethod;
@@ -33,8 +32,8 @@ public class AcrolinxServiceExceptionTest extends IntegrationTestBase
             fail("getCapabilities should fail because of invalid AccessToken");
         } catch (AcrolinxServiceException e) {
             assertEquals(AcrolinxServiceException.Type.auth.toString(), e.getType());
-            assertThat(e.getDetail(), not(isEmptyOrNullString()));
-            assertThat(e.getTitle(), not(isEmptyOrNullString()));
+            assertThat(e.getDetail(), not(emptyOrNullString()));
+            assertThat(e.getTitle(), not(emptyOrNullString()));
             System.out.println(e.toString());
             assertEquals(401, e.getStatus());
 
@@ -49,7 +48,7 @@ public class AcrolinxServiceExceptionTest extends IntegrationTestBase
         AcrolinxEndpoint endpoint = new AcrolinxEndpoint(new URI(ACROLINX_URL + "/unknown"), "invlaid", "1.2.3.4",
                 "en");
         try {
-            PlatformInformation information = endpoint.getPlatformInformation();
+            endpoint.getPlatformInformation();
             fail("test should fail due to 404");
         } catch (AcrolinxException ae) {
             assertTrue(ae.getMessage().contains("404"));

@@ -75,7 +75,7 @@ public class CheckTest extends IntegrationTestBase
                                         guidanceProfileEn.getId()).build()).build());
 
         assertNotNull(checkResponse);
-        assertThat(checkResponse.getData().getId(), not(isEmptyOrNullString()));
+        assertThat(checkResponse.getData().getId(), not(emptyOrNullString()));
         assertThat(checkResponse.getLinks().getResult(), startsWith(ACROLINX_URL));
         assertThat(checkResponse.getLinks().getCancel(), startsWith(ACROLINX_URL));
     }
@@ -178,9 +178,8 @@ public class CheckTest extends IntegrationTestBase
     @Test(expected = CancellationException.class)
     public void cancelCheck() throws InterruptedException, ExecutionException
     {
-        final CheckRequest checkRequest = CheckRequest.ofDocumentContent(longTestText).withContentReference(
-                ("file.txt")).withCheckOptions(
-                        CheckOptions.getBuilder().withGuidanceProfileId(guidanceProfileEn.getId()).build()).build();
+        CheckRequest.ofDocumentContent(longTestText).withContentReference(("file.txt")).withCheckOptions(
+                CheckOptions.getBuilder().withGuidanceProfileId(guidanceProfileEn.getId()).build()).build();
 
         ExecutorService executorService = Executors.newFixedThreadPool(1);
         Future<CheckResult> future = executorService.submit(new Callable<CheckResult>() {
@@ -216,7 +215,7 @@ public class CheckTest extends IntegrationTestBase
                             checkOptions).build());
 
             assertNotNull(checkResponse);
-            assertThat(checkResponse.getData().getId(), not(isEmptyOrNullString()));
+            assertThat(checkResponse.getData().getId(), not(emptyOrNullString()));
             assertThat(checkResponse.getLinks().getResult(), startsWith(ACROLINX_URL));
             assertThat(checkResponse.getLinks().getCancel(), startsWith(ACROLINX_URL));
         }
@@ -290,7 +289,7 @@ public class CheckTest extends IntegrationTestBase
                         "file.txt").withCheckOptions(checkOptions).build());
 
         assertNotNull(checkResponse);
-        assertThat(checkResponse.getData().getId(), not(isEmptyOrNullString()));
+        assertThat(checkResponse.getData().getId(), not(emptyOrNullString()));
         assertThat(checkResponse.getLinks().getResult(), startsWith(ACROLINX_URL));
         assertThat(checkResponse.getLinks().getCancel(), startsWith(ACROLINX_URL));
     }

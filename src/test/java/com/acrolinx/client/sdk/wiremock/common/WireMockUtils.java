@@ -73,14 +73,14 @@ public class WireMockUtils
     {
         stubFor(get(urlEqualTo(API_PATH_PREFIX + path)).willReturn(
                 aResponse().withStatus(200).withHeader("Content-Type", "application/json").withBody(
-                        JsonUtils.toJson(new SuccessResponse(data))).withFixedDelay(delayMs)));
+                        JsonUtils.toJson(new SuccessResponse<T>(data))).withFixedDelay(delayMs)));
     }
 
     public static <T> void mockPostSuccessResponseWithDelay(String path, T data, int delayMs)
     {
         stubFor(post(urlEqualTo(API_PATH_PREFIX + path)).willReturn(
                 aResponse().withStatus(200).withHeader("Content-Type", "application/json").withBody(
-                        JsonUtils.toJson(new SuccessResponse(data))).withFixedDelay(delayMs)));
+                        JsonUtils.toJson(new SuccessResponse<T>(data))).withFixedDelay(delayMs)));
     }
 
     public static <T> void mockPostResponse(String path, T response)
@@ -92,7 +92,7 @@ public class WireMockUtils
             String requiredState)
     {
         stubFor(get(urlEqualTo(API_PATH_PREFIX + path)).inScenario(scenario).whenScenarioStateIs(
-                requiredState).willReturn(okJson(JsonUtils.toJson(new SuccessResponse(successData)))));
+                requiredState).willReturn(okJson(JsonUtils.toJson(new SuccessResponse<T>(successData)))));
     }
 
     public static <T> void mockGetResponseInScenario(String path, T response, String scenario, String requiredState,
