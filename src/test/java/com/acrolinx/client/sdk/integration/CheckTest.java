@@ -8,6 +8,7 @@ import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.ACROLIN
 import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.ACROLINX_URL;
 import static com.acrolinx.client.sdk.testutils.IssueUtils.findIssueWithFirstSuggestion;
 import static com.acrolinx.client.sdk.testutils.IssueUtils.findIssueWithSurface;
+import static com.acrolinx.client.sdk.testutils.TestConstants.DEVELOPMENT_SIGNATURE;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertEquals;
@@ -17,6 +18,8 @@ import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.verify;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -29,6 +32,7 @@ import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import com.acrolinx.client.sdk.AcrolinxEndpoint;
 import com.acrolinx.client.sdk.Progress;
 import com.acrolinx.client.sdk.check.*;
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
@@ -95,6 +99,24 @@ public class CheckTest extends IntegrationTestBase
         CheckResult.Report scorecard = checkResult.getReport(ReportType.scorecard);
         assertEquals("Score Card", scorecard.getDisplayName());
         assertThat(scorecard.getLink(), startsWith(ACROLINX_URL));
+    }
+
+    @Test
+    public void checkWithUserAndSdkUrl() throws AcrolinxException, URISyntaxException
+    {
+        URI realAcrolinxURL = new URI(ACROLINX_URL);
+        URI userFacingAcrolinxURL = new URI("https://www.acrolinx.com/proxy");
+
+        endpoint = new AcrolinxEndpoint(realAcrolinxURL, userFacingAcrolinxURL, DEVELOPMENT_SIGNATURE, "1.2.3.4", "en");
+
+        CheckResult checkResult = endpoint.check(ACROLINX_API_TOKEN,
+                CheckRequest.ofDocumentContent("This textt has ann erroor.").withContentReference(
+                        ("file.txt")).build());
+
+        assertThat(checkResult.getReport(ReportType.scorecard).getLink(),
+                startsWith("https://www.acrolinx.com/proxy/"));
+        assertThat(checkResult.getReport(ReportType.scorecard).getLink(),
+                not(startsWith("https://www.acrolinx.com/proxy//")));
     }
 
     @Test
