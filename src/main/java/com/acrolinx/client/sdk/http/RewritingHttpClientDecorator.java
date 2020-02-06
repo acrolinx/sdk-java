@@ -1,6 +1,7 @@
 /**
  * Copyright (c) 2020-present Acrolinx GmbH
  */
+
 package com.acrolinx.client.sdk.http;
 
 import java.io.IOException;
@@ -13,14 +14,16 @@ import org.slf4j.LoggerFactory;
 
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 
-public class RewritingHttpClientDecorator implements AcrolinxHttpClient {
+public class RewritingHttpClientDecorator implements AcrolinxHttpClient
+{
     private final AcrolinxHttpClient delegate;
     private final URI from;
     private final URI to;
 
     private static final Logger logger = LoggerFactory.getLogger(RewritingHttpClientDecorator.class);
 
-    public RewritingHttpClientDecorator(final AcrolinxHttpClient delegate, final URI from, final URI to) {
+    public RewritingHttpClientDecorator(final AcrolinxHttpClient delegate, final URI from, final URI to)
+    {
         this.delegate = delegate;
         this.from = from;
         this.to = to;
@@ -28,12 +31,14 @@ public class RewritingHttpClientDecorator implements AcrolinxHttpClient {
 
     @Override
     public AcrolinxResponse fetch(final URI url, final HttpMethod method, final Map<String, String> headers,
-            final String body) throws IOException, AcrolinxException {
+            final String body) throws IOException, AcrolinxException
+    {
 
         return delegate.fetch(patchUrl(url), method, headers, body);
     }
 
-    private URI patchUrl(final URI url) {
+    private URI patchUrl(final URI url)
+    {
         if (!from.getScheme().toLowerCase().equals(url.getScheme().toLowerCase())
                 || !from.getAuthority().toLowerCase().equals(url.getAuthority().toLowerCase())
                 || !url.getPath().toLowerCase().startsWith(from.getPath().toLowerCase())) {
@@ -50,7 +55,8 @@ public class RewritingHttpClientDecorator implements AcrolinxHttpClient {
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() throws IOException
+    {
         delegate.close();
     }
 }
