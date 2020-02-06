@@ -124,6 +124,7 @@ task javadocJar(type: Jar) {
 license {
 	header rootProject.file('LICENSE_HEADER')
 	strictCheck true
+	skipExistingHeaders true
 	excludes(["**/*.json", "**/*.xml"])
 }
 
