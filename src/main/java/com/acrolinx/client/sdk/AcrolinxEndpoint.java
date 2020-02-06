@@ -26,6 +26,7 @@ import com.acrolinx.client.sdk.http.AcrolinxHttpClient;
 import com.acrolinx.client.sdk.http.AcrolinxResponse;
 import com.acrolinx.client.sdk.http.ApacheHttpClient;
 import com.acrolinx.client.sdk.http.HttpMethod;
+import com.acrolinx.client.sdk.http.RewritingHttpClientDecorator;
 import com.acrolinx.client.sdk.internal.*;
 import com.acrolinx.client.sdk.platform.Capabilities;
 import com.acrolinx.client.sdk.platform.Link;
@@ -45,8 +46,8 @@ public class AcrolinxEndpoint
      *
      * @param acrolinxURL URL to your Acrolinx Platform for example: https://yourcompany.acrolinx.com
      * @param signature License to use integration with Acrolinx.
-     * @param clientVersion Version number of your client for example: 1.2.5.34
-     * @param clientLocale Locale of environment in which integration is deployed.
+     * @param clientVersion Version number of your Acrolinx Integration for example: 1.2.5.34
+     * @param clientLocale Locale of environment in which the integration is deployed.
      */
     public AcrolinxEndpoint(URI acrolinxURL, String signature, String clientVersion, String clientLocale)
     {
@@ -54,12 +55,41 @@ public class AcrolinxEndpoint
     }
 
     /**
+     * Use this constructor in case the URL that is returned to the user have to differ to the URL the
+     * integration connects to.
+     * 
+     * Examples:
+     * <ul>
+     * <li>An SSO-proxy is used to access the Scorecard and the Content Analysis dashboard, but the SDK
+     * in an automated environment isn’t able to use the same route.
+     * https://yourcompany.myintegration.com/proxy/ vs. https://yourcompany.acrolinx.com.</li>
+     * <li>An integration can connect directly to the Acrolinx Platform using an internal URL, where a
+     * user has to access it using an external URL. http://localhost:8031 vs.
+     * https://yourcompany.acrolinx.com.</li>
+     * </ul>
+     * 
+     * @param sdkAcrolinxURL URL to your Acrolinx Platform for example: https://yourcompany.acrolinx.com
+     * @param userFacingAcrolinxURL URL to your Acrolinx Platform that is returned to the user:
+     *        https://yourcompany.myintegration.com/proxy/
+     * @param signature License to use integration with Acrolinx.
+     * @param clientVersion Version number of your Acrolinx Integration for example: 1.2.5.34
+     * @param clientLocale Locale of environment in which the integration is deployed.
+     */
+    public AcrolinxEndpoint(URI sdkAcrolinxURL, URI userFacingAcrolinxURL, String signature, String clientVersion,
+            String clientLocale)
+    {
+        this(new RewritingHttpClientDecorator(new ApacheHttpClient(), userFacingAcrolinxURL, sdkAcrolinxURL),
+                userFacingAcrolinxURL, signature, clientVersion, clientLocale);
+    }
+
+    /**
      *
-     * @param httpClient Provide your own http client implementing AcrolinxHttpClient interface
+     * @param httpClient Provide your own http Acrolinx Integration implementing
+     *        {@link AcrolinxHttpClient} interface
      * @param acrolinxURL URL to your Acrolinx Platform for example: https://yourcompany.acrolinx.com
      * @param signature License to use integration with Acrolinx.
-     * @param clientVersion Version number of your client for example: 1.2.5.37
-     * @param clientLocale Locale of environment in which integration is deployed.
+     * @param clientVersion Version number of your Acrolinx Integration for example: 1.2.5.37
+     * @param clientLocale Locale of environment in which the integration is deployed.
      */
     public AcrolinxEndpoint(AcrolinxHttpClient httpClient, URI acrolinxURL, String signature, String clientVersion,
             String clientLocale)

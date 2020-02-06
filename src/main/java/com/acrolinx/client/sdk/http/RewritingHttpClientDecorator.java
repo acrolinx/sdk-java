@@ -1,4 +1,8 @@
 
+/**
+ * Copyright (c) 2020-present Acrolinx GmbH
+ */
+
 package com.acrolinx.client.sdk.http;
 
 import java.io.IOException;
