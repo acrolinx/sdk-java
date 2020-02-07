@@ -1,3 +1,5 @@
+import java.time.Duration
+
 plugins {
 	// Apply the java-library plugin to add support for Java Library
 	id 'java-library'
@@ -233,8 +235,8 @@ publishing {
 }
 
 nexusPublishing {
-	connectTimeout = 12000
-	clientTimeout = 12000
+	connectTimeout = Duration.ofMinutes(5);
+	clientTimeout =  Duration.ofMinutes(5);
 	repositories {
 		sonatype {
 			username = sonatypeUsername
