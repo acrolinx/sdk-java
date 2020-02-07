@@ -233,8 +233,8 @@ publishing {
 }
 
 nexusPublishing {
-	connectTimeout = 5
-	clientTimeout = 5
+	connectTimeout = 12000
+	clientTimeout = 12000
 	repositories {
 		sonatype {
 			username = sonatypeUsername
