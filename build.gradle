@@ -233,6 +233,8 @@ publishing {
 }
 
 nexusPublishing {
+	connectTimeout = 5
+	clientTimeout = 5
 	repositories {
 		sonatype {
 			username = sonatypeUsername
@@ -282,7 +284,6 @@ tasks.withType(Javadoc) {
 nexusStaging{
 	numberOfRetries = 40
 	delayBetweenRetriesInMillis = 4000
-	stagingRepositoryId = "comacrolinxclient-1166"
 	username = sonatypeUsername
 	password = sonatypePassword
 }
