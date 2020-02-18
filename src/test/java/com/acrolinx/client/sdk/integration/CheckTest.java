@@ -120,6 +120,24 @@ public class CheckTest extends IntegrationTestBase
     }
 
     @Test
+    public void checkWithUserAndSdkUrl2() throws AcrolinxException, URISyntaxException
+    {
+        URI realAcrolinxURL = new URI(ACROLINX_URL);
+        URI userFacingAcrolinxURL = new URI("https://www.acrolinx.com/proxy/");
+
+        endpoint = new AcrolinxEndpoint(realAcrolinxURL, userFacingAcrolinxURL, DEVELOPMENT_SIGNATURE, "1.2.3.4", "en");
+
+        CheckResult checkResult = endpoint.check(ACROLINX_API_TOKEN,
+                CheckRequest.ofDocumentContent("This textt has ann erroor.").withContentReference(
+                        ("file.txt")).build());
+
+        assertThat(checkResult.getReport(ReportType.scorecard).getLink(),
+                startsWith("https://www.acrolinx.com/proxy/"));
+        assertThat(checkResult.getReport(ReportType.scorecard).getLink(),
+                not(startsWith("https://www.acrolinx.com/proxy//")));
+    }
+
+    @Test
     public void checkUtf8() throws AcrolinxException
     {
         String documentContent = "an naïve approach";
