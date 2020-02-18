@@ -37,7 +37,7 @@ Before you start developing your own integration, you might benefit from looking
 <dependency>
     <groupId>com.acrolinx.client</groupId>
     <artifactId>sdk</artifactId>
-    <version>1.0.5</version>
+    <version>1.0.6</version>
 </dependency>
 ```
 
@@ -49,7 +49,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.acrolinx.client:sdk:1.0.5'
+    implementation 'com.acrolinx.client:sdk:1.0.6'
 }
 ```
 
