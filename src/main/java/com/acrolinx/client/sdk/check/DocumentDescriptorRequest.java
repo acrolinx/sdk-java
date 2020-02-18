@@ -6,7 +6,7 @@ package com.acrolinx.client.sdk.check;
 
 import java.util.List;
 
-class DocumentDescriptorRequest
+public class DocumentDescriptorRequest
 {
     private final String reference;
     private final List<CustomField> customFields;
@@ -17,12 +17,12 @@ class DocumentDescriptorRequest
         this.customFields = customFields;
     }
 
-    String getReference()
+    public String getReference()
     {
         return reference;
     }
 
-    List<CustomField> getCustomFields()
+    public List<CustomField> getCustomFields()
     {
         return customFields;
     }
