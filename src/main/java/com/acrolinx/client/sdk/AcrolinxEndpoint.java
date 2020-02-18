@@ -44,10 +44,10 @@ public class AcrolinxEndpoint
 
     /**
      *
-     * @param acrolinxURL URL to your Acrolinx Platform for example: https://yourcompany.acrolinx.com
-     * @param signature License to use integration with Acrolinx.
+     * @param acrolinxURL   URL to your Acrolinx Platform for example: https://yourcompany.acrolinx.com
+     * @param signature     License to use integration with Acrolinx.
      * @param clientVersion Version number of your Acrolinx Integration for example: 1.2.5.34
-     * @param clientLocale Locale of environment in which the integration is deployed.
+     * @param clientLocale  Locale of environment in which the integration is deployed.
      */
     public AcrolinxEndpoint(URI acrolinxURL, String signature, String clientVersion, String clientLocale)
     {
@@ -68,12 +68,13 @@ public class AcrolinxEndpoint
      * https://yourcompany.acrolinx.com.</li>
      * </ul>
      * 
-     * @param sdkAcrolinxURL URL to your Acrolinx Platform for example: https://yourcompany.acrolinx.com
+     * @param sdkAcrolinxURL        URL to your Acrolinx Platform for example:
+     *                              https://yourcompany.acrolinx.com
      * @param userFacingAcrolinxURL URL to your Acrolinx Platform that is returned to the user:
-     *        https://yourcompany.myintegration.com/proxy/
-     * @param signature License to use integration with Acrolinx.
-     * @param clientVersion Version number of your Acrolinx Integration for example: 1.2.5.34
-     * @param clientLocale Locale of environment in which the integration is deployed.
+     *                              https://yourcompany.myintegration.com/proxy/
+     * @param signature             License to use integration with Acrolinx.
+     * @param clientVersion         Version number of your Acrolinx Integration for example: 1.2.5.34
+     * @param clientLocale          Locale of environment in which the integration is deployed.
      */
     public AcrolinxEndpoint(URI sdkAcrolinxURL, URI userFacingAcrolinxURL, String signature, String clientVersion,
             String clientLocale)
@@ -84,12 +85,12 @@ public class AcrolinxEndpoint
 
     /**
      *
-     * @param httpClient Provide your own http Acrolinx Integration implementing
-     *        {@link AcrolinxHttpClient} interface
-     * @param acrolinxURL URL to your Acrolinx Platform for example: https://yourcompany.acrolinx.com
-     * @param signature License to use integration with Acrolinx.
+     * @param httpClient    Provide your own http Acrolinx Integration implementing
+     *                      {@link AcrolinxHttpClient} interface
+     * @param acrolinxURL   URL to your Acrolinx Platform for example: https://yourcompany.acrolinx.com
+     * @param signature     License to use integration with Acrolinx.
      * @param clientVersion Version number of your Acrolinx Integration for example: 1.2.5.37
-     * @param clientLocale Locale of environment in which the integration is deployed.
+     * @param clientLocale  Locale of environment in which the integration is deployed.
      */
     public AcrolinxEndpoint(AcrolinxHttpClient httpClient, URI acrolinxURL, String signature, String clientVersion,
             String clientLocale)
@@ -105,7 +106,7 @@ public class AcrolinxEndpoint
      * Throws an exception if the acrolinxHttpResponse indicates an error.
      *
      * @throws AcrolinxServiceException Acrolinx specific to Http Client.
-     * @throws RuntimeException JSON parsing failure.
+     * @throws RuntimeException         JSON parsing failure.
      */
     private static void validateHttpResponse(AcrolinxResponse acrolinxHttpResponse, URI uri, HttpMethod method)
             throws AcrolinxException
@@ -160,7 +161,7 @@ public class AcrolinxEndpoint
      * Single sign-on
      *
      * @param genericToken Generic SSO token configured on your Acrolinx Platform.
-     * @param username User who wants to authenticate
+     * @param username     User who wants to authenticate
      * @return SignInSuccess holds the access token that is required to initiate check
      */
     public SignInSuccess signInWithSSO(String genericToken, String username) throws AcrolinxException
@@ -186,9 +187,9 @@ public class AcrolinxEndpoint
     /**
      * An interactive sign-in where user can open URL in a browser to sign in.
      *
-     * @param callback Provide a method that can be called to open sign-in link in the browser.
+     * @param callback    Provide a method that can be called to open sign-in link in the browser.
      * @param accessToken Provide an already available access to check its validity
-     * @param timeoutMs Provide timeout in milliseconds
+     * @param timeoutMs   Provide timeout in milliseconds
      * @return SignInSuccess holds the access token that is required to initiate check
      */
     public SignInSuccess signInInteractive(final InteractiveCallback callback, AccessToken accessToken, long timeoutMs)
@@ -235,7 +236,7 @@ public class AcrolinxEndpoint
      * Get check capabilities of the Platform
      * 
      * @param accessToken Provide access token obtained from Sign-in Success Response or Acrolinx
-     *        dashboard
+     *                    dashboard
      * @return Checking capabilities available for Platform
      */
     public Capabilities getCapabilities(AccessToken accessToken) throws AcrolinxException
@@ -246,8 +247,8 @@ public class AcrolinxEndpoint
     /**
      * Submit a check request
      *
-     * @param accessToken Provide access token obtained from Sign-in Success Response or Acrolinx
-     *        dashboard.
+     * @param accessToken  Provide access token obtained from Sign-in Success Response or Acrolinx
+     *                     dashboard.
      * @param checkRequest Use CheckRequestBuilder to simplify building check request.
      * @return Check response contains the URL to fetch check result.
      */
@@ -261,8 +262,8 @@ public class AcrolinxEndpoint
      * Get URL to Content Analysis dashboard
      *
      * @param accessToken Provide access token obtained from Sign-in Success Response or Acrolinx
-     *        dashboard
-     * @param batchId Provide a batch Id submitted for performing a check
+     *                    dashboard
+     * @param batchId     Provide a batch Id submitted for performing a check
      * @return String contains URL to Content Analysis dashboard.
      */
     public String getContentAnalysisDashboard(AccessToken accessToken, String batchId) throws AcrolinxException
@@ -283,9 +284,9 @@ public class AcrolinxEndpoint
     /**
      * Submits a check and waits until result is obtained.
      * 
-     * @param accessToken Provide access token obtained from Sign-in Success Response or Acrolinx
-     *        dashboard
-     * @param checkRequest Use CheckRequestBuilder to simplify building check request.
+     * @param accessToken      Provide access token obtained from Sign-in Success Response or Acrolinx
+     *                         dashboard
+     * @param checkRequest     Use CheckRequestBuilder to simplify building check request.
      * @param progressListener Provides statistical information about check progress
      * @return Acrolinx Scorecard for the checked content.
      */
@@ -371,8 +372,10 @@ public class AcrolinxEndpoint
             AccessToken accessToken, String body, Map<String, String> extraHeaders) throws AcrolinxException
     {
         try {
-            URI uri = new URIBuilder().setScheme(acrolinxUri.getScheme()).setPort(acrolinxUri.getPort()).setHost(
-                    acrolinxUri.getHost()).setPath(acrolinxUri.getPath() + "api/v1/" + apiPath).build();
+            URI uri = new URIBuilder().setScheme(acrolinxUri.getScheme()).setPort(
+                    acrolinxUri.getPort()).setHost(acrolinxUri.getHost()).setPath(acrolinxUri.getPath()
+                            + (acrolinxUri.getPath().length() == 0 || acrolinxUri.getPath().endsWith("/") ? "" : "/")
+                            + "api/v1/" + apiPath).build();
             return fetchFromUrl(uri, deserializer, method, accessToken, body, extraHeaders);
         } catch (IOException | URISyntaxException e) {
             logger.debug("Uri formation failed");
@@ -398,8 +401,8 @@ public class AcrolinxEndpoint
      * Check if document you wish to check is supported by Platform
      * 
      * @param documentType Type of your document for example: .xml, .md, .dita
-     * @param accessToken Provide access token obtained from Sign-in Success Response or Acrolinx
-     *        dashboard
+     * @param accessToken  Provide access token obtained from Sign-in Success Response or Acrolinx
+     *                     dashboard
      * @return true if document type is checkable and false if not.
      */
     public boolean isDocumentTypeCheckable(String documentType, AccessToken accessToken) throws AcrolinxException
