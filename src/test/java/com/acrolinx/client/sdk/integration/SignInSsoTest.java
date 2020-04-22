@@ -9,6 +9,7 @@ import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.ACROLIN
 import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.ACROLINX_URL;
 import static com.acrolinx.client.sdk.testutils.TestConstants.DEVELOPMENT_SIGNATURE;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 
 import java.net.URI;
@@ -29,6 +30,26 @@ public class SignInSsoTest extends IntegrationTestBase
         assumeTrue(ACROLINX_API_USERNAME != null && ACROLINX_API_SSO_TOKEN != null);
 
         SignInSuccess signInSuccess = endpoint.signInWithSSO(ACROLINX_API_SSO_TOKEN, ACROLINX_API_USERNAME);
+        assertEquals(ACROLINX_API_USERNAME, signInSuccess.getUser().getUsername());
+    }
+
+    @Test
+    public void testSignInWithSSOIgnoreCase() throws AcrolinxException
+    {
+        assumeTrue(ACROLINX_API_USERNAME != null && ACROLINX_API_SSO_TOKEN != null);
+        assumeFalse(endpoint.getPlatformInformation().getServer().getVersion().equals("2020.04.22154"));
+
+        SignInSuccess signInSuccess = endpoint.signInWithSSO(ACROLINX_API_SSO_TOKEN, ACROLINX_API_USERNAME.toUpperCase());
+        assertEquals(ACROLINX_API_USERNAME, signInSuccess.getUser().getUsername());
+    }
+
+    @Test
+    public void testSignInWithSSOIgnoreCase2() throws AcrolinxException
+    {
+        assumeTrue(ACROLINX_API_USERNAME != null && ACROLINX_API_SSO_TOKEN != null);
+        assumeFalse(endpoint.getPlatformInformation().getServer().getVersion().equals("2020.04.22154"));
+
+        SignInSuccess signInSuccess = endpoint.signInWithSSO(ACROLINX_API_SSO_TOKEN, ACROLINX_API_USERNAME.toLowerCase());
         assertEquals(ACROLINX_API_USERNAME, signInSuccess.getUser().getUsername());
     }
 
