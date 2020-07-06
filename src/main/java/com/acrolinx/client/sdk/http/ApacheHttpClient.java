@@ -43,6 +43,7 @@ public class ApacheHttpClient implements AcrolinxHttpClient
     {
         final PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
         final HttpClientBuilder httpClientBuilder = HttpClientBuilder.create().setConnectionManager(cm);
+        httpClientBuilder.useSystemProperties();
         return httpClientBuilder.build();
     }
 
