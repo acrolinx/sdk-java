@@ -23,7 +23,7 @@ Before you start developing your own integration, you might benefit from looking
 * [Getting Started with Custom Integrations](https://docs.acrolinx.com/customintegrations),
 * the [Guidance for the Development of Acrolinx Integrations](https://github.com/acrolinx/acrolinx-coding-guidance),
 * the [Acrolinx Platform API](https://github.com/acrolinx/platform-api)
-* the [Rendered Version of Acrolinx Platform API](https://acrolinxapi.docs.apiary.io/#)
+* the [Rendered Version of the Acrolinx Platform API](https://acrolinxapi.docs.apiary.io/#)
 * the [Acrolinx SDKs](https://github.com/acrolinx?q=sdk), and
 * the [Acrolinx Demo Projects](https://github.com/acrolinx?q=demo).
 
@@ -55,9 +55,9 @@ dependencies {
 
 #### First Steps
 
-Create instance of AcrolinxEndpoint to begin.
+Create instance of `AcrolinxEndpoint` to begin.
 
-AcrolinxEndpoint offers a single entry point to avail features provided by the SDK.
+`AcrolinxEndpoint` offers a single entry point to the avail features provided by the SDK.
 
 See the [Acrolinx Java SDK demo](https://github.com/acrolinx/sdk-demo-java/blob/master/src/main/java/com/acrolinx/client/demo/SdkDemo.java) for a quickstart example.
 
