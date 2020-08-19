@@ -4,7 +4,7 @@
 
 1. Check out the project, create, and configure an `.env` file as described above.
 
-2. Please add new features using the master branch, or submit a pull request.
+2. Please add new features using the `master` branch, or submit a pull request.
    To install dependencies, build, and test the project, run:
 
    ```bash
