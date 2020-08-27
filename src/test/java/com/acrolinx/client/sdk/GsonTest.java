@@ -63,7 +63,7 @@ public class GsonTest
 
         if (signInResponse instanceof SignInResponse.SignInLinks) {
             SignInResponse.SignInLinksInternal links = ((SignInResponse.SignInLinks) signInResponse).links;
-            assertEquals("https://test-next-ssl.acrolinx.com/signin/?ticket_id=2b3db9c6-79e3-4cc0-b760-624fb19802e9",
+            assertEquals("https://acrolinx.com/signin/?ticket_id=2b3db9c6-79e3-4cc0-b760-624fb19802e9",
                     links.getInteractive());
         } else {
             fail("signInResponse should be links but is " + signInResponse);
