@@ -69,8 +69,8 @@ jacocoTestReport {
 dependencyCheck {
 	formats = ['HTML', 'XML']
 	cve {
-		urlModified = 'https://dune.dev.acrolinx.com/~nist-data-mirror/nvdcve-1.0-modified.json.gz'
-		urlBase = 'https://dune.dev.acrolinx.com/~nist-data-mirror/nvdcve-1.0-%d.json.gz'
+		urlModified = 'https://dune.dev.acrolinx.com/~nist-data-mirror/nvdcve-1.1-modified.json.gz'
+		urlBase = 'https://dune.dev.acrolinx.com/~nist-data-mirror/nvdcve-1.1-%d.json.gz'
 	}
 }
 
