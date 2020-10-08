@@ -38,14 +38,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import org.hamcrest.Matchers;
-import org.hamcrest.collection.IsEmptyCollection;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
-import org.mockito.internal.matchers.GreaterThan;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import com.acrolinx.client.sdk.AcrolinxEndpoint;
@@ -172,6 +169,17 @@ public class CheckTest extends IntegrationTestBase
             assertThat(goal.getColor(), not(""));
             assertThat(goal.getDisplayName(), not(""));
         }
+    }
+
+    @Test
+    public void checkAndGetCounts() throws AcrolinxException
+    {
+        CheckResult checkResult = checkEnglishText("This textt has ann erroor.");
+
+        assertNotNull(checkResult.getCounts());
+        assertThat(checkResult.getCounts().getSentences(), not(0));
+        assertThat(checkResult.getCounts().getWords(), not(0));
+        assertEquals(checkResult.getCounts().getIssues(), checkResult.getIssues().size());
     }
 
     @Test

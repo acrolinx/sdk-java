@@ -15,15 +15,17 @@ public class CheckResult
     private final List<Issue> issues;
     private final List<Goal> goals;
     private Goals goalsObj;
+    private final Counts counts;
 
     public CheckResult(final String id, final Quality quality, final Map<String, Report> reports,
-            final List<Issue> issues, final List<Goal> goals)
+            final List<Issue> issues, final List<Goal> goals, Counts counts)
     {
         this.id = id;
         this.quality = quality;
         this.reports = reports;
         this.issues = issues;
         this.goals = goals;
+        this.counts = counts;
     }
 
     public Goals getGoals()
@@ -94,5 +96,10 @@ public class CheckResult
     {
         return "CheckResult{" + "id='" + id + '\'' + ", quality=" + quality + ", reports=" + reports + ", issues="
                 + issues + '}';
+    }
+
+    public Counts getCounts()
+    {
+        return counts;
     }
 }
