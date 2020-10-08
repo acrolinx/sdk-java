@@ -13,13 +13,27 @@ public class CheckResult
     private final Quality quality;
     private final Map<String, Report> reports;
     private final List<Issue> issues;
+    private final List<Goal> goals;
+    private Goals goalsObj;
 
-    public CheckResult(String id, Quality quality, Map<String, Report> reports, List<Issue> issues)
+    public CheckResult(final String id, final Quality quality, final Map<String, Report> reports,
+            final List<Issue> issues, final List<Goal> goals)
     {
         this.id = id;
         this.quality = quality;
         this.reports = reports;
         this.issues = issues;
+        this.goals = goals;
+    }
+
+    public Goals getGoals()
+    {
+        synchronized (goals) {
+            if (goalsObj == null) {
+                goalsObj = new Goals(goals);
+            }
+        }
+        return goalsObj;
     }
 
     public String getId()
@@ -37,7 +51,7 @@ public class CheckResult
         return reports;
     }
 
-    public Report getReport(ReportType reportType)
+    public Report getReport(final ReportType reportType)
     {
         return reports.get(reportType.toString());
     }
@@ -52,7 +66,7 @@ public class CheckResult
         private final String displayName;
         private final String link;
 
-        public Report(String displayName, String link)
+        public Report(final String displayName, final String link)
         {
             this.displayName = displayName;
             this.link = link;

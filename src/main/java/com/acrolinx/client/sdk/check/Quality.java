@@ -17,13 +17,20 @@ public class Quality
 
     private final int score;
     private final Status status;
-    private List<ScoresByGoal> scoresByGoal;
+    private final List<ScoresByGoal> scoresByGoal;
+    private final List<Goal> goals;
 
-    public Quality(int score, Status status, List<ScoresByGoal> scoresByGoal)
+    public Quality(int score, Status status, List<ScoresByGoal> scoresByGoal, List<Goal> goals)
     {
         this.score = score;
         this.status = status;
         this.scoresByGoal = scoresByGoal;
+        this.goals = goals;
+    }
+
+    public List<Goal> getGoals()
+    {
+        return goals;
     }
 
     public int getScore()
@@ -44,6 +51,7 @@ public class Quality
     @Override
     public String toString()
     {
-        return "Quality{" + "score=" + score + ", status=" + status + ", scoresByGoal=" + scoresByGoal + '}';
+        return "Quality{goals=" + goals + ", score=" + score + ", scoresByGoal=" + scoresByGoal + ", status=" + status
+                + "}";
     }
 }

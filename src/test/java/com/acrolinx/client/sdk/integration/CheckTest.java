@@ -10,6 +10,7 @@ import static com.acrolinx.client.sdk.testutils.IssueUtils.findIssueWithFirstSug
 import static com.acrolinx.client.sdk.testutils.IssueUtils.findIssueWithSurface;
 import static com.acrolinx.client.sdk.testutils.TestConstants.DEVELOPMENT_SIGNATURE;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.lessThan;
@@ -19,6 +20,7 @@ import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assume.assumeTrue;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.atLeast;
@@ -36,11 +38,14 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import org.hamcrest.Matchers;
+import org.hamcrest.collection.IsEmptyCollection;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
+import org.mockito.internal.matchers.GreaterThan;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import com.acrolinx.client.sdk.AcrolinxEndpoint;
@@ -52,6 +57,7 @@ import com.acrolinx.client.sdk.check.CheckResponse;
 import com.acrolinx.client.sdk.check.CheckResult;
 import com.acrolinx.client.sdk.check.CheckType;
 import com.acrolinx.client.sdk.check.CustomField;
+import com.acrolinx.client.sdk.check.Goal;
 import com.acrolinx.client.sdk.check.Issue;
 import com.acrolinx.client.sdk.check.ProgressListener;
 import com.acrolinx.client.sdk.check.Quality;
@@ -136,6 +142,36 @@ public class CheckTest extends IntegrationTestBase
         CheckResult.Report scorecard = checkResult.getReport(ReportType.scorecard);
         assertEquals("Score Card", scorecard.getDisplayName());
         assertThat(scorecard.getLink(), startsWith(ACROLINX_URL));
+    }
+
+    @Test
+    public void checkAndGetGoals() throws AcrolinxException
+    {
+        CheckResult checkResult = checkEnglishText("This textt has ann erroor.");
+
+        assertNotNull(checkResult.getGoals());
+        assertThat(checkResult.getGoals().getAll(), not(empty()));
+        assertThat(checkResult.getIssues(), not(empty()));
+        assertSame(checkResult.getGoals(), checkResult.getGoals());
+        assertSame(checkResult.getGoals().getAll(), checkResult.getGoals().getAll());
+
+        for (Issue issue : checkResult.getIssues()) {
+            assertEquals(issue.getGoalId(), checkResult.getGoals().ofIssue(issue).getId());
+            assertThat(checkResult.getGoals().ofIssue(issue).getIssues(), not(0));
+            assertNotNull(checkResult.getGoals().ofIssue(issue).getColor());
+            assertNotNull(checkResult.getGoals().ofIssue(issue).getDisplayName());
+            assertThat(checkResult.getGoals().ofIssue(issue).getColor(), not(""));
+            assertThat(checkResult.getGoals().ofIssue(issue).getDisplayName(), not(""));
+        }
+
+        for (Goal goal : checkResult.getGoals().getAll()) {
+            assertNotNull(goal.getId());
+            assertNotNull(goal.getColor());
+            assertNotNull(goal.getDisplayName());
+            assertThat(goal.getId(), not(""));
+            assertThat(goal.getColor(), not(""));
+            assertThat(goal.getDisplayName(), not(""));
+        }
     }
 
     @Test
@@ -232,6 +268,8 @@ public class CheckTest extends IntegrationTestBase
         assertEquals(2, match.getOriginalBegin());
         assertEquals(7, match.getOriginalEnd());
         assertEquals("textt", match.getOriginalPart());
+
+        assertNotNull(issue.getGoalId());
     }
 
     /**

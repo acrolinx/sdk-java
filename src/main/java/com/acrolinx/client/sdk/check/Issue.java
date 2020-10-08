@@ -13,15 +13,17 @@ public class Issue
     private final String displaySurface;
     private final List<Suggestion> suggestions;
     private final PositionalInformation positionalInformation;
+    private final String goalId;
 
     public Issue(String displayNameHtml, String guidanceHtml, String displaySurface, List<Suggestion> suggestions,
-            PositionalInformation positionalInformation)
+            PositionalInformation positionalInformation, String goalId)
     {
         this.displayNameHtml = displayNameHtml;
         this.guidanceHtml = guidanceHtml;
         this.displaySurface = displaySurface;
         this.suggestions = suggestions;
         this.positionalInformation = positionalInformation;
+        this.goalId = goalId;
     }
 
     public String getDisplayNameHtml()
@@ -133,5 +135,10 @@ public class Issue
             return "Match{" + "originalBegin=" + originalBegin + ", originalEnd=" + originalEnd + ", originalPart='"
                     + originalPart + '\'' + '}';
         }
+    }
+
+    public String getGoalId()
+    {
+        return this.goalId;
     }
 }
