@@ -20,3 +20,5 @@
 .project
 .settings
 bin
+sdk-java.ipr
+sdk-java.iws
