@@ -403,11 +403,14 @@ public class CheckTest extends IntegrationTestBase
         CheckOptions checkOptions = CheckOptions.getBuilder().withGuidanceProfileId(
                 guidanceProfileEn.getId()).withBatchId(UUID.randomUUID().toString()).withCheckType(
                         CheckType.baseline).withContentFormat("txt").build();
+
         List<ReportType> rtl = new ArrayList<>();
         rtl.add(ReportType.scorecard);
+        rtl.add((ReportType.termHarvesting));
         CheckResponse checkResponse = endpoint.submitCheck(ACROLINX_API_TOKEN,
                 CheckRequest.ofDocumentContent("This textt has ann erroor.").withContentReference(
                         "file.txt").withCheckOptions(checkOptions).build());
+
         assertNotNull(checkResponse);
         assertThat(checkResponse.getData().getId(), not(emptyOrNullString()));
         assertThat(checkResponse.getLinks().getResult(), startsWith(ACROLINX_URL));
