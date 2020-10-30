@@ -19,13 +19,20 @@ public class Quality
     private final Status status;
     private final List<ScoresByGoal> scoresByGoal;
     private final List<Goal> goals;
+    private final List<Metric> metrics;
 
-    public Quality(int score, Status status, List<ScoresByGoal> scoresByGoal, List<Goal> goals)
+    public Quality(int score, Status status, List<ScoresByGoal> scoresByGoal, List<Goal> goals, List<Metric> metrics)
     {
         this.score = score;
         this.status = status;
         this.scoresByGoal = scoresByGoal;
         this.goals = goals;
+        this.metrics = metrics;
+    }
+
+    public List<Metric> getMetrics()
+    {
+        return metrics;
     }
 
     public List<Goal> getGoals()
@@ -51,7 +58,7 @@ public class Quality
     @Override
     public String toString()
     {
-        return "Quality{goals=" + goals + ", score=" + score + ", scoresByGoal=" + scoresByGoal + ", status=" + status
-                + "}";
+        return "Quality{goals=" + goals + ", score=" + score + ", scoresByGoal=" + scoresByGoal + ", metrics=" + metrics
+                + ", status=" + status + "}";
     }
 }

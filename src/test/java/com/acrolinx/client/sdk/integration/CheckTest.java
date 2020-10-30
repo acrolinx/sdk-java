@@ -56,6 +56,7 @@ import com.acrolinx.client.sdk.check.CheckType;
 import com.acrolinx.client.sdk.check.CustomField;
 import com.acrolinx.client.sdk.check.Goal;
 import com.acrolinx.client.sdk.check.Issue;
+import com.acrolinx.client.sdk.check.Metric;
 import com.acrolinx.client.sdk.check.ProgressListener;
 import com.acrolinx.client.sdk.check.Quality;
 import com.acrolinx.client.sdk.check.Quality.Status;
@@ -168,6 +169,21 @@ public class CheckTest extends IntegrationTestBase
             assertThat(goal.getId(), not(""));
             assertThat(goal.getColor(), not(""));
             assertThat(goal.getDisplayName(), not(""));
+        }
+    }
+
+    @Test
+    public void checkAndGetMetrics() throws AcrolinxException
+    {
+        CheckResult checkResult = checkEnglishText("This textt has ann erroor.");
+
+        assertNotNull(checkResult.getQuality());
+        assertNotNull(checkResult.getQuality().getMetrics());
+        assertThat(checkResult.getQuality().getMetrics(), not(empty()));
+
+        for (Metric metric : checkResult.getQuality().getMetrics()) {
+            assertThat(metric.getId(), not(emptyOrNullString()));
+            assertThat(metric.getScore(), not(lessThanOrEqualTo(0)));
         }
     }
 
