@@ -13,6 +13,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.in;
 import static org.hamcrest.Matchers.lessThan;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.hamcrest.Matchers.not;
@@ -121,7 +122,7 @@ public class CheckTest extends IntegrationTestBase
                         ContentEncoding.base64).withContentReference(wordDocumentName).withCheckOptions(
                                 CheckOptions.getBuilder().withGuidanceProfileId(
                                         guidanceProfileEn.getId()).build()).build());
-        assertEquals(Status.red, checkResult.getQuality().getStatus());
+        assertThat(checkResult.getQuality().getStatus(), in(new Status[]{Status.red, Status.yellow}));
         assertFalse(checkResult.getReports().get("scorecard").getLink().length() == 0);
     }
 
