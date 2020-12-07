@@ -15,12 +15,14 @@ public class CheckRequestBuilder
     private CheckRequest.ContentEncoding contentEncoding;
     private CheckOptions checkOptions;
     private DocumentDescriptorRequest document;
+    private ExternalContent externalContent = null;
     private String reference = null;
     private List<CustomField> customFields = new ArrayList<>();
 
     CheckRequestBuilder(Document document) throws AcrolinxException
     {
         this.content = document.getContent();
+        this.externalContent = document.getExternalContent();
     }
 
     CheckRequestBuilder(String content)
@@ -63,6 +65,6 @@ public class CheckRequestBuilder
         if (this.reference != null) {
             this.document = new DocumentDescriptorRequest(this.reference, this.customFields);
         }
-        return new CheckRequest(content, contentEncoding, checkOptions, document);
+        return new CheckRequest(content, contentEncoding, checkOptions, document, this.externalContent);
     }
 }

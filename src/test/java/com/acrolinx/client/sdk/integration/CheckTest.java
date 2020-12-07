@@ -22,6 +22,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.atLeast;
@@ -55,13 +56,16 @@ import com.acrolinx.client.sdk.check.CheckResponse;
 import com.acrolinx.client.sdk.check.CheckResult;
 import com.acrolinx.client.sdk.check.CheckType;
 import com.acrolinx.client.sdk.check.CustomField;
+import com.acrolinx.client.sdk.check.ExternalContentBuilder;
 import com.acrolinx.client.sdk.check.Goal;
 import com.acrolinx.client.sdk.check.Issue;
+import com.acrolinx.client.sdk.check.Issue.Match;
 import com.acrolinx.client.sdk.check.Metric;
 import com.acrolinx.client.sdk.check.ProgressListener;
 import com.acrolinx.client.sdk.check.Quality;
 import com.acrolinx.client.sdk.check.Quality.Status;
 import com.acrolinx.client.sdk.check.ReportType;
+import com.acrolinx.client.sdk.check.SimpleDocument;
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import com.acrolinx.client.sdk.integration.common.IntegrationTestBase;
 import com.acrolinx.client.sdk.platform.Capabilities;
@@ -74,7 +78,7 @@ import com.google.common.collect.Lists;
 public class CheckTest extends IntegrationTestBase
 {
     /**
-     * This text should should need some seconds to check.
+     * This text should need some seconds to check.
      */
     private static final String longTestText = Strings.repeat("This sentence is nice. \n", 300);
     private GuidanceProfile guidanceProfileEn;
@@ -112,6 +116,10 @@ public class CheckTest extends IntegrationTestBase
         assertThat(checkResponse.getLinks().getCancel(), startsWith(ACROLINX_URL));
     }
 
+    /**
+     * The same works for all supported file types. See:
+     * https://github.com/acrolinx/acrolinx-coding-guidance/blob/master/topics/text-extraction.md
+     */
     @Test
     public void checkAWordDocument() throws AcrolinxException
     {
@@ -124,6 +132,84 @@ public class CheckTest extends IntegrationTestBase
                                         guidanceProfileEn.getId()).build()).build());
         assertThat(checkResult.getQuality().getStatus(), in(new Status[]{Status.red, Status.yellow}));
         assertFalse(checkResult.getReports().get("scorecard").getLink().length() == 0);
+    }
+
+    @Test
+    public void checkXmlWithCustomEntities() throws AcrolinxException
+    {
+        final String documentName = "xmlWithReferences.xml";
+        String xmlContent = "<x>&special;</x>";
+
+        ExternalContentBuilder externalContentBuilder = new ExternalContentBuilder();
+        externalContentBuilder.addEntity("special", "<y>This is an tesst!</y>");
+
+        CheckResult checkResult = endpoint.check(ACROLINX_API_TOKEN,
+                CheckRequest.ofDocument(
+                        new SimpleDocument(xmlContent, externalContentBuilder.build())).withContentReference(
+                                documentName).withCheckOptions(
+                                        CheckOptions.getBuilder().withGuidanceProfileId(
+                                                guidanceProfileEn.getId()).build()).build());
+        for (Issue issue : checkResult.getIssues()) {
+            for (Match match : issue.getPositionalInformation().getMatches()) {
+                if ("tesst".equals(match.getOriginalPart())) {
+                    return;
+                }
+            }
+        }
+        fail("Issues don't contain an expected referenced issue with surface 'tesst'. Issues: "
+                + checkResult.getIssues());
+    }
+
+    @Test
+    public void checkXmlWithPlainTextCustomEntities() throws AcrolinxException
+    {
+        final String documentName = "xmlWithReferences.xml";
+        String xmlContent = "<x>&special;</x>";
+
+        ExternalContentBuilder externalContentBuilder = new ExternalContentBuilder();
+        externalContentBuilder.addTextReplacement("special", "This is an tesst!");
+
+        CheckResult checkResult = endpoint.check(ACROLINX_API_TOKEN,
+                CheckRequest.ofDocument(
+                        new SimpleDocument(xmlContent, externalContentBuilder.build())).withContentReference(
+                                documentName).withCheckOptions(
+                                        CheckOptions.getBuilder().withGuidanceProfileId(
+                                                guidanceProfileEn.getId()).build()).build());
+        for (Issue issue : checkResult.getIssues()) {
+            for (Match match : issue.getPositionalInformation().getMatches()) {
+                if ("tesst".equals(match.getOriginalPart())) {
+                    return;
+                }
+            }
+        }
+        fail("Issues don't contain an expected referenced issue with surface 'tesst'. Issues: "
+                + checkResult.getIssues());
+    }
+
+    @Test
+    public void checkDitaMap() throws AcrolinxException
+    {
+        final String documentName = "test.ditamap";
+        String xmlContent = TestUtils.readResource("test.ditamap");
+
+        ExternalContentBuilder externalContentBuilder = new ExternalContentBuilder();
+        externalContentBuilder.addDitaReference("some.dita", TestUtils.readResource("test.topic"));
+
+        CheckResult checkResult = endpoint.check(ACROLINX_API_TOKEN,
+                CheckRequest.ofDocument(
+                        new SimpleDocument(xmlContent, externalContentBuilder.build())).withContentReference(
+                                documentName).withCheckOptions(
+                                        CheckOptions.getBuilder().withGuidanceProfileId(
+                                                guidanceProfileEn.getId()).build()).build());
+        for (Issue issue : checkResult.getIssues()) {
+            for (Match match : issue.getPositionalInformation().getMatches()) {
+                if ("tesst".equals(match.getOriginalPart())) {
+                    return;
+                }
+            }
+        }
+        fail("Issues don't contain an expected referenced issue with surface 'tesst'. Issues: "
+                + checkResult.getIssues());
     }
 
     @Test

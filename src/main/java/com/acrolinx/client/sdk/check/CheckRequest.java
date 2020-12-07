@@ -11,12 +11,18 @@ import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 public class CheckRequest
 {
     CheckRequest(String content, @Nullable ContentEncoding contentEncoding, @Nullable CheckOptions checkOptions,
-            @Nullable DocumentDescriptorRequest document)
+            @Nullable DocumentDescriptorRequest document, ExternalContent externalContent)
     {
         this.content = content;
         this.contentEncoding = contentEncoding;
         this.checkOptions = checkOptions;
         this.document = document;
+        this.externalContent = externalContent;
+    }
+
+    public ExternalContent getExternalContent()
+    {
+        return externalContent;
     }
 
     public static CheckRequestBuilder ofDocumentContent(String content)
@@ -39,6 +45,9 @@ public class CheckRequest
 
     @Nullable
     private final DocumentDescriptorRequest document;
+
+    @Nullable
+    private final ExternalContent externalContent;
 
     public String getContent()
     {
