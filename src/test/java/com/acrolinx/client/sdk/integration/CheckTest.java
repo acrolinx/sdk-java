@@ -141,7 +141,8 @@ public class CheckTest extends IntegrationTestBase
         String xmlContent = "<x>&special;</x>";
 
         ExternalContentBuilder externalContentBuilder = new ExternalContentBuilder();
-        externalContentBuilder.addEntity("special", "<y>This is an tesst!</y>");
+        externalContentBuilder.addEntity("special", "&special2;");
+        externalContentBuilder.addEntity("special2", "This is an tesst!");
 
         CheckResult checkResult = endpoint.check(ACROLINX_API_TOKEN,
                 CheckRequest.ofDocument(
@@ -149,6 +150,7 @@ public class CheckTest extends IntegrationTestBase
                                 documentName).withCheckOptions(
                                         CheckOptions.getBuilder().withGuidanceProfileId(
                                                 guidanceProfileEn.getId()).build()).build());
+
         for (Issue issue : checkResult.getIssues()) {
             for (Match match : issue.getPositionalInformation().getMatches()) {
                 if ("tesst".equals(match.getOriginalPart())) {
@@ -167,7 +169,9 @@ public class CheckTest extends IntegrationTestBase
         String xmlContent = "<x>&special;</x>";
 
         ExternalContentBuilder externalContentBuilder = new ExternalContentBuilder();
-        externalContentBuilder.addTextReplacement("special", "This is an tesst!");
+
+        externalContentBuilder.addTextReplacement("special", "<y>This is &not; an tesst!</y>");
+        externalContentBuilder.addTextReplacement("&not;", "tost");
 
         CheckResult checkResult = endpoint.check(ACROLINX_API_TOKEN,
                 CheckRequest.ofDocument(
@@ -175,6 +179,16 @@ public class CheckTest extends IntegrationTestBase
                                 documentName).withCheckOptions(
                                         CheckOptions.getBuilder().withGuidanceProfileId(
                                                 guidanceProfileEn.getId()).build()).build());
+
+        for (Issue issue : checkResult.getIssues()) {
+            for (Match match : issue.getPositionalInformation().getMatches()) {
+                if ("tost".equals(match.getOriginalPart())) {
+                    fail("Content should not contain the second level entity 'tost' because it should not resolve recursively. Issues: "
+                            + checkResult.getIssues());
+                }
+            }
+        }
+
         for (Issue issue : checkResult.getIssues()) {
             for (Match match : issue.getPositionalInformation().getMatches()) {
                 if ("tesst".equals(match.getOriginalPart())) {
