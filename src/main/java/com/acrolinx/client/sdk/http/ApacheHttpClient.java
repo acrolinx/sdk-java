@@ -14,6 +14,8 @@ import javax.annotation.Nullable;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.ParseException;
+import org.apache.http.client.config.CookieSpecs;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -43,6 +45,10 @@ public class ApacheHttpClient implements AcrolinxHttpClient
     {
         final PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
         final HttpClientBuilder httpClientBuilder = HttpClientBuilder.create().setConnectionManager(cm);
+        RequestConfig localConfig = RequestConfig.custom()
+                .setCookieSpec(CookieSpecs.STANDARD)
+                .build();
+        httpClientBuilder.setDefaultRequestConfig(localConfig);
         httpClientBuilder.useSystemProperties();
         return httpClientBuilder.build();
     }
