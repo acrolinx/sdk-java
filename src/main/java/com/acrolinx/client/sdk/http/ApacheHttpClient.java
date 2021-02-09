@@ -45,9 +45,7 @@ public class ApacheHttpClient implements AcrolinxHttpClient
     {
         final PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
         final HttpClientBuilder httpClientBuilder = HttpClientBuilder.create().setConnectionManager(cm);
-        RequestConfig localConfig = RequestConfig.custom()
-                .setCookieSpec(CookieSpecs.STANDARD)
-                .build();
+        RequestConfig localConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build();
         httpClientBuilder.setDefaultRequestConfig(localConfig);
         httpClientBuilder.useSystemProperties();
         return httpClientBuilder.build();
