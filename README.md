@@ -59,7 +59,8 @@ Create instance of `AcrolinxEndpoint` to begin.
 
 `AcrolinxEndpoint` offers a single entry point to the avail features provided by the SDK.
 
-See the [Acrolinx Java SDK demo](https://github.com/acrolinx/sdk-demo-java/blob/master/src/main/java/com/acrolinx/client/demo/SdkDemo.java) for a quickstart example.
+See the [Acrolinx Java SDK demo](https://github.com/acrolinx/sdk-demo-java/blob/master/src/main/java/com/acrolinx/client/demo/SdkDemo.java)
+for a quickstart example.
 
 See [`CheckTest.java`](src/test/java/com/acrolinx/client/sdk/integration/CheckTest.java) for more examples.
 
@@ -70,7 +71,8 @@ See the [Java SDK Documentation](https://acrolinx.github.io/sdk-java/).
 In order to run the integration tests locally:
 
 * You need access to the Acrolinx Platform
-* You need to create an `.env`-file similar to the [`.env.template`](.env.template) file. Alternately you can set the corresponding environment variables in a different way.
+* You need to create an `.env`-file similar to the [`.env.template`](.env.template) file.
+  Alternately you can set the corresponding environment variables in a different way.
   
 ## Contributing to This SDK
 
