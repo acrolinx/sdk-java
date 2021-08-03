@@ -26,6 +26,7 @@ import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
+import com.acrolinx.client.sdk.utils.XMLSecurityUtils;
 
 public class MultiPartDocumentBuilder
 {
@@ -38,6 +39,7 @@ public class MultiPartDocumentBuilder
             throws AcrolinxException
     {
         DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
+        XMLSecurityUtils.limitResolutionOfExternalEntities(documentFactory);
         DocumentBuilder documentBuilder;
         try {
             documentBuilder = documentFactory.newDocumentBuilder();
@@ -90,7 +92,9 @@ public class MultiPartDocumentBuilder
         Element node;
         try {
             logger.debug("Encoding specified? " + (encoding == null ? "Not specified" : encoding));
-            node = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(
+            final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+            XMLSecurityUtils.limitResolutionOfExternalEntities(documentBuilderFactory);
+            node = documentBuilderFactory.newDocumentBuilder().parse(
                     new ByteArrayInputStream(xml.getBytes(encoding == null ? "UTF-8" : encoding))).getDocumentElement();
         } catch (SAXException | IOException | ParserConfigurationException e) {
             logger.debug("Parsing node content failed.");
