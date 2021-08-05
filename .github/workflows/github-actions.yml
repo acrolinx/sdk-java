@@ -22,6 +22,6 @@ jobs:
           distribution: 'adopt' # See 'Supported distributions' for available options
           java-version: '8'
 
-      - run: ./gradlew build --exclude-task test && ./gradlew javadoc
-      - run: chmod +x ./deploy.sh
+        - run: ./gradlew build --exclude-task test && ./gradlew javadoc
+        - run: chmod +x ./deploy.sh
         
