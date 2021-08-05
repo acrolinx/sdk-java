@@ -1,11 +1,5 @@
 name: GitHub Actions sdk-java
-on:
-  push:
-    branches: [main]
-    tags:
-      - "v*.*.*"
-  pull_request:
-    branches: [master]
+on: [push]
 jobs:
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest
