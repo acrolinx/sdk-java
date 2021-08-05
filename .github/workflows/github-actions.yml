@@ -10,18 +10,12 @@ jobs:
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-      - uses: actions/checkout@v2
+      uses: actions/checkout@v2
         with:
           fetch-depth: 0
-
-      # Install JDK 8
-      - name: Install JDK 8
-      - uses: actions/setup-java@v2
+      uses: actions/setup-java@v2
         with:
           distribution: 'adopt' # See 'Supported distributions' for available options
           java-version: '8'
-
       - run: ./gradlew build --exclude-task test && ./gradlew javadoc
       - run: chmod +x ./deploy.sh
-        
