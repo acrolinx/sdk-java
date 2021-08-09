@@ -13,3 +13,13 @@ jobs:
           java-version: '8'
       - run: ./gradlew build --exclude-task test && ./gradlew javadoc
       - run: chmod +x ./deploy.sh
+      - run: ./gradlew build && ./deploy.sh
+      - uses: avinal/github-pages-deploy-action@main #For deployment of generated javadoc pages
+        with:
+          # GitHub access token with Repo Access
+          GITHUB_TOKEN: ${{ github.token }}
+          LANGUAGE: "java"
+          PAGES_BRANCH: "gh-pages"
+          BUILD_FROM: "master"
+          DOCS_FOLDER: "build/docs/javadoc/"
+          
