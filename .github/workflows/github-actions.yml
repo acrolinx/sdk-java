@@ -11,9 +11,11 @@ jobs:
         with:
           distribution: 'adopt' # See 'Supported distributions' for available options
           java-version: '8'
-      - run: ./gradlew build --exclude-task test && ./gradlew javadoc
+      - run: ./gradlew build --exclude-task test
+      - run: ./gradlew javadoc
       - run: chmod +x ./deploy.sh
-      - run: ./gradlew build && ./deploy.sh
+      - run: ./gradlew build  
+      - run: ./deploy.sh 
       - uses: avinal/github-pages-deploy-action@main #For deployment of generated javadoc pages
         with:
           # GitHub access token with Repo Access
