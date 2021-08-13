@@ -3,6 +3,11 @@ on: [push]
 jobs:
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest
+    env:
+      ACROLINX_URL=${{ secrets.ACROLINX_URL }}
+      ACROLINX_API_USERNAME=${{ secrets.ACROLINX_API_USERNAME }}
+      ACROLINX_API_TOKEN=${{ secrets.ACROLINX_API_TOKEN }}
+      ACROLINX_API_SSO_TOKEN=${{ secrets.ACROLINX_API_SSO_TOKEN }}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -11,11 +16,8 @@ jobs:
         with:
           distribution: 'adopt' # See 'Supported distributions' for available options
           java-version: '8'
-      - run: ./gradlew build --exclude-task test
+      - run: ./gradlew build
       - run: ./gradlew javadoc
-      - run: chmod +x ./deploy.sh
-      - run: ./gradlew build  
-      - run: ./deploy.sh 
       - uses: avinal/github-pages-deploy-action@main #For deployment of generated javadoc pages
         with:
           # GitHub access token with Repo Access
