@@ -1,7 +1,8 @@
 # Acrolinx Java SDK
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.acrolinx.client/sdk)](https://search.maven.org/artifact/com.acrolinx.client/sdk)
-[![Build Status](https://travis-ci.com/acrolinx/sdk-java.svg?branch=master)](https://travis-ci.org/acrolinx/sdk-java)
+![Build Status](https://github.com/acrolinx/sdk-java/actions/workflows/build-deploy.yml/badge.svg)
+
 
 This library is meant to be used to interact with the Acrolinx Platform API in automated integrations.
 It does NOT offer an interface to work with the Acrolinx Sidebar (see [Sidebar Java SDK](https://github.com/acrolinx/sidebar-sdk-java)).
