@@ -25,7 +25,7 @@ jobs:
       ORG_GRADLE_PROJECT_signingKey: ${{ secrets.CODE_SIGNING_PRIV_KEY }}
       SONATYPE_PW: ${{ secrets.SONATYPE_PW }}
       SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
-      GITHUB_TOKEN: ${{ github.token }}
+      GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -56,13 +56,8 @@ jobs:
 
       # Deploy Java Doc
       - name: Deploy Java Doc
-        uses: avinal/github-pages-deploy-action@main #For deployment of generated javadoc pages
+        uses: JamesIves/github-pages-deploy-action@4.1.5
         if: steps.deploy.outputs.released == 'true'
         with:
-          LANGUAGE: "java"
-          PAGES_BRANCH: "gh-pages"
-          BUILD_FROM: "master"
-          DOCS_FOLDER: "build/docs/javadoc/"
-
-
-          
+          branch: gh-pages
+          folder: "build/docs/javadoc/"
