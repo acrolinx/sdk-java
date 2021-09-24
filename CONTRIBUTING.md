@@ -27,7 +27,7 @@ Note that it might take quite a while until the new version shows up in [Maven C
       ./gradlew createGithubReleaseTag -Dorg.ajoberstar.grgit.auth.username=someone -Dorg.ajoberstar.grgit.auth.password=mysecretpassword
    ```
 
-5. Once the tag is pushed to GitHub, TravisCI will automatically update the [API documentation on the GitHub Pages](https://acrolinx.github.io/sidebar-sdk-java/).
+5. Once the tag is pushed to GitHub, Actions will automatically update the [API documentation on the GitHub Pages](https://acrolinx.github.io/sdk-java/).
 6. Don't forget to commit and push a new SNAPSHOT version.
 7. Update referenced versions is [`README.md`](https://github.com/acrolinx/sdk-java/edit/master/README.md).
 8. Update referenced versions is [Acrolinx Java SDK Demo Project](https://github.com/acrolinx/sdk-demo-java/edit/master/build.gradle).
