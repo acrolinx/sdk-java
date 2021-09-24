@@ -1,9 +1,7 @@
-name: GitHub Actions sdk-java
+name: Build and Deploy
 on:
   push:
     branches: [ master ]
-    tags:
-      - "v*.*.*"
   pull_request:
     branches: [ master ]
   schedule:
@@ -16,7 +14,7 @@ on:
         default: "Manual Workflow Run"
 
 jobs:
-  build:
+  Build-And-Deploy:
     runs-on: ubuntu-latest
     env:
       ACROLINX_URL: ${{ secrets.ACROLINX_URL }}
@@ -41,7 +39,7 @@ jobs:
           distribution: 'temurin'
           java-version: '8'
 
-      # Build Gradle Project
+      # Build an Test Gradle Project
       - name: Build Gradle Project
         run: ./gradlew build
 
@@ -51,6 +49,7 @@ jobs:
 
       # Deploy artifacts to sonatype and maven central
       - name: Deploy artifacts
+        id: deploy
         run: |
           chmod +x ./deploy.sh
           ./deploy.sh
@@ -58,6 +57,7 @@ jobs:
       # Deploy Java Doc
       - name: Deploy Java Doc
         uses: avinal/github-pages-deploy-action@main #For deployment of generated javadoc pages
+        if: steps.deploy.outputs.released != 'true'
         with:
           LANGUAGE: "java"
           PAGES_BRANCH: "gh-pages"
