@@ -1,0 +1,68 @@
+name: Build and Deploy
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  schedule:
+    - cron: "30 5 * * *"
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: "Trigger Comment (Optional)"
+        required: false
+        default: "Manual Workflow Run"
+
+jobs:
+  Build-And-Deploy:
+    runs-on: ubuntu-latest
+    env:
+      ACROLINX_URL: ${{ secrets.ACROLINX_URL }}
+      ACROLINX_API_USERNAME: ${{ secrets.ACROLINX_API_USERNAME }}
+      ACROLINX_API_TOKEN: ${{ secrets.ACROLINX_API_TOKEN }}
+      ACROLINX_API_SSO_TOKEN: ${{ secrets.ACROLINX_API_SSO_TOKEN }}
+      ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.CODE_SIGNING_PWD }}
+      ORG_GRADLE_PROJECT_signingKey: ${{ secrets.CODE_SIGNING_PRIV_KEY }}
+      SONATYPE_PW: ${{ secrets.SONATYPE_PW }}
+      SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+      GITHUB_TOKEN: ${{ github.token }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      # Using Java 8 from Eclipse Foundation
+      - name: Setup Java
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: '8'
+
+      # Build an Test Gradle Project
+      - name: Build Gradle Project
+        run: ./gradlew build
+
+      # Generate Docs
+      - name: Create Java Doc
+        run: ./gradlew javadoc
+
+      # Deploy artifacts to sonatype and maven central
+      - name: Deploy artifacts
+        id: deploy
+        run: |
+          chmod +x ./deploy.sh
+          ./deploy.sh
+
+      # Deploy Java Doc
+      - name: Deploy Java Doc
+        uses: avinal/github-pages-deploy-action@main #For deployment of generated javadoc pages
+        if: steps.deploy.outputs.released == 'true'
+        with:
+          LANGUAGE: "java"
+          PAGES_BRANCH: "gh-pages"
+          BUILD_FROM: "master"
+          DOCS_FOLDER: "build/docs/javadoc/"
+
+
+          
