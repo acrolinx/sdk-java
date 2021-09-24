@@ -38,7 +38,6 @@ else
         if ./gradlew closeAndReleaseRepository; then
             echo "Done with release step."
             echo "Trying to create Github Release Tag"
-            export GRGIT_USER=${{ secrets.GITHUB_TOKEN }}
             if ./gradlew createGithubReleaseTag; then
               echo "Done with tagging as release version on Github."
               exit 0
