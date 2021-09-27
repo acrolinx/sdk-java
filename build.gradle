@@ -260,11 +260,10 @@ task createGithubReleaseTag {
 			def hasOldReleaseVersion = grgit.tag.list().find { it.getName() == "release-${project.version}" }
 			if (!hasOldReleaseVersion) {
 				println 'is new release version'
-				commandLine 'sh', 'echo "::set-output name=TAGNAME::release-${project.version}"'
-				commandLine 'sh', 'echo "::set-output name=RELEASED::true"'
 			}
 		} else {
 			println 'NO RELEASE VERSION'
+			throw new GradleException('NO APPROPRIATE RELEASE VERSION')
 		}
 	}
 }
