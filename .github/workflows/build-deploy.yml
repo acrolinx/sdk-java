@@ -59,7 +59,7 @@ jobs:
         if: steps.deploy.outputs.RELEASE == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CUSTOM_TAG: steps.deploy.outputs.TAGNAME
+          CUSTOM_TAG: ${{ steps.deploy.outputs.TAGNAME }}
 
       # Deploy Java Doc
       - name: Deploy Java Doc
