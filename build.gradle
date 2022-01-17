@@ -84,33 +84,33 @@ sonarqube {
 
 dependencies {
 	// This dependency is used internally, and not exposed to consumers on their own compile classpath.
-	implementation 'com.google.guava:guava:28.2-jre'
+	implementation 'com.google.guava:guava:30.1.1-jre'
 
 	// https://github.com/julman99/gson-fire
-	implementation 'io.gsonfire:gson-fire:1.9.0-alpha1'
+	implementation 'io.gsonfire:gson-fire:1.8.5'
 
 	// Use JUnit test framework
-	testImplementation 'junit:junit:4.13'
+	testImplementation 'junit:junit:4.13.2'
 
 	// https://github.com/cdimascio/java-dotenv
-	testImplementation 'io.github.cdimascio:java-dotenv:5.1.1'
+	testImplementation 'io.github.cdimascio:java-dotenv:5.2.2'
 
 	// http://wiremock.org
-	testImplementation "com.github.tomakehurst:wiremock:2.25.1"
+	testImplementation "com.github.tomakehurst:wiremock:2.27.2"
 
 	// https://site.mockito.org
-	testImplementation "org.mockito:mockito-core:3.2.4"
+	testImplementation "org.mockito:mockito-core:3.12.4"
 
 	// http://hamcrest.org
 	testImplementation 'org.hamcrest:hamcrest:2.2'
 
 	//Apache http dependencies
-	implementation 'org.apache.httpcomponents:httpclient:4.5.11'
+	implementation 'org.apache.httpcomponents:httpclient:4.5.13'
 
 	//Google gson
-	implementation 'com.google.code.gson:gson:2.8.6'
+	implementation 'com.google.code.gson:gson:2.8.9'
 
-	implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.0-alpha1'
+	implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.0-alpha6'
 }
 
 task sourcesJar(type: Jar) {
