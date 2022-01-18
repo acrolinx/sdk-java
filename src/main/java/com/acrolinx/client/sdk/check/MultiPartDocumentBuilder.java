@@ -10,6 +10,7 @@ import java.io.StringWriter;
 import java.util.Map;
 
 import javax.annotation.Nullable;
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -26,7 +27,6 @@ import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
-import com.acrolinx.client.sdk.utils.XMLSecurityUtils;
 
 public class MultiPartDocumentBuilder
 {
@@ -39,7 +39,8 @@ public class MultiPartDocumentBuilder
             throws AcrolinxException
     {
         DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
-        XMLSecurityUtils.limitResolutionOfExternalEntities(documentFactory);
+        documentFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        documentFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
         DocumentBuilder documentBuilder;
         try {
             documentBuilder = documentFactory.newDocumentBuilder();
@@ -93,7 +94,8 @@ public class MultiPartDocumentBuilder
         try {
             logger.debug("Encoding specified? " + (encoding == null ? "Not specified" : encoding));
             final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-            XMLSecurityUtils.limitResolutionOfExternalEntities(documentBuilderFactory);
+            documentBuilderFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            documentBuilderFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
             node = documentBuilderFactory.newDocumentBuilder().parse(
                     new ByteArrayInputStream(xml.getBytes(encoding == null ? "UTF-8" : encoding))).getDocumentElement();
         } catch (SAXException | IOException | ParserConfigurationException e) {
