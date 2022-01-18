@@ -2,6 +2,7 @@
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.acrolinx.client/sdk)](https://search.maven.org/artifact/com.acrolinx.client/sdk)
 ![Build Status](https://github.com/acrolinx/sdk-java/actions/workflows/build-deploy.yml/badge.svg)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=acrolinx_sdk-java&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=acrolinx_sdk-java)
 
 
 This library is meant to be used to interact with the Acrolinx Platform API in automated integrations.
