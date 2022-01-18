@@ -10,14 +10,7 @@ import static com.acrolinx.client.sdk.testutils.IssueUtils.findIssueWithFirstSug
 import static com.acrolinx.client.sdk.testutils.IssueUtils.findIssueWithSurface;
 import static com.acrolinx.client.sdk.testutils.TestConstants.DEVELOPMENT_SIGNATURE;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.emptyOrNullString;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.in;
-import static org.hamcrest.Matchers.lessThan;
-import static org.hamcrest.Matchers.lessThanOrEqualTo;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.startsWith;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -233,7 +226,7 @@ public class CheckTest extends IntegrationTestBase
 
         final Quality quality = checkResult.getQuality();
         assertThat(quality.getScore(), lessThan(100));
-        assertThat(quality.getScore(), not(lessThan(40)));
+        assertThat(quality.getScore(), greaterThan(0));
         assertNotNull(quality.getStatus());
         assertNotNull(quality.getScoresByGoal());
 
