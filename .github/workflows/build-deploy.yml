@@ -25,6 +25,7 @@ jobs:
       ORG_GRADLE_PROJECT_signingKey: ${{ secrets.CODE_SIGNING_PRIV_KEY }}
       SONATYPE_PW: ${{ secrets.SONATYPE_PW }}
       SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+      SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -41,6 +42,10 @@ jobs:
       # Build an Test Gradle Project
       - name: Build Gradle Project
         run: ./gradlew build
+
+      # Sonar Cloud Scan
+      - name: Sonar Scan Project
+        run: ./gradlew sonarqube
 
       # Generate Docs
       - name: Create Java Doc
