@@ -83,8 +83,6 @@ sonarqube {
 		property 'sonar.projectKey', 'acrolinx_sdk-java'
 		property "sonar.exclusions", "src/test/**/*.java"
 		property "sonar.host.url", "https://sonarcloud.io"
-		property 'sonar.dependencyCheck.reportPath', "${dependencyCheck.outputDirectory}/dependency-check-report.xml"
-		property 'sonar.dependencyCheck.htmlReportPath', "${dependencyCheck.outputDirectory}/dependency-check-report.html"
 	}
 }
 
