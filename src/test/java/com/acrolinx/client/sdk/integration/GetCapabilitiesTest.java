@@ -68,10 +68,11 @@ public class GetCapabilitiesTest extends IntegrationTestBase
             assertNotNull(cf.getDisplayName());
             assertNotNull(cf.getInputType());
             assertNotNull(cf.getKey());
-            assertNotNull(cf.getPossibleValues());
-            assertNotNull(cf.getType());
+            String type = cf.getType();
+            assertNotNull(type);
+            if (type.equals("list")) {
+                assertNotNull(cf.getPossibleValues());
+            }
         }
-
     }
-
 }
