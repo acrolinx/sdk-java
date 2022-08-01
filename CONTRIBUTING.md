@@ -31,3 +31,11 @@ Note that it might take quite a while until the new version shows up in [Maven C
 ## Updating Dependencies
 
 ```./gradlew useLatestVersions && ./gradlew useLatestVersionsCheck```
+
+## Updating Gradle Version
+
+Gradle releases: https://gradle.org/releases/
+
+```shell
+./gradlew wrapper --gradle-version 7.5
+```
