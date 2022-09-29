@@ -124,6 +124,7 @@ public class AcrolinxEndpoint
         ErrorResponse.AcrolinxServiceError acrolinxServiceError;
 
         try {
+            logger.debug("Error response text: " + responseText);
             acrolinxServiceError = parseJson(responseText, ErrorResponse.class).error;
             if (acrolinxServiceError == null) {
                 logger.error("Unable to parse JSON response");
