@@ -327,5 +327,7 @@ check.dependsOn 'spotlessCheck'
 javadocJar.dependsOn javadoc
 spotlessJava.dependsOn 'downloadLicenses'
 spotlessJava.dependsOn test
+spotlessJava.dependsOn 'compileJava'
+spotlessJava.dependsOn 'javadoc'
 spotlessMisc.dependsOn spotlessJava
 // vim: sw=4 ts=4 noet
