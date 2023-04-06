@@ -4,34 +4,33 @@
 
 package com.acrolinx.client.sdk.integration;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
-import java.util.GregorianCalendar;
+import java.util.Calendar;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.acrolinx.client.sdk.PlatformInformation;
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import com.acrolinx.client.sdk.integration.common.IntegrationTestBase;
 
-public class GetPlatformInformationTest extends IntegrationTestBase
+class GetPlatformInformationTest extends IntegrationTestBase
 {
     @Test
-    public void testFetchingPlatformInformation() throws AcrolinxException, InterruptedException
+    void testFetchingPlatformInformation() throws AcrolinxException
     {
-        PlatformInformation platformInformation = endpoint.getPlatformInformation();
-
-        assertNotNull(platformInformation);
+        PlatformInformation platformInformation = acrolinxEndpoint.getPlatformInformation();
 
         assertEquals("Acrolinx Platform", platformInformation.getServer().getName());
         assertEquals(Arrays.asList("en", "fr", "de", "ja", "pt", "sv", "zh"), platformInformation.getLocales());
 
         final String version = platformInformation.getServer().getVersion();
-        assertTrue("Server version set", !version.isEmpty());
-        final int year = GregorianCalendar.getInstance().get(GregorianCalendar.YEAR);
-        assertTrue("Server version starts with " + year + " or " + (year + 1) + " or " + (year - 1),
-                version.startsWith("" + year) || version.startsWith("" + (year + 1))
-                        || version.startsWith("" + (year - 1)));
+        assertFalse(version.isEmpty());
+        final int year = Calendar.getInstance().get(Calendar.YEAR);
+        assertTrue(version.startsWith("" + year) || version.startsWith("" + (year + 1))
+                || version.startsWith("" + (year - 1)));
     }
 }

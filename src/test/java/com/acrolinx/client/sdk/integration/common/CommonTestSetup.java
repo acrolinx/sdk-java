@@ -14,9 +14,9 @@ import com.acrolinx.client.sdk.AcrolinxEndpoint;
 
 import io.github.cdimascio.dotenv.Dotenv;
 
-public class CommonTestSetup
+public final class CommonTestSetup
 {
-    static Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
+    private static final Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
 
     public static final String ACROLINX_URL = dotenv.get("ACROLINX_URL");
 
@@ -31,10 +31,4 @@ public class CommonTestSetup
     {
         return new AcrolinxEndpoint(new URI(ACROLINX_URL), DEVELOPMENT_SIGNATURE, "1.2.3.4", "en");
     }
-
-    public static AcrolinxEndpoint createInvalidPlatformTestEndpoint() throws URISyntaxException
-    {
-        return new AcrolinxEndpoint(new URI("http://acrolinx.berlin"), DEVELOPMENT_SIGNATURE, "1.2.3.4", "en");
-    }
-
 }

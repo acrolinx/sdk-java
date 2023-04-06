@@ -6,14 +6,18 @@ package com.acrolinx.client.sdk.integration;
 
 import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.ACROLINX_URL;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.emptyOrNullString;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.startsWith;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.acrolinx.client.sdk.AccessToken;
 import com.acrolinx.client.sdk.AcrolinxEndpoint;
@@ -22,38 +26,34 @@ import com.acrolinx.client.sdk.exceptions.AcrolinxServiceException;
 import com.acrolinx.client.sdk.http.HttpMethod;
 import com.acrolinx.client.sdk.integration.common.IntegrationTestBase;
 
-public class AcrolinxServiceExceptionTest extends IntegrationTestBase
+class AcrolinxServiceExceptionTest extends IntegrationTestBase
 {
     @Test
-    public void testGetCapabilitiesWithInvalidAccessToken() throws AcrolinxException
+    void testGetCapabilitiesWithInvalidAccessToken()
     {
-        try {
-            endpoint.getCapabilities(new AccessToken("invalid"));
-            fail("getCapabilities should fail because of invalid AccessToken");
-        } catch (AcrolinxServiceException e) {
-            assertEquals(AcrolinxServiceException.Type.auth.toString(), e.getType());
-            assertThat(e.getDetail(), not(emptyOrNullString()));
-            assertThat(e.getTitle(), not(emptyOrNullString()));
-            System.out.println(e.toString());
-            assertEquals(401, e.getStatus());
+        AcrolinxServiceException acrolinxServiceException = Assertions.assertThrows(AcrolinxServiceException.class,
+                () -> acrolinxEndpoint.getCapabilities(new AccessToken("invalid")));
 
-            assertEquals(HttpMethod.GET, e.getRequest().getMethod());
-            assertThat(e.getRequest().getUrl().toString(), startsWith(ACROLINX_URL));
-        }
+        assertEquals(AcrolinxServiceException.Type.auth.toString(), acrolinxServiceException.getType());
+        assertThat(acrolinxServiceException.getDetail(), not(emptyOrNullString()));
+        assertThat(acrolinxServiceException.getTitle(), not(emptyOrNullString()));
+        assertEquals(401, acrolinxServiceException.getStatus());
+
+        assertEquals(HttpMethod.GET, acrolinxServiceException.getRequest().getMethod());
+        assertThat(acrolinxServiceException.getRequest().getUrl().toString(), startsWith(ACROLINX_URL));
     }
 
     @Test
-    public void test404ErrorCodeCheckApi() throws URISyntaxException, AcrolinxException, IOException
+    void test404ErrorCodeCheckApi() throws URISyntaxException, IOException
     {
-        AcrolinxEndpoint endpoint = new AcrolinxEndpoint(new URI(ACROLINX_URL + "/unknown"), "invlaid", "1.2.3.4",
-                "en");
+        AcrolinxEndpoint acrolinxEndpoint = new AcrolinxEndpoint(new URI(ACROLINX_URL + "/unknown"), "invlaid",
+                "1.2.3.4", "en");
         try {
-            endpoint.getPlatformInformation();
-            fail("test should fail due to 404");
-        } catch (AcrolinxException ae) {
-            assertTrue(ae.getMessage().contains("404"));
+            AcrolinxException acrolinxException = Assertions.assertThrows(AcrolinxException.class,
+                    () -> acrolinxEndpoint.getPlatformInformation());
+            assertTrue(acrolinxException.getMessage().contains("404"));
         } finally {
-            endpoint.close();
+            acrolinxEndpoint.close();
         }
     }
 

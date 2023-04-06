@@ -7,7 +7,6 @@ package com.acrolinx.client.sdk.manual;
 import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.createTestAcrolinxEndpoint;
 
 import java.net.URISyntaxException;
-import java.util.concurrent.ExecutionException;
 
 import com.acrolinx.client.sdk.AcrolinxEndpoint;
 import com.acrolinx.client.sdk.InteractiveCallback;
@@ -16,12 +15,11 @@ import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 
 public class SignInInteractiveExample
 {
-    public static void main(String[] args)
-            throws URISyntaxException, AcrolinxException, ExecutionException, InterruptedException
+    public static void main(String[] args) throws URISyntaxException, AcrolinxException, InterruptedException
     {
-        AcrolinxEndpoint endpoint = createTestAcrolinxEndpoint();
+        AcrolinxEndpoint acrolinxEndpoint = createTestAcrolinxEndpoint();
 
-        SignInSuccess signInSuccess = endpoint.signInInteractive(new InteractiveCallback() {
+        SignInSuccess signInSuccess = acrolinxEndpoint.signInInteractive(new InteractiveCallback() {
             @Override
             public void onInteractiveUrl(String url)
             {
