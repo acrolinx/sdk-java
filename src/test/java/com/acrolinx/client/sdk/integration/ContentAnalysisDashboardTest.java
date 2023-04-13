@@ -5,7 +5,7 @@
 package com.acrolinx.client.sdk.integration;
 
 import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.ACROLINX_API_TOKEN;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import org.junit.jupiter.api.Test;
 
@@ -19,6 +19,6 @@ class ContentAnalysisDashboardTest extends IntegrationTestBase
     {
         String contentAnalysisDashboardLink = acrolinxEndpoint.getContentAnalysisDashboard(ACROLINX_API_TOKEN, "1");
 
-        assertTrue(!contentAnalysisDashboardLink.isEmpty());
+        assertFalse(contentAnalysisDashboardLink.isEmpty());
     }
 }
