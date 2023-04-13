@@ -24,7 +24,7 @@ public class GetPlatformInformationTest extends IntegrationTestBase
 
         assertNotNull(platformInformation);
 
-        assertEquals("Acrolinx Core Platform", platformInformation.getServer().getName());
+        assertEquals("Acrolinx Platform", platformInformation.getServer().getName());
         assertEquals(Arrays.asList("en", "fr", "de", "ja", "pt", "sv", "zh"), platformInformation.getLocales());
 
         final String version = platformInformation.getServer().getVersion();
