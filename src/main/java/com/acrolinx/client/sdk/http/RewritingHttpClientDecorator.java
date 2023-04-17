@@ -33,14 +33,13 @@ public class RewritingHttpClientDecorator implements AcrolinxHttpClient
     public AcrolinxResponse fetch(final URI url, final HttpMethod method, final Map<String, String> headers,
             final String body) throws IOException, AcrolinxException
     {
-
         return delegate.fetch(patchUrl(url), method, headers, body);
     }
 
     private URI patchUrl(final URI url)
     {
-        if (!from.getScheme().toLowerCase().equals(url.getScheme().toLowerCase())
-                || !from.getAuthority().toLowerCase().equals(url.getAuthority().toLowerCase())
+        if (!from.getScheme().toLowerCase().equalsIgnoreCase(url.getScheme())
+                || !from.getAuthority().toLowerCase().equalsIgnoreCase(url.getAuthority())
                 || !url.getPath().toLowerCase().startsWith(from.getPath().toLowerCase())) {
             return url;
         }
@@ -49,7 +48,7 @@ public class RewritingHttpClientDecorator implements AcrolinxHttpClient
                     to.getPath() + "/" + url.getPath().substring(from.getPath().length()), url.getQuery(),
                     url.getFragment());
         } catch (final URISyntaxException e) {
-            logger.info("Rewriting url failed falling back to original url: " + e.getMessage());
+            logger.info("Rewriting url failed falling back to original url: {}", e.getMessage());
             return url;
         }
     }

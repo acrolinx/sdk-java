@@ -18,7 +18,12 @@ import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.acrolinx.client.sdk.check.*;
+import com.acrolinx.client.sdk.check.CheckCancelledResponse;
+import com.acrolinx.client.sdk.check.CheckPollResponse;
+import com.acrolinx.client.sdk.check.CheckRequest;
+import com.acrolinx.client.sdk.check.CheckResponse;
+import com.acrolinx.client.sdk.check.CheckResult;
+import com.acrolinx.client.sdk.check.ProgressListener;
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import com.acrolinx.client.sdk.exceptions.AcrolinxServiceException;
 import com.acrolinx.client.sdk.exceptions.SignInException;
@@ -27,14 +32,18 @@ import com.acrolinx.client.sdk.http.AcrolinxResponse;
 import com.acrolinx.client.sdk.http.ApacheHttpClient;
 import com.acrolinx.client.sdk.http.HttpMethod;
 import com.acrolinx.client.sdk.http.RewritingHttpClientDecorator;
-import com.acrolinx.client.sdk.internal.*;
+import com.acrolinx.client.sdk.internal.ErrorResponse;
+import com.acrolinx.client.sdk.internal.JsonDeserializer;
+import com.acrolinx.client.sdk.internal.JsonUtils;
+import com.acrolinx.client.sdk.internal.SignInPollResponse;
+import com.acrolinx.client.sdk.internal.SignInResponse;
+import com.acrolinx.client.sdk.internal.SuccessResponse;
 import com.acrolinx.client.sdk.platform.Capabilities;
 import com.acrolinx.client.sdk.platform.Link;
 import com.google.common.base.Strings;
 
 public class AcrolinxEndpoint
 {
-
     private static final Logger logger = LoggerFactory.getLogger(AcrolinxEndpoint.class);
     private String signature;
     private String clientVersion;
@@ -124,7 +133,7 @@ public class AcrolinxEndpoint
         ErrorResponse.AcrolinxServiceError acrolinxServiceError;
 
         try {
-            logger.debug("Error response text: " + responseText);
+            logger.debug("Error response text: {}", responseText);
             acrolinxServiceError = parseJson(responseText, ErrorResponse.class).error;
             if (acrolinxServiceError == null) {
                 logger.error("Unable to parse JSON response");
@@ -218,15 +227,15 @@ public class AcrolinxEndpoint
                 if (pollResponse instanceof SignInPollResponse.Success) {
                     return ((SignInPollResponse.Success) pollResponse).data;
                 }
-                logger.debug("Poll response:" + pollResponse.toString());
+                logger.debug("Poll response: {}", pollResponse);
                 Progress progress = ((SignInPollResponse.Progress) pollResponse).progress;
-                logger.debug("SignIn polling: " + progress.percent);
+                logger.debug("SignIn polling: {}", progress.getPercent());
 
                 long sleepTimeMs = progress.getRetryAfterMs();
                 Thread.sleep(sleepTimeMs);
             }
         } catch (AcrolinxException | URISyntaxException | IOException e) {
-            logger.debug("Sign-in failed" + e.getMessage());
+            logger.debug("Sign-in failed {}", e.getMessage());
             throw new AcrolinxException(e);
         }
         throw new SignInException("Timeout");
@@ -345,7 +354,7 @@ public class AcrolinxEndpoint
                 progressListener.onProgress(progress);
             }
 
-            logger.debug("Polling for check result. Progress: " + progress.percent);
+            logger.debug("Polling for check result. Progress: {}", progress.getPercent());
 
             long sleepTimeMs = progress.getRetryAfterMs();
             Thread.sleep(sleepTimeMs);
@@ -378,17 +387,16 @@ public class AcrolinxEndpoint
                             + (acrolinxUri.getPath().length() == 0 || acrolinxUri.getPath().endsWith("/") ? "" : "/")
                             + "api/v1/" + apiPath).build();
         } catch (URISyntaxException e) {
-            logger.debug("Uri formation failed: " + e.getMessage() + "\nAPI-Path:" + apiPath + "\nAcrolinx URL:"
-                    + acrolinxUri);
+            logger.debug("Uri formation failed: {}\nAPI-Path: {}\nAcrolinx URL: {}", e.getMessage(), apiPath,
+                    acrolinxUri);
             throw new AcrolinxException(e);
         }
         try {
             return fetchFromUrl(uri, deserializer, method, accessToken, body, extraHeaders);
         } catch (IOException e) {
-            logger.debug("fetchFromUrl " + uri + " failed: " + e.getMessage());
+            logger.debug("fetchFromUrl {} failed: {}", uri, e.getMessage());
             throw new AcrolinxException(e);
         }
-
     }
 
     private <T> T fetchFromUrl(final URI uri, final JsonDeserializer<T> deserializer, final HttpMethod method,
@@ -417,7 +425,7 @@ public class AcrolinxEndpoint
     {
         Capabilities capabilities = this.getCapabilities(accessToken);
         String referencePattern = capabilities.getCheckingCapabilities().getReferencePattern();
-        logger.debug("Refrence Pattern: " + referencePattern);
+        logger.debug("Refrence Pattern: {}", referencePattern);
         return documentType.matches(referencePattern);
     }
 

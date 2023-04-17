@@ -6,7 +6,6 @@ package com.acrolinx.client.sdk.platform;
 
 public class ContentFormat
 {
-
     private String id;
     private String displayName;
 
@@ -25,5 +24,4 @@ public class ContentFormat
     {
         return displayName;
     }
-
 }

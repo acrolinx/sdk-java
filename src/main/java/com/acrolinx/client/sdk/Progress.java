@@ -6,10 +6,9 @@ package com.acrolinx.client.sdk;
 
 public class Progress
 {
-    Double retryAfter;
-
-    Double percent;
-    String message;
+    private Double retryAfter;
+    private Double percent;
+    private String message;
 
     public Progress(Double retryAfter, Double percent, String message)
     {

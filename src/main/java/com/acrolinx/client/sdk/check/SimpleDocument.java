@@ -6,11 +6,8 @@ package com.acrolinx.client.sdk.check;
 
 import javax.annotation.Nullable;
 
-import com.acrolinx.client.sdk.exceptions.AcrolinxException;
-
 public class SimpleDocument implements Document
 {
-
     private String content;
     private ExternalContent externalContent;
 
@@ -26,7 +23,7 @@ public class SimpleDocument implements Document
     }
 
     @Override
-    public String getContent() throws AcrolinxException
+    public String getContent()
     {
         return this.content;
     }
@@ -36,5 +33,4 @@ public class SimpleDocument implements Document
     {
         return externalContent;
     }
-
 }

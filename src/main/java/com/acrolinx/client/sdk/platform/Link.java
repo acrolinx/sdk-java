@@ -6,7 +6,6 @@ package com.acrolinx.client.sdk.platform;
 
 public class Link
 {
-
     private String linkType;
     private String link;
 
@@ -25,5 +24,4 @@ public class Link
     {
         return link;
     }
-
 }

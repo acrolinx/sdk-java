@@ -57,5 +57,4 @@ public class CheckOptions
     {
         return contentFormat;
     }
-
 }

@@ -21,15 +21,15 @@ public class AccessToken
     }
 
     @Override
-    public boolean equals(Object o)
+    public boolean equals(Object object)
     {
-        if (this == o) {
+        if (this == object) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (object == null || getClass() != object.getClass()) {
             return false;
         }
-        AccessToken that = (AccessToken) o;
+        AccessToken that = (AccessToken) object;
         return Objects.equals(token, that.token);
     }
 

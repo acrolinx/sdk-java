@@ -12,7 +12,6 @@ import java.util.List;
  */
 public class ExternalContentBuilder
 {
-
     private List<ExternalContentField> textReplacements = new ArrayList<>();
     private List<ExternalContentField> entities = new ArrayList<>();
     private List<ExternalContentField> ditaReferences = new ArrayList<>();
@@ -72,5 +71,4 @@ public class ExternalContentBuilder
         return new ExternalContent(textReplacements, entities, ditaReferences);
 
     }
-
 }

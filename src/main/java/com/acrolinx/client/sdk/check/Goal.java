@@ -44,5 +44,4 @@ public class Goal
     {
         return "Goal{color=" + color + ", displayName=" + displayName + ", id=" + id + ", issues=" + issues + "}";
     }
-
 }
