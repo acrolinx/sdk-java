@@ -8,7 +8,7 @@ import java.util.List;
 
 import com.acrolinx.client.sdk.check.Issue;
 
-public class IssueUtils
+public final class IssueUtils
 {
     public static Issue findIssueWithSurface(List<Issue> issues, String surface)
     {

@@ -4,19 +4,26 @@
 
 package com.acrolinx.client.sdk.integration;
 
-import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.*;
-import static org.junit.Assert.*;
-import static org.junit.Assume.assumeTrue;
-import static org.mockito.Mockito.*;
+import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.ACROLINX_API_TOKEN;
+import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.ACROLINX_API_USERNAME;
+import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.ACROLINX_URL;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-import java.util.concurrent.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.Mockito;
 
 import com.acrolinx.client.sdk.AccessToken;
 import com.acrolinx.client.sdk.InteractiveCallback;
@@ -25,54 +32,39 @@ import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import com.acrolinx.client.sdk.exceptions.SignInException;
 import com.acrolinx.client.sdk.integration.common.IntegrationTestBase;
 
-@RunWith(MockitoJUnitRunner.StrictStubs.class)
-public class SignInInteractiveTest extends IntegrationTestBase
+class SignInInteractiveTest extends IntegrationTestBase
 {
-    @Mock
-    private InteractiveCallback interactiveCallback;
+    private final InteractiveCallback interactiveCallback = Mockito.mock(InteractiveCallback.class);
 
-    @Before
-    public void beforeTest()
+    @Test
+    void testSignInWithNoAccessToken()
     {
-        assumeTrue(ACROLINX_API_USERNAME != null && ACROLINX_API_TOKEN != null);
+        SignInException signInException = Assertions.assertThrows(SignInException.class,
+                () -> acrolinxEndpoint.signInInteractive(interactiveCallback, null, 400L));
+        assertEquals("Timeout", signInException.getMessage());
+        verify(interactiveCallback, times(1)).onInteractiveUrl(ArgumentMatchers.startsWith(ACROLINX_URL));
     }
 
     @Test
-    public void testSignInWithNoAccessToken() throws AcrolinxException, InterruptedException
+    void testSignInWithPollingWithValidAccessToken() throws AcrolinxException, InterruptedException
     {
-        try {
-            endpoint.signInInteractive(interactiveCallback, null, 400L);
-            fail("It should fail due to timeout.");
-        } catch (SignInException e) {
-            assertEquals("Timeout", e.getMessage());
-            verify(interactiveCallback, times(1)).onInteractiveUrl(ArgumentMatchers.startsWith(ACROLINX_URL));
-        }
-    }
-
-    @Test
-    public void testSignInWithPollingWithValidAccessToken() throws AcrolinxException, InterruptedException
-    {
-        SignInSuccess signInSuccess = endpoint.signInInteractive(interactiveCallback, ACROLINX_API_TOKEN, 500L);
+        SignInSuccess signInSuccess = acrolinxEndpoint.signInInteractive(interactiveCallback, ACROLINX_API_TOKEN, 500L);
 
         assertEquals(ACROLINX_API_USERNAME, signInSuccess.getUser().getUsername());
         verifyNoMoreInteractions(interactiveCallback);
     }
 
     @Test
-    public void testSignInWithPollingWithInvalidAccessToken()
-            throws ExecutionException, InterruptedException, AcrolinxException
+    void testSignInWithPollingWithInvalidAccessToken()
     {
-        try {
-            endpoint.signInInteractive(interactiveCallback, new AccessToken("accesstoken"), 1000L);
-            fail("It should fail due to timeout.");
-        } catch (SignInException e) {
-            assertEquals("Timeout", e.getMessage());
-            verify(interactiveCallback, times(1)).onInteractiveUrl(ArgumentMatchers.startsWith(ACROLINX_URL));
-        }
+        SignInException signInException = Assertions.assertThrows(SignInException.class,
+                () -> acrolinxEndpoint.signInInteractive(interactiveCallback, new AccessToken("accesstoken"), 1000L));
+        assertEquals("Timeout", signInException.getMessage());
+        verify(interactiveCallback, times(1)).onInteractiveUrl(ArgumentMatchers.startsWith(ACROLINX_URL));
     }
 
-    @Test(expected = CancellationException.class)
-    public void testSignCancel() throws ExecutionException, InterruptedException, TimeoutException
+    @Test
+    void testSignCancel()
     {
         final long timeoutMs = 1000;
 
@@ -81,14 +73,14 @@ public class SignInInteractiveTest extends IntegrationTestBase
             @Override
             public SignInSuccess call() throws Exception
             {
-                return endpoint.signInInteractive(interactiveCallback, ACROLINX_API_TOKEN, timeoutMs);
+                return acrolinxEndpoint.signInInteractive(interactiveCallback, ACROLINX_API_TOKEN, timeoutMs);
             }
         });
 
         boolean cancelled = future.cancel(true);
-        assertTrue("User cancelled", cancelled);
-        future.get(timeoutMs, TimeUnit.MILLISECONDS);
-        fail("It should throw cancellation exception");
+        assertTrue(cancelled);
+
+        Assertions.assertThrows(CancellationException.class, () -> future.get(timeoutMs, TimeUnit.MILLISECONDS));
     }
 
 }

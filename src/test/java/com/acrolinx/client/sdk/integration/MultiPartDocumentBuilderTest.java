@@ -4,23 +4,22 @@
 
 package com.acrolinx.client.sdk.integration;
 
-import static junit.framework.TestCase.assertNotNull;
-import static junit.framework.TestCase.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.acrolinx.client.sdk.check.MultiPartDocumentBuilder;
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import com.acrolinx.client.sdk.integration.common.IntegrationTestBase;
 
-public class MultiPartDocumentBuilderTest extends IntegrationTestBase
+class MultiPartDocumentBuilderTest extends IntegrationTestBase
 {
-
     @Test
-    public void testMultiPartDocumentCreation() throws AcrolinxException
+    void testMultiPartDocumentCreation() throws AcrolinxException
     {
         MultiPartDocumentBuilder multiPartDocument = new MultiPartDocumentBuilder("test");
         multiPartDocument.addDocumentPart("element", "This text contains errorss", null);
@@ -30,7 +29,7 @@ public class MultiPartDocumentBuilderTest extends IntegrationTestBase
     }
 
     @Test
-    public void testMultiPartDocumentCreationWithAttributes() throws AcrolinxException
+    void testMultiPartDocumentCreationWithAttributes() throws AcrolinxException
     {
         MultiPartDocumentBuilder multiPartDocument = new MultiPartDocumentBuilder("test");
         Map<String, String> attributes = new HashMap<>();
@@ -40,13 +39,12 @@ public class MultiPartDocumentBuilderTest extends IntegrationTestBase
         multiPartDocument.addDocumentPart("element", "This text contains errorss", attributes);
         String content = multiPartDocument.build().getContent();
 
-        assertNotNull(content);
         assertTrue(content.contains("val2"));
         assertTrue(content.contains("val"));
     }
 
     @Test
-    public void testDoctypeIsSetCorrectly() throws AcrolinxException
+    void testDoctypeIsSetCorrectly() throws AcrolinxException
     {
         String publicId = "-//Acrolinx/DTD Acrolinx Integration v2//EN";
         String systemId = "https://acrolinx,com/dtd/acrolinx.dtd";
@@ -55,13 +53,12 @@ public class MultiPartDocumentBuilderTest extends IntegrationTestBase
         multiPartDocument.addDocumentPart("element", "This text contains errorss", null);
         String content = multiPartDocument.build().getContent();
 
-        assertNotNull(content);
         assertTrue(content.contains(publicId));
         assertTrue(content.contains(systemId));
     }
 
     @Test
-    public void testAddHTMLPart() throws AcrolinxException
+    void testAddHTMLPart() throws AcrolinxException
     {
         String publicId = "-//Acrolinx/DTD Acrolinx Integration v2//EN";
         String systemId = "https://acrolinx,com/dtd/acrolinx.dtd";
@@ -73,8 +70,6 @@ public class MultiPartDocumentBuilderTest extends IntegrationTestBase
                 "UTF-8");
         String content = multiPartDocument.build().getContent();
 
-        assertNotNull(content);
         assertTrue(content.contains("A saample acro para"));
     }
-
 }

@@ -5,7 +5,12 @@
 package com.acrolinx.client.sdk.wiremock.common;
 
 import static com.acrolinx.client.sdk.testutils.TestConstants.DEVELOPMENT_SIGNATURE;
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -14,11 +19,11 @@ import com.acrolinx.client.sdk.AcrolinxEndpoint;
 import com.acrolinx.client.sdk.internal.JsonUtils;
 import com.acrolinx.client.sdk.internal.SuccessResponse;
 
-public class WireMockUtils
+public final class WireMockUtils
 {
     public static final int PLATFORM_PORT_MOCKED = 8089;
-    public static final String acrolinxUrl = "http://localhost:" + PLATFORM_PORT_MOCKED;
-    public static final String API_PATH_PREFIX = "/api/v1/";
+    private static final String acrolinxUrl = "http://localhost:" + PLATFORM_PORT_MOCKED;
+    private static final String API_PATH_PREFIX = "/api/v1/";
 
     public static AcrolinxEndpoint createTestAcrolinxEndpointMocked() throws URISyntaxException
     {
@@ -73,14 +78,14 @@ public class WireMockUtils
     {
         stubFor(get(urlEqualTo(API_PATH_PREFIX + path)).willReturn(
                 aResponse().withStatus(200).withHeader("Content-Type", "application/json").withBody(
-                        JsonUtils.toJson(new SuccessResponse<T>(data))).withFixedDelay(delayMs)));
+                        JsonUtils.toJson(new SuccessResponse<>(data))).withFixedDelay(delayMs)));
     }
 
     public static <T> void mockPostSuccessResponseWithDelay(String path, T data, int delayMs)
     {
         stubFor(post(urlEqualTo(API_PATH_PREFIX + path)).willReturn(
                 aResponse().withStatus(200).withHeader("Content-Type", "application/json").withBody(
-                        JsonUtils.toJson(new SuccessResponse<T>(data))).withFixedDelay(delayMs)));
+                        JsonUtils.toJson(new SuccessResponse<>(data))).withFixedDelay(delayMs)));
     }
 
     public static <T> void mockPostResponse(String path, T response)
@@ -92,7 +97,7 @@ public class WireMockUtils
             String requiredState)
     {
         stubFor(get(urlEqualTo(API_PATH_PREFIX + path)).inScenario(scenario).whenScenarioStateIs(
-                requiredState).willReturn(okJson(JsonUtils.toJson(new SuccessResponse<T>(successData)))));
+                requiredState).willReturn(okJson(JsonUtils.toJson(new SuccessResponse<>(successData)))));
     }
 
     public static <T> void mockGetResponseInScenario(String path, T response, String scenario, String requiredState,

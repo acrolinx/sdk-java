@@ -4,33 +4,29 @@
 
 package com.acrolinx.client.sdk.integration.common;
 
-import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.ACROLINX_URL;
 import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.createTestAcrolinxEndpoint;
-import static org.junit.Assume.assumeTrue;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-import org.junit.After;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 import com.acrolinx.client.sdk.AcrolinxEndpoint;
 
-public class IntegrationTestBase
+public abstract class IntegrationTestBase
 {
-    protected AcrolinxEndpoint endpoint;
+    protected AcrolinxEndpoint acrolinxEndpoint;
 
-    @Before
-    public void beforeTestBase() throws URISyntaxException, IOException
+    @BeforeEach
+    void beforeEachBase() throws URISyntaxException
     {
-        assumeTrue(ACROLINX_URL != null);
-        endpoint = createTestAcrolinxEndpoint();
-
+        acrolinxEndpoint = createTestAcrolinxEndpoint();
     }
 
-    @After
-    public void afterTestBase() throws IOException
+    @AfterEach
+    void afterEachBase() throws IOException
     {
-        endpoint.close();
+        acrolinxEndpoint.close();
     }
 }

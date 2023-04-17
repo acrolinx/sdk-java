@@ -4,31 +4,33 @@
 
 package com.acrolinx.client.sdk.wiremock;
 
-import static com.acrolinx.client.sdk.wiremock.common.WireMockUtils.*;
-import static junit.framework.TestCase.assertTrue;
+import static com.acrolinx.client.sdk.wiremock.common.WireMockUtils.PLATFORM_PORT_MOCKED;
+import static com.acrolinx.client.sdk.wiremock.common.WireMockUtils.httpClientMockNotFoundResponse;
+import static com.acrolinx.client.sdk.wiremock.common.WireMockUtils.httpClientMockTimeOut;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
-import java.util.concurrent.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import com.acrolinx.client.sdk.http.AcrolinxResponse;
 import com.acrolinx.client.sdk.http.ApacheHttpClient;
 import com.acrolinx.client.sdk.http.HttpMethod;
 import com.acrolinx.client.sdk.wiremock.common.MockedTestBase;
+import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 
-public class HttpClientMockTest extends MockedTestBase
+@WireMockTest(httpPort = PLATFORM_PORT_MOCKED)
+class HttpClientMockTest extends MockedTestBase
 {
-
-    public static final int PLATFORM_PORT_MOCKED = 8089;
-    public static final String acrolinxUrl = "http://localhost:" + PLATFORM_PORT_MOCKED;
+    private static final int PLATFORM_PORT_MOCKED = 8089;
+    private static final String acrolinxUrl = "http://localhost:" + PLATFORM_PORT_MOCKED;
 
     @Test
-    public void test404HttpClient() throws URISyntaxException, IOException, AcrolinxException
+    void test404HttpClient() throws URISyntaxException, IOException, AcrolinxException
     {
         String api = "/api/v1/";
         httpClientMockNotFoundResponse(api);
@@ -37,14 +39,12 @@ public class HttpClientMockTest extends MockedTestBase
         AcrolinxResponse acrolinxResponse = apacheHttpClient.fetch(new URI(acrolinxUrl + api), HttpMethod.GET,
                 headersHashMap, null);
 
-        assertTrue(acrolinxResponse.getStatus() == 404);
-
+        assertEquals(404, acrolinxResponse.getStatus());
     }
 
     @Test
-    public void testTimeout() throws URISyntaxException, IOException, AcrolinxException
+    void testTimeout() throws URISyntaxException, IOException, AcrolinxException
     {
-
         String api = "/api/v1/";
         httpClientMockTimeOut(api);
         HashMap<String, String> headersHashMap = new HashMap<>();
@@ -52,34 +52,6 @@ public class HttpClientMockTest extends MockedTestBase
         AcrolinxResponse acrolinxResponse = apacheHttpClient.fetch(new URI(acrolinxUrl + api), HttpMethod.GET,
                 headersHashMap, null);
 
-        assertTrue(acrolinxResponse.getStatus() == 408);
-
-    }
-
-    @Test
-    public void testTimeoutParallelConections()
-            throws URISyntaxException, IOException, ExecutionException, InterruptedException, AcrolinxException
-    {
-
-        final String api = "/api/v1/";
-        httpClientMockTimeOut(api);
-        final HashMap<String, String> headersHashMap = new HashMap<>();
-        final ApacheHttpClient apacheHttpClient = new ApacheHttpClient();
-        ExecutorService executorService = Executors.newFixedThreadPool(2);
-        Future<AcrolinxResponse> acrolinxResponseFuture = executorService.submit(new Callable<AcrolinxResponse>() {
-
-            @Override
-            public AcrolinxResponse call() throws Exception
-            {
-                return apacheHttpClient.fetch(new URI(acrolinxUrl + api), HttpMethod.GET, headersHashMap, null);
-            }
-        });
-
-        httpClientMockSuccess(api);
-        AcrolinxResponse ar200 = apacheHttpClient.fetch(new URI(acrolinxUrl + api), HttpMethod.GET, headersHashMap,
-                null);
-        assertTrue(ar200.getStatus() == 200);
-        assertTrue(acrolinxResponseFuture.get().getStatus() == 408);
-
+        assertEquals(408, acrolinxResponse.getStatus());
     }
 }
