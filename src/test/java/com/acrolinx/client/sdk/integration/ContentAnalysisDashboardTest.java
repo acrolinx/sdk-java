@@ -15,7 +15,7 @@ import com.acrolinx.client.sdk.integration.common.IntegrationTestBase;
 class ContentAnalysisDashboardTest extends IntegrationTestBase
 {
     @Test
-    void testFetchingContentAnalysisDasboard() throws AcrolinxException
+    void testFetchingContentAnalysisDashboard() throws AcrolinxException
     {
         String contentAnalysisDashboardLink = acrolinxEndpoint.getContentAnalysisDashboard(ACROLINX_API_TOKEN, "1");
 

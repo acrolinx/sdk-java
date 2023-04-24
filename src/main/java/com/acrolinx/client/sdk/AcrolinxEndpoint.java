@@ -43,7 +43,6 @@ public class AcrolinxEndpoint
     private AcrolinxHttpClient httpClient;
 
     /**
-     *
      * @param acrolinxURL URL to your Acrolinx Platform for example: https://yourcompany.acrolinx.com
      * @param signature License to use integration with Acrolinx.
      * @param clientVersion Version number of your Acrolinx Integration for example: 1.2.5.34
@@ -57,11 +56,11 @@ public class AcrolinxEndpoint
     /**
      * Use this constructor in case the URL that is returned to the user have to differ to the URL the
      * integration connects to.
-     * 
+     * <p>
      * Examples:
      * <ul>
      * <li>An SSO-proxy is used to access the Scorecard and the Content Analysis dashboard, but the SDK
-     * in an automated environment isn’t able to use the same route.
+     * in an automated environment is not able to use the same route.
      * https://yourcompany.myintegration.com/proxy/ vs. https://yourcompany.acrolinx.com.</li>
      * <li>An integration can connect directly to the Acrolinx Platform using an internal URL, where a
      * user has to access it using an external URL. http://localhost:8031 vs.
@@ -83,7 +82,6 @@ public class AcrolinxEndpoint
     }
 
     /**
-     *
      * @param httpClient Provide your own http Acrolinx Integration implementing
      *        {@link AcrolinxHttpClient} interface
      * @param acrolinxURL URL to your Acrolinx Platform for example: https://yourcompany.acrolinx.com
@@ -124,7 +122,7 @@ public class AcrolinxEndpoint
         ErrorResponse.AcrolinxServiceError acrolinxServiceError;
 
         try {
-            logger.debug("Error response text: " + responseText);
+            logger.debug("Error response text: {}", responseText);
             acrolinxServiceError = parseJson(responseText, ErrorResponse.class).error;
             if (acrolinxServiceError == null) {
                 logger.error("Unable to parse JSON response");
@@ -149,7 +147,6 @@ public class AcrolinxEndpoint
     }
 
     /**
-     *
      * @return Information about Platform version and locales supported
      */
     public PlatformInformation getPlatformInformation() throws AcrolinxException
@@ -175,7 +172,7 @@ public class AcrolinxEndpoint
 
     /**
      * An interactive sign-in where user can open a URL in a browser to sign in.
-     * 
+     *
      * @param callback Provide a method that can be called to open sign-in link in the browser.
      * @return SignInSuccess holds the access token that is required to initiate check
      */
@@ -234,7 +231,7 @@ public class AcrolinxEndpoint
 
     /**
      * Get check capabilities of the Platform
-     * 
+     *
      * @param accessToken Provide access token obtained from Sign-in Success Response or Acrolinx
      *        dashboard
      * @return Checking capabilities available for Platform
@@ -283,7 +280,7 @@ public class AcrolinxEndpoint
 
     /**
      * Submits a check and waits until result is obtained.
-     * 
+     *
      * @param accessToken Provide access token obtained from Sign-in Success Response or Acrolinx
      *        dashboard
      * @param checkRequest Use CheckRequestBuilder to simplify building check request.
@@ -298,7 +295,7 @@ public class AcrolinxEndpoint
         try {
             return pollForResultWithCancelHandling(accessToken, progressListener, checkResponse);
         } catch (URISyntaxException | IOException e) {
-            logger.debug("Pollong for check result failed");
+            logger.debug("Polling for check result failed");
             throw new AcrolinxException(e);
         }
     }
@@ -310,7 +307,7 @@ public class AcrolinxEndpoint
         try {
             return pollForResultWithCancelHandling(accessToken, null, checkResponse);
         } catch (URISyntaxException | IOException e) {
-            logger.debug("Pollong for check result failed");
+            logger.debug("Polling for check result failed");
             throw new AcrolinxException(e);
         }
     }
@@ -378,14 +375,14 @@ public class AcrolinxEndpoint
                             + (acrolinxUri.getPath().length() == 0 || acrolinxUri.getPath().endsWith("/") ? "" : "/")
                             + "api/v1/" + apiPath).build();
         } catch (URISyntaxException e) {
-            logger.debug("Uri formation failed: " + e.getMessage() + "\nAPI-Path:" + apiPath + "\nAcrolinx URL:"
-                    + acrolinxUri);
+            logger.debug("Uri formation failed: {} \nAPI-Path: {} \nAcrolinx URL: {}", e.getMessage(), apiPath,
+                    acrolinxUri);
             throw new AcrolinxException(e);
         }
         try {
             return fetchFromUrl(uri, deserializer, method, accessToken, body, extraHeaders);
         } catch (IOException e) {
-            logger.debug("fetchFromUrl " + uri + " failed: " + e.getMessage());
+            logger.debug("fetchFromUrl {} failed: {}", uri, e.getMessage());
             throw new AcrolinxException(e);
         }
 
@@ -407,7 +404,7 @@ public class AcrolinxEndpoint
 
     /**
      * Check if document you wish to check is supported by Platform
-     * 
+     *
      * @param documentType Type of your document for example: .xml, .md, .dita
      * @param accessToken Provide access token obtained from Sign-in Success Response or Acrolinx
      *        dashboard
@@ -417,7 +414,7 @@ public class AcrolinxEndpoint
     {
         Capabilities capabilities = this.getCapabilities(accessToken);
         String referencePattern = capabilities.getCheckingCapabilities().getReferencePattern();
-        logger.debug("Refrence Pattern: " + referencePattern);
+        logger.debug("Reference Pattern: {}", referencePattern);
         return documentType.matches(referencePattern);
     }
 

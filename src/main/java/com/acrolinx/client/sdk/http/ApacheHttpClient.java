@@ -59,19 +59,19 @@ public class ApacheHttpClient implements AcrolinxHttpClient
 
         setHeaders(request, headers);
 
-        logger.debug("Executing request for API: " + uri.toString());
+        logger.debug("Executing request for API: {}", uri);
         final HttpResponse response = httpClient.execute(request);
 
         AcrolinxResponse acrolinxResponse = new AcrolinxResponse();
         int statusCode = response.getStatusLine().getStatusCode();
-        logger.debug("Response status code: " + statusCode);
+        logger.debug("Response status code: {}", statusCode);
         acrolinxResponse.setStatus(statusCode);
 
         HttpEntity responseEntity = response.getEntity();
         try {
             String result = EntityUtils.toString(responseEntity);
             acrolinxResponse.setResult(result);
-            logger.debug("Entity response: " + result);
+            logger.debug("Entity response: {}", result);
         } catch (ParseException | IOException e) {
             throw new AcrolinxException(e);
         }
@@ -86,7 +86,6 @@ public class ApacheHttpClient implements AcrolinxHttpClient
     }
 
     private HttpRequestBase createRequests(URI uri, HttpMethod httpMethod, @Nullable String jsonBody)
-            throws UnsupportedEncodingException
     {
         switch (httpMethod) {
             case GET:

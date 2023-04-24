@@ -41,7 +41,7 @@ class GetCapabilitiesTest extends IntegrationTestBase
     }
 
     @Test
-    void testGetCapablitiesExtended() throws AcrolinxException
+    void testGetCapabilitiesExtended() throws AcrolinxException
     {
         Capabilities capabilities = acrolinxEndpoint.getCapabilities(ACROLINX_API_TOKEN);
 
