@@ -50,7 +50,7 @@ class AcrolinxServiceExceptionTest extends IntegrationTestBase
                 "1.2.3.4", "en");
         try {
             AcrolinxException acrolinxException = Assertions.assertThrows(AcrolinxException.class,
-                    () -> acrolinxEndpoint.getPlatformInformation());
+                    acrolinxEndpoint::getPlatformInformation);
             assertTrue(acrolinxException.getMessage().contains("404"));
         } finally {
             acrolinxEndpoint.close();
