@@ -20,6 +20,7 @@ public class BatchCheckIdGenerator
         String name = "javaSDK";
 
         if (integrationShortName != null && !integrationShortName.isEmpty()) {
+            name = integrationShortName.trim().replace(" ", "-");
             name = integrationShortName.trim().replaceAll(" ", "-");
         }
 
