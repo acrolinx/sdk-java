@@ -18,13 +18,9 @@ public abstract class SignInPollResponse
     {
     }
 
-    static final TypeSelector<SignInPollResponse> TYPE_SELECTOR = new TypeSelector<SignInPollResponse>() {
-        @Override
-        public Class<? extends SignInPollResponse> getClassForElement(JsonElement readElement)
-        {
-            Boolean isSuccess = readElement.getAsJsonObject().has("data");
-            return isSuccess ? SignInPollResponse.Success.class : Progress.class;
-        }
+    static final TypeSelector<SignInPollResponse> TYPE_SELECTOR = readElement -> {
+        boolean isSuccess = readElement.getAsJsonObject().has("data");
+        return isSuccess ? Success.class : Progress.class;
     };
 
     public static class Success extends SignInPollResponse

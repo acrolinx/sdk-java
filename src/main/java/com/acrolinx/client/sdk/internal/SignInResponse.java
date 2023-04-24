@@ -18,13 +18,9 @@ public abstract class SignInResponse
     {
     }
 
-    static final TypeSelector<SignInResponse> TYPE_SELECTOR = new TypeSelector<SignInResponse>() {
-        @Override
-        public Class<? extends SignInResponse> getClassForElement(JsonElement readElement)
-        {
-            boolean isSuccess = readElement.getAsJsonObject().get("data").getAsJsonObject().has("accessToken");
-            return isSuccess ? SignInResponse.Success.class : SignInResponse.SignInLinks.class;
-        }
+    static final TypeSelector<SignInResponse> TYPE_SELECTOR = readElement -> {
+        boolean isSuccess = readElement.getAsJsonObject().get("data").getAsJsonObject().has("accessToken");
+        return isSuccess ? Success.class : SignInLinks.class;
     };
 
     public static class Success extends SignInResponse

@@ -13,13 +13,9 @@ import io.gsonfire.TypeSelector;
  */
 public abstract class CheckPollResponse
 {
-    public static final TypeSelector<CheckPollResponse> TYPE_SELECTOR = new TypeSelector<CheckPollResponse>() {
-        @Override
-        public Class<? extends CheckPollResponse> getClassForElement(JsonElement readElement)
-        {
-            Boolean isSuccess = readElement.getAsJsonObject().has("data");
-            return isSuccess ? CheckPollResponse.Success.class : Progress.class;
-        }
+    public static final TypeSelector<CheckPollResponse> TYPE_SELECTOR = readElement -> {
+        boolean isSuccess = readElement.getAsJsonObject().has("data");
+        return isSuccess ? Success.class : Progress.class;
     };
 
     private CheckPollResponse()
