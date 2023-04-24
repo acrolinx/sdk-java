@@ -6,7 +6,6 @@ package com.acrolinx.client.sdk.check;
 
 public class CustomField
 {
-
     private String key;
     private String value;
 
@@ -25,5 +24,4 @@ public class CustomField
     {
         return value;
     }
-
 }

@@ -8,7 +8,6 @@ import java.util.concurrent.Callable;
 
 public class JsonResponse implements Callable<String>
 {
-
     private String jsonString;
 
     public JsonResponse(String jsonString)
@@ -17,7 +16,7 @@ public class JsonResponse implements Callable<String>
     }
 
     @Override
-    public String call() throws Exception
+    public String call()
     {
         return jsonString;
     }

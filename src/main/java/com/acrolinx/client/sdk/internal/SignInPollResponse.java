@@ -5,7 +5,6 @@
 package com.acrolinx.client.sdk.internal;
 
 import com.acrolinx.client.sdk.SignInSuccess;
-import com.google.gson.JsonElement;
 
 import io.gsonfire.TypeSelector;
 
@@ -14,17 +13,13 @@ import io.gsonfire.TypeSelector;
  */
 public abstract class SignInPollResponse
 {
-    private SignInPollResponse()
+    SignInPollResponse()
     {
     }
 
-    static final TypeSelector<SignInPollResponse> TYPE_SELECTOR = new TypeSelector<SignInPollResponse>() {
-        @Override
-        public Class<? extends SignInPollResponse> getClassForElement(JsonElement readElement)
-        {
-            Boolean isSuccess = readElement.getAsJsonObject().has("data");
-            return isSuccess ? SignInPollResponse.Success.class : Progress.class;
-        }
+    static final TypeSelector<SignInPollResponse> TYPE_SELECTOR = jsonElement -> {
+        boolean isSuccess = jsonElement.getAsJsonObject().has("data");
+        return isSuccess ? SignInPollResponse.Success.class : Progress.class;
     };
 
     public static class Success extends SignInPollResponse

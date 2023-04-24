@@ -23,14 +23,18 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.*;
+import org.w3c.dom.Attr;
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.DocumentType;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 
 public class MultiPartDocumentBuilder
 {
-
     private org.w3c.dom.Document document;
     private Element root;
     private static final Logger logger = LoggerFactory.getLogger(MultiPartDocumentBuilder.class);
@@ -51,8 +55,8 @@ public class MultiPartDocumentBuilder
         this.document = documentBuilder.newDocument();
 
         if (publicId != null || systemId != null) {
-            logger.debug("Doctype Public Id: " + publicId);
-            logger.debug("Doctype system Id: " + systemId);
+            logger.debug("Doctype Public Id: {}", publicId);
+            logger.debug("Doctype system Id: {}", systemId);
 
             DOMImplementation implementation = this.document.getImplementation();
             DocumentType documentType = implementation.createDocumentType(rootElement, publicId, systemId);
@@ -89,10 +93,9 @@ public class MultiPartDocumentBuilder
 
     public MultiPartDocumentBuilder addDocumentNode(String xml, @Nullable String encoding) throws AcrolinxException
     {
-
         Element node;
         try {
-            logger.debug("Encoding specified? " + (encoding == null ? "Not specified" : encoding));
+            logger.debug("Encoding specified? {}", encoding == null ? "Not specified" : encoding);
             final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             documentBuilderFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
             documentBuilderFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
@@ -136,5 +139,4 @@ public class MultiPartDocumentBuilder
             throw new AcrolinxException(e);
         }
     }
-
 }

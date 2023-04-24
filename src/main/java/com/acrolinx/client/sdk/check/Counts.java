@@ -6,7 +6,6 @@ package com.acrolinx.client.sdk.check;
 
 public class Counts
 {
-
     private final int sentences;
     private final int words;
     private final int issues;
@@ -38,5 +37,4 @@ public class Counts
     {
         return "Counts [issues=" + issues + ", sentences=" + sentences + ", words=" + words + "]";
     }
-
 }

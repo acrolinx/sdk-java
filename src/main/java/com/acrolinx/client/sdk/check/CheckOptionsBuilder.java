@@ -27,8 +27,6 @@ public class CheckOptionsBuilder
     /**
      * Optional. Available guidance profiles depend on your Acrolinx Platform configuration.
      *
-     * @param guidanceProfileId
-     * @return CheckOptionsBuilder
      * @see com.acrolinx.client.sdk.AcrolinxEndpoint#getCapabilities(AccessToken)
      */
     public CheckOptionsBuilder withGuidanceProfileId(String guidanceProfileId)
@@ -42,8 +40,6 @@ public class CheckOptionsBuilder
      * own ids you can use this setting.
      * 
      * @see BatchCheckIdGenerator
-     * @param batchId
-     * @return CheckOptionsBuilder
      */
     public CheckOptionsBuilder withBatchId(String batchId)
     {
@@ -55,8 +51,6 @@ public class CheckOptionsBuilder
      * Optional. Per default a scorecard is generated for each check. Available report types depend on
      * the current users permission and the Acrolinx Platform configuration.
      *
-     * @param reportTypes
-     * @return CheckOptionsBuilder
      * @see com.acrolinx.client.sdk.AcrolinxEndpoint#getCapabilities(AccessToken)
      */
     public CheckOptionsBuilder withGenerateReportTypes(List<ReportType> reportTypes)
@@ -113,12 +107,9 @@ public class CheckOptionsBuilder
      * Optional. Per default this is set to "AUTO" which enables the Acrolinx Platforms default mapping
      * for input types to common file extensions.
      * 
-     * @see <a target="_blank" href=
+     * @see <a href=
      *      "https://github.com/acrolinx/acrolinx-coding-guidance/blob/master/topics/text-extraction.md#check-format-and-supporting-multiformat-editors">Check
-     *      Coding Guidance on Github for more information</a>
-     *
-     * @param contentFormat
-     * @return CheckOptionsBuilder
+     *      Coding Guidance on GitHub for more information</a>
      */
     public CheckOptionsBuilder withContentFormat(String contentFormat)
     {

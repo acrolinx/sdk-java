@@ -4,8 +4,6 @@
 
 package com.acrolinx.client.sdk.check;
 
-import com.google.gson.JsonElement;
-
 import io.gsonfire.TypeSelector;
 
 /**
@@ -13,16 +11,12 @@ import io.gsonfire.TypeSelector;
  */
 public abstract class CheckPollResponse
 {
-    public static final TypeSelector<CheckPollResponse> TYPE_SELECTOR = new TypeSelector<CheckPollResponse>() {
-        @Override
-        public Class<? extends CheckPollResponse> getClassForElement(JsonElement readElement)
-        {
-            Boolean isSuccess = readElement.getAsJsonObject().has("data");
-            return isSuccess ? CheckPollResponse.Success.class : Progress.class;
-        }
+    public static final TypeSelector<CheckPollResponse> TYPE_SELECTOR = jsonElement -> {
+        boolean isSuccess = jsonElement.getAsJsonObject().has("data");
+        return isSuccess ? CheckPollResponse.Success.class : Progress.class;
     };
 
-    private CheckPollResponse()
+    CheckPollResponse()
     {
     }
 

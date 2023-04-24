@@ -5,7 +5,6 @@
 package com.acrolinx.client.sdk.http;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.Map;
 
@@ -41,7 +40,7 @@ public class ApacheHttpClient implements AcrolinxHttpClient
         this.httpClient = createHttpClient();
     }
 
-    private CloseableHttpClient createHttpClient()
+    private static CloseableHttpClient createHttpClient()
     {
         final PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
         final HttpClientBuilder httpClientBuilder = HttpClientBuilder.create().setConnectionManager(cm);
@@ -59,19 +58,19 @@ public class ApacheHttpClient implements AcrolinxHttpClient
 
         setHeaders(request, headers);
 
-        logger.debug("Executing request for API: " + uri.toString());
+        logger.debug("Executing request for API: {}", uri);
         final HttpResponse response = httpClient.execute(request);
 
         AcrolinxResponse acrolinxResponse = new AcrolinxResponse();
         int statusCode = response.getStatusLine().getStatusCode();
-        logger.debug("Response status code: " + statusCode);
+        logger.debug("Response status code: {}", statusCode);
         acrolinxResponse.setStatus(statusCode);
 
         HttpEntity responseEntity = response.getEntity();
         try {
             String result = EntityUtils.toString(responseEntity);
             acrolinxResponse.setResult(result);
-            logger.debug("Entity response: " + result);
+            logger.debug("Entity response: {}", result);
         } catch (ParseException | IOException e) {
             throw new AcrolinxException(e);
         }
@@ -85,8 +84,7 @@ public class ApacheHttpClient implements AcrolinxHttpClient
         this.httpClient.close();
     }
 
-    private HttpRequestBase createRequests(URI uri, HttpMethod httpMethod, @Nullable String jsonBody)
-            throws UnsupportedEncodingException
+    private static HttpRequestBase createRequests(URI uri, HttpMethod httpMethod, @Nullable String jsonBody)
     {
         switch (httpMethod) {
             case GET:
@@ -105,7 +103,7 @@ public class ApacheHttpClient implements AcrolinxHttpClient
         }
     }
 
-    private void setHeaders(HttpRequestBase request, Map<String, String> headers)
+    private static void setHeaders(HttpRequestBase request, Map<String, String> headers)
     {
         for (Map.Entry<String, String> entry : headers.entrySet()) {
             request.setHeader(entry.getKey(), entry.getValue());
