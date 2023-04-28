@@ -12,22 +12,14 @@ import com.google.common.io.Resources;
 
 public final class TestUtils
 {
-    public static String readResource(String resourcePath)
+    public static String readResource(String resourcePath) throws IOException
     {
-        try {
-            return Resources.toString(Resources.getResource(resourcePath), StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return Resources.toString(Resources.getResource(resourcePath), StandardCharsets.UTF_8);
     }
 
-    public static String readResourceAsBase64(String resourcePath)
+    public static String readResourceAsBase64(String resourcePath) throws IOException
     {
-        try {
-            byte[] content = Resources.toByteArray(Resources.getResource(resourcePath));
-            return Base64.getEncoder().encodeToString(content);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        byte[] content = Resources.toByteArray(Resources.getResource(resourcePath));
+        return Base64.getEncoder().encodeToString(content);
     }
 }

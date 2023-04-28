@@ -8,6 +8,8 @@ import static com.acrolinx.client.sdk.internal.JsonUtils.parseJson;
 import static com.acrolinx.client.sdk.testutils.TestUtils.readResource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.IOException;
+
 import org.junit.jupiter.api.Test;
 
 import com.acrolinx.client.sdk.internal.SignInResponse;
@@ -17,7 +19,7 @@ import com.acrolinx.client.sdk.platform.Server;
 class GsonTest
 {
     @Test
-    void testParseServer()
+    void testParseServer() throws IOException
     {
         String json = readResource("server.json");
 
@@ -28,7 +30,7 @@ class GsonTest
     }
 
     @Test
-    void testParseSuccessResponse()
+    void testParseSuccessResponse() throws IOException
     {
         String json = readResource("server-success-response.json");
 
@@ -39,7 +41,7 @@ class GsonTest
     }
 
     @Test
-    void testParseSignInSuccessResponse()
+    void testParseSignInSuccessResponse() throws IOException
     {
         String json = readResource("sign-in-success-response.json");
 
@@ -50,7 +52,7 @@ class GsonTest
     }
 
     @Test
-    void testParseSignInLinksResponse()
+    void testParseSignInLinksResponse() throws IOException
     {
         String json = readResource("sign-in-links-response.json");
 
