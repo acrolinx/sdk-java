@@ -24,11 +24,11 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.fail;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.verify;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -79,15 +79,15 @@ class CheckTest extends IntegrationTestBase
     /**
      * This text should need some seconds to check.
      */
-    private static final String longTestText = Strings.repeat("This sentence is nice. \n", 300);
+    static final String longTestText = Strings.repeat("This sentence is nice. \n", 300);
 
-    private GuidanceProfile guidanceProfileEn;
-    private final ProgressListener progressListener = Mockito.mock(ProgressListener.class);
+    GuidanceProfile guidanceProfileEn;
+    final ProgressListener progressListener = Mockito.mock(ProgressListener.class);
 
     @BeforeEach
     void beforeEach() throws AcrolinxException
     {
-        assumeTrue(ACROLINX_API_TOKEN != null);
+        assertNotNull(ACROLINX_API_TOKEN);
         Capabilities capabilities = acrolinxEndpoint.getCapabilities(ACROLINX_API_TOKEN);
 
         for (GuidanceProfile profile : capabilities.getCheckingCapabilities().getGuidanceProfiles()) {
@@ -96,7 +96,8 @@ class CheckTest extends IntegrationTestBase
                 break;
             }
         }
-        assumeTrue(guidanceProfileEn != null);
+
+        assertNotNull(guidanceProfileEn);
     }
 
     @Test
@@ -114,11 +115,14 @@ class CheckTest extends IntegrationTestBase
     }
 
     /**
-     * The same works for all supported file types. See:
-     * https://github.com/acrolinx/acrolinx-coding-guidance/blob/master/topics/text-extraction.md
+     * The same works for all supported file types.
+     * 
+     * @see <a href=
+     *      "https://github.com/acrolinx/acrolinx-coding-guidance/blob/main/topics/text-extraction.md">Text
+     *      Extraction</a>
      */
     @Test
-    void checkAWordDocument() throws AcrolinxException
+    void checkAWordDocument() throws AcrolinxException, IOException
     {
         final String base64FileContent = TestUtils.readResourceAsBase64("document.docx");
         final String wordDocumentName = "document.docx";
@@ -200,7 +204,7 @@ class CheckTest extends IntegrationTestBase
     }
 
     @Test
-    void checkDitaMap() throws AcrolinxException
+    void checkDitaMap() throws AcrolinxException, IOException
     {
         final String documentName = "test.ditamap";
         String xmlContent = TestUtils.readResource("test.ditamap");
@@ -254,12 +258,13 @@ class CheckTest extends IntegrationTestBase
         assertSame(checkResult.getGoals().getAll(), checkResult.getGoals().getAll());
 
         for (Issue issue : checkResult.getIssues()) {
-            assertEquals(issue.getGoalId(), checkResult.getGoals().ofIssue(issue).getId());
-            assertThat(checkResult.getGoals().ofIssue(issue).getIssues(), not(0));
-            assertNotNull(checkResult.getGoals().ofIssue(issue).getColor());
-            assertNotNull(checkResult.getGoals().ofIssue(issue).getDisplayName());
-            assertThat(checkResult.getGoals().ofIssue(issue).getColor(), not(""));
-            assertThat(checkResult.getGoals().ofIssue(issue).getDisplayName(), not(""));
+            Goal goal = checkResult.getGoals().ofIssue(issue);
+            assertEquals(issue.getGoalId(), goal.getId());
+            assertThat(goal.getIssues(), not(0));
+            assertNotNull(goal.getColor());
+            assertNotNull(goal.getDisplayName());
+            assertThat(goal.getColor(), not(""));
+            assertThat(goal.getDisplayName(), not(""));
         }
 
         for (Goal goal : checkResult.getGoals().getAll()) {
@@ -527,7 +532,7 @@ class CheckTest extends IntegrationTestBase
         assertThat(checkResponse.getLinks().getCancel(), startsWith(ACROLINX_URL));
     }
 
-    private CheckResult checkEnglishText(String documentContent) throws AcrolinxException
+    CheckResult checkEnglishText(String documentContent) throws AcrolinxException
     {
         return acrolinxEndpoint.check(ACROLINX_API_TOKEN,
                 CheckRequest.ofDocumentContent(documentContent).withContentReference("file.txt").withCheckOptions(
@@ -538,19 +543,15 @@ class CheckTest extends IntegrationTestBase
     @Test
     void testCheckWithDocumentMetaData()
     {
-        try {
-            CheckResult checkResult = acrolinxEndpoint.check(ACROLINX_API_TOKEN,
-                    CheckRequest.ofDocumentContent("Thee sentencee contains errors").withContentReference(
-                            "file.txt").withCustomField(new CustomField("Text Field", "Item")).withCustomField(
-                                    new CustomField("List Field", "List Item 1")).withCheckOptions(
-                                            CheckOptions.getBuilder().withGuidanceProfileId(
-                                                    guidanceProfileEn.getId()).build()).build(),
-                    progressListener);
-
-            assertNotNull(checkResult);
-        } catch (AcrolinxException e) {
-            assertEquals("Custom field values are incorrect", e.getMessage());
-        }
+        AcrolinxException acrolinxException = Assertions.assertThrows(AcrolinxException.class,
+                () -> acrolinxEndpoint.check(ACROLINX_API_TOKEN,
+                        CheckRequest.ofDocumentContent("Thee sentencee contains errors").withContentReference(
+                                "file.txt").withCustomField(new CustomField("Text Field", "Item")).withCustomField(
+                                        new CustomField("List Field", "List Item 1")).withCheckOptions(
+                                                CheckOptions.getBuilder().withGuidanceProfileId(
+                                                        guidanceProfileEn.getId()).build()).build(),
+                        progressListener));
+        assertEquals("Custom field values are incorrect", acrolinxException.getMessage());
     }
 
     @Test

@@ -16,7 +16,6 @@ class CheckRequestTest extends IntegrationTestBase
     @Test
     void testCreateCheckRequest()
     {
-        CheckRequest checkRequest = CheckRequest.ofDocumentContent("This text contains no error.").build();
-        assertNotNull(checkRequest);
+        assertNotNull(CheckRequest.ofDocumentContent("This text contains no error.").build());
     }
 }

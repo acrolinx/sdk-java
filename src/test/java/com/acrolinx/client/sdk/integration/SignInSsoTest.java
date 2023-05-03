@@ -10,8 +10,8 @@ import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.ACROLIN
 import static com.acrolinx.client.sdk.testutils.TestConstants.DEVELOPMENT_SIGNATURE;
 import static com.acrolinx.client.sdk.wiremock.common.WireMockUtils.PLATFORM_PORT_MOCKED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assumptions.assumeFalse;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -31,7 +31,8 @@ class SignInSsoTest extends IntegrationTestBase
     @Test
     void testSignInWithSSO() throws AcrolinxException
     {
-        assumeTrue(ACROLINX_API_USERNAME != null && ACROLINX_API_SSO_TOKEN != null);
+        assertNotNull(ACROLINX_API_USERNAME);
+        assertNotNull(ACROLINX_API_SSO_TOKEN);
 
         SignInSuccess signInSuccess = acrolinxEndpoint.signInWithSSO(ACROLINX_API_SSO_TOKEN, ACROLINX_API_USERNAME);
         assertEquals(ACROLINX_API_USERNAME, signInSuccess.getUser().getUsername());
@@ -40,8 +41,10 @@ class SignInSsoTest extends IntegrationTestBase
     @Test
     void testSignInWithSSOIgnoreCase() throws AcrolinxException
     {
-        assumeTrue(ACROLINX_API_USERNAME != null && ACROLINX_API_SSO_TOKEN != null);
-        assumeFalse(acrolinxEndpoint.getPlatformInformation().getServer().getVersion().equals("2020.04.22154"));
+        assertNotNull(ACROLINX_API_USERNAME);
+        assertNotNull(ACROLINX_API_SSO_TOKEN);
+
+        assertNotEquals("2020.04.22154", acrolinxEndpoint.getPlatformInformation().getServer().getVersion());
 
         SignInSuccess signInSuccess = acrolinxEndpoint.signInWithSSO(ACROLINX_API_SSO_TOKEN,
                 ACROLINX_API_USERNAME.toUpperCase());
@@ -51,8 +54,10 @@ class SignInSsoTest extends IntegrationTestBase
     @Test
     void testSignInWithSSOIgnoreCase2() throws AcrolinxException
     {
-        assumeTrue(ACROLINX_API_USERNAME != null && ACROLINX_API_SSO_TOKEN != null);
-        assumeFalse(acrolinxEndpoint.getPlatformInformation().getServer().getVersion().equals("2020.04.22154"));
+        assertNotNull(ACROLINX_API_USERNAME);
+        assertNotNull(ACROLINX_API_SSO_TOKEN);
+
+        assertNotEquals("2020.04.22154", acrolinxEndpoint.getPlatformInformation().getServer().getVersion());
 
         SignInSuccess signInSuccess = acrolinxEndpoint.signInWithSSO(ACROLINX_API_SSO_TOKEN,
                 ACROLINX_API_USERNAME.toLowerCase());
@@ -69,7 +74,8 @@ class SignInSsoTest extends IntegrationTestBase
     @Test
     void ssoWithUserAndSdkUrl() throws AcrolinxException, URISyntaxException
     {
-        assumeTrue(ACROLINX_API_USERNAME != null && ACROLINX_API_SSO_TOKEN != null);
+        assertNotNull(ACROLINX_API_USERNAME);
+        assertNotNull(ACROLINX_API_SSO_TOKEN);
 
         URI realAcrolinxURL = new URI(ACROLINX_URL);
         URI userFacingAcrolinxURL = new URI("https://www.acrolinx.com/proxy");
@@ -84,7 +90,8 @@ class SignInSsoTest extends IntegrationTestBase
     @Test
     void ssoWithUserAndSdkUrl2() throws AcrolinxException, URISyntaxException
     {
-        assumeTrue(ACROLINX_API_USERNAME != null && ACROLINX_API_SSO_TOKEN != null);
+        assertNotNull(ACROLINX_API_USERNAME);
+        assertNotNull(ACROLINX_API_SSO_TOKEN);
 
         URI realAcrolinxURL = new URI(ACROLINX_URL);
         URI userFacingAcrolinxURL = new URI("https://www.acrolinx.com/proxy/");

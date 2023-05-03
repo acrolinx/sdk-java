@@ -86,36 +86,19 @@ sonarqube {
 }
 
 dependencies {
-	// This dependency is used internally, and not exposed to consumers on their own compile classpath.
+	implementation 'org.slf4j:slf4j-api:2.0.7'
 	implementation 'com.google.guava:guava:31.1-jre'
-
-	// https://github.com/julman99/gson-fire
+	implementation 'com.google.code.gson:gson:2.10.1'
 	implementation 'io.gsonfire:gson-fire:1.8.5'
-
-	// Use JUnit test framework
-	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
-	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
-
-	// https://github.com/cdimascio/java-dotenv
-	testImplementation 'io.github.cdimascio:java-dotenv:5.2.2'
-
-	// http://wiremock.org
-	testImplementation "com.github.tomakehurst:wiremock-jre8-standalone:2.35.0"
-
-	testImplementation "org.mockito:mockito-junit-jupiter:4.11.0"
-
-	// http://hamcrest.org
-	testImplementation 'org.hamcrest:hamcrest:2.2'
-
-	//Apache http dependencies
 	implementation 'org.apache.httpcomponents:httpclient:4.5.14'
 
-	//Google gson
-	implementation 'com.google.code.gson:gson:2.10.1'
-
-	implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.7'
-
-	testImplementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.3.7'
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
+	testImplementation 'io.github.cdimascio:java-dotenv:5.2.2'
+	testImplementation "com.github.tomakehurst:wiremock-jre8-standalone:2.35.0"
+	testImplementation "org.mockito:mockito-core:4.11.0"
+	testImplementation 'org.hamcrest:hamcrest:2.2'
+	testRuntimeOnly 'ch.qos.logback:logback-classic:1.3.7'
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
 }
 
 
