@@ -82,5 +82,4 @@ class SignInInteractiveTest extends IntegrationTestBase
 
         Assertions.assertThrows(CancellationException.class, () -> future.get(timeoutMs, TimeUnit.MILLISECONDS));
     }
-
 }

@@ -6,8 +6,8 @@ package com.acrolinx.client.sdk.platform;
 
 public class Language
 {
-    private String id;
-    private String displayName;
+    private final String id;
+    private final String displayName;
 
     public Language(String id, String displayName)
     {

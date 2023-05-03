@@ -6,8 +6,8 @@ package com.acrolinx.client.sdk.platform;
 
 public class Server
 {
-    private String version;
-    private String name;
+    private final String version;
+    private final String name;
 
     public Server(String version, String name)
     {

@@ -8,8 +8,8 @@ import javax.annotation.Nullable;
 
 public class SimpleDocument implements Document
 {
-    private String content;
-    private ExternalContent externalContent;
+    private final String content;
+    private final ExternalContent externalContent;
 
     public SimpleDocument(String content)
     {

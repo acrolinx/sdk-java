@@ -24,10 +24,6 @@ public class CheckOptions
         this.contentFormat = contentFormat;
     }
 
-    /**
-     * @see CheckOptionsBuilder
-     * @return CheckOptionsBuilder
-     */
     public static CheckOptionsBuilder getBuilder()
     {
         return new CheckOptionsBuilder();

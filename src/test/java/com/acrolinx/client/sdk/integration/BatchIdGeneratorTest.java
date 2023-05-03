@@ -35,5 +35,4 @@ class BatchIdGeneratorTest extends IntegrationTestBase
         assertTrue(batchid.contains("cli"));
         assertTrue(batchid.contains("gen"));
     }
-
 }

@@ -16,11 +16,11 @@ import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 
 public class RewritingHttpClientDecorator implements AcrolinxHttpClient
 {
+    private static final Logger logger = LoggerFactory.getLogger(RewritingHttpClientDecorator.class);
+
     private final AcrolinxHttpClient delegate;
     private final URI from;
     private final URI to;
-
-    private static final Logger logger = LoggerFactory.getLogger(RewritingHttpClientDecorator.class);
 
     public RewritingHttpClientDecorator(final AcrolinxHttpClient delegate, final URI from, final URI to)
     {

@@ -6,8 +6,8 @@ package com.acrolinx.client.sdk;
 
 public class User
 {
-    private String id;
-    private String username;
+    private final String id;
+    private final String username;
 
     public User(String id, String username)
     {

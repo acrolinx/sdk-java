@@ -35,9 +35,10 @@ import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 
 public class MultiPartDocumentBuilder
 {
-    private org.w3c.dom.Document document;
-    private Element root;
     private static final Logger logger = LoggerFactory.getLogger(MultiPartDocumentBuilder.class);
+
+    private final org.w3c.dom.Document document;
+    private final Element root;
 
     public MultiPartDocumentBuilder(String rootElement, @Nullable String publicId, @Nullable String systemId)
             throws AcrolinxException

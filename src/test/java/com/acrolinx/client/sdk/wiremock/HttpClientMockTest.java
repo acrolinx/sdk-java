@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.HashMap;
+import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
 
@@ -20,24 +20,22 @@ import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import com.acrolinx.client.sdk.http.AcrolinxResponse;
 import com.acrolinx.client.sdk.http.ApacheHttpClient;
 import com.acrolinx.client.sdk.http.HttpMethod;
-import com.acrolinx.client.sdk.wiremock.common.MockedTestBase;
+import com.acrolinx.client.sdk.wiremock.common.WireMockUtils;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 
 @WireMockTest(httpPort = PLATFORM_PORT_MOCKED)
-class HttpClientMockTest extends MockedTestBase
+class HttpClientMockTest
 {
-    private static final int PLATFORM_PORT_MOCKED = 8089;
-    private static final String acrolinxUrl = "http://localhost:" + PLATFORM_PORT_MOCKED;
+    private static final String ACROLINX_URL = "http://localhost:" + WireMockUtils.PLATFORM_PORT_MOCKED;
 
     @Test
     void test404HttpClient() throws URISyntaxException, IOException, AcrolinxException
     {
         String api = "/api/v1/";
         httpClientMockNotFoundResponse(api);
-        HashMap<String, String> headersHashMap = new HashMap<>();
         ApacheHttpClient apacheHttpClient = new ApacheHttpClient();
-        AcrolinxResponse acrolinxResponse = apacheHttpClient.fetch(new URI(acrolinxUrl + api), HttpMethod.GET,
-                headersHashMap, null);
+        AcrolinxResponse acrolinxResponse = apacheHttpClient.fetch(new URI(ACROLINX_URL + api), HttpMethod.GET,
+                Collections.emptyMap(), null);
 
         assertEquals(404, acrolinxResponse.getStatus());
     }
@@ -47,10 +45,9 @@ class HttpClientMockTest extends MockedTestBase
     {
         String api = "/api/v1/";
         httpClientMockTimeOut(api);
-        HashMap<String, String> headersHashMap = new HashMap<>();
         ApacheHttpClient apacheHttpClient = new ApacheHttpClient();
-        AcrolinxResponse acrolinxResponse = apacheHttpClient.fetch(new URI(acrolinxUrl + api), HttpMethod.GET,
-                headersHashMap, null);
+        AcrolinxResponse acrolinxResponse = apacheHttpClient.fetch(new URI(ACROLINX_URL + api), HttpMethod.GET,
+                Collections.emptyMap(), null);
 
         assertEquals(408, acrolinxResponse.getStatus());
     }

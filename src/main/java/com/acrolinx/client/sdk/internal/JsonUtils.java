@@ -19,12 +19,15 @@ public class JsonUtils
         throw new IllegalStateException();
     }
 
-    private static final GsonFireBuilder builder = new GsonFireBuilder().registerTypeSelector(CheckPollResponse.class,
-            CheckPollResponse.TYPE_SELECTOR).registerTypeSelector(SignInResponse.class,
-                    SignInResponse.TYPE_SELECTOR).registerTypeSelector(SignInPollResponse.class,
-                            SignInPollResponse.TYPE_SELECTOR);
+    private static final Gson gson = createGson();
 
-    private static final Gson gson = builder.createGson();
+    private static Gson createGson()
+    {
+        return new GsonFireBuilder().registerTypeSelector(CheckPollResponse.class,
+                CheckPollResponse.TYPE_SELECTOR).registerTypeSelector(SignInResponse.class,
+                        SignInResponse.TYPE_SELECTOR).registerTypeSelector(SignInPollResponse.class,
+                                SignInPollResponse.TYPE_SELECTOR).createGson();
+    }
 
     public static Type getType(final Class<?> rawClass, final Class<?> parameter)
     {

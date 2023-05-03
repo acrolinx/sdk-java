@@ -8,28 +8,31 @@ import static com.acrolinx.client.sdk.wiremock.common.WireMockUtils.PLATFORM_POR
 import static com.acrolinx.client.sdk.wiremock.common.WireMockUtils.mockSuccessResponse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.net.URISyntaxException;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import com.acrolinx.client.sdk.AcrolinxEndpoint;
 import com.acrolinx.client.sdk.PlatformInformation;
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import com.acrolinx.client.sdk.platform.Server;
-import com.acrolinx.client.sdk.wiremock.common.MockedTestBase;
+import com.acrolinx.client.sdk.wiremock.common.WireMockUtils;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonSyntaxException;
 
 @WireMockTest(httpPort = PLATFORM_PORT_MOCKED)
-class GetPlatformInformationMockedTest extends MockedTestBase
+class GetPlatformInformationMockedTest
 {
     @Test
-    void testFetchingPlatformInformationSucces() throws AcrolinxException
+    void testFetchingPlatformInformationSucces() throws AcrolinxException, URISyntaxException
     {
         PlatformInformation expectedPlatformInformation = new PlatformInformation(new Server("2018.12", "Old Server"),
                 Lists.newArrayList("en"));
         mockSuccessResponse("", expectedPlatformInformation);
 
-        PlatformInformation platformInformation = acrolinxEndpoint.getPlatformInformation();
+        PlatformInformation platformInformation = WireMockUtils.createTestAcrolinxEndpoint().getPlatformInformation();
 
         assertEquals(expectedPlatformInformation.getServer().getName(), platformInformation.getServer().getName());
         assertEquals(expectedPlatformInformation.getServer().getVersion(),
@@ -38,10 +41,11 @@ class GetPlatformInformationMockedTest extends MockedTestBase
     }
 
     @Test
-    void testFetchingPlatformInformationFailure()
+    void testFetchingPlatformInformationFailure() throws URISyntaxException
     {
         mockSuccessResponse("", "Wrong Result");
 
+        AcrolinxEndpoint acrolinxEndpoint = WireMockUtils.createTestAcrolinxEndpoint();
         Assertions.assertThrows(JsonSyntaxException.class, () -> acrolinxEndpoint.getPlatformInformation());
     }
 }

@@ -22,12 +22,12 @@ import com.acrolinx.client.sdk.internal.SuccessResponse;
 public final class WireMockUtils
 {
     public static final int PLATFORM_PORT_MOCKED = 8089;
-    private static final String acrolinxUrl = "http://localhost:" + PLATFORM_PORT_MOCKED;
+    private static final String ACROLINX_URL = "http://localhost:" + PLATFORM_PORT_MOCKED;
     private static final String API_PATH_PREFIX = "/api/v1/";
 
-    public static AcrolinxEndpoint createTestAcrolinxEndpointMocked() throws URISyntaxException
+    public static AcrolinxEndpoint createTestAcrolinxEndpoint() throws URISyntaxException
     {
-        return new AcrolinxEndpoint(new URI(acrolinxUrl), DEVELOPMENT_SIGNATURE, "1.2.3.4", "en");
+        return new AcrolinxEndpoint(new URI(ACROLINX_URL), DEVELOPMENT_SIGNATURE, "1.2.3.4", "en");
     }
 
     public static <T> void mockSuccessResponse(String path, T data)
@@ -37,7 +37,7 @@ public final class WireMockUtils
 
     public static void httpClientMockTimeOut(String path)
     {
-        httpClientMockTimeOutwithDelay(path, 5000);
+        httpClientMockTimeOutwithDelay(path, 5_000);
     }
 
     public static void httpClientMockTimeOutwithDelay(String path, int delayMs)
@@ -109,6 +109,6 @@ public final class WireMockUtils
 
     public static String mockUrlOfApiPath(String apiPath)
     {
-        return acrolinxUrl + API_PATH_PREFIX + apiPath;
+        return ACROLINX_URL + API_PATH_PREFIX + apiPath;
     }
 }

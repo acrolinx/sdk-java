@@ -45,11 +45,12 @@ import com.google.common.base.Strings;
 public class AcrolinxEndpoint
 {
     private static final Logger logger = LoggerFactory.getLogger(AcrolinxEndpoint.class);
-    private String signature;
-    private String clientVersion;
-    private String clientLocale;
-    private URI acrolinxUri;
-    private AcrolinxHttpClient httpClient;
+
+    private final String signature;
+    private final String clientVersion;
+    private final String clientLocale;
+    private final URI acrolinxUri;
+    private final AcrolinxHttpClient httpClient;
 
     /**
      *
@@ -175,7 +176,7 @@ public class AcrolinxEndpoint
      */
     public SignInSuccess signInWithSSO(String genericToken, String username) throws AcrolinxException
     {
-        HashMap<String, String> extraHeaders = new HashMap<>();
+        Map<String, String> extraHeaders = new HashMap<>();
         extraHeaders.put("password", genericToken);
         extraHeaders.put("username", username);
 
@@ -342,9 +343,10 @@ public class AcrolinxEndpoint
             @Nullable ProgressListener progressListener)
             throws AcrolinxException, URISyntaxException, IOException, InterruptedException
     {
-        URI pollUrl = new URI(checkResponse.getLinks().getResult());
+        URI pollUri = new URI(checkResponse.getLinks().getResult());
+
         while (true) {
-            CheckPollResponse pollResponse = fetchFromUrl(pollUrl, JsonUtils.getSerializer(CheckPollResponse.class),
+            CheckPollResponse pollResponse = fetchFromUrl(pollUri, JsonUtils.getSerializer(CheckPollResponse.class),
                     HttpMethod.GET, accessToken, null, null);
             if (pollResponse instanceof CheckPollResponse.Success) {
                 return ((CheckPollResponse.Success) pollResponse).data;
@@ -368,13 +370,11 @@ public class AcrolinxEndpoint
                 JsonUtils.getSerializer(CheckCancelledResponse.class), HttpMethod.DELETE, accessToken, null, null);
     }
 
-    @SuppressWarnings("unchecked")
     private <T> T fetchDataFromApiPath(String apiPath, Class<T> clazz, HttpMethod method, AccessToken accessToken,
             String body, Map<String, String> extraHeaders) throws AcrolinxException
     {
         return (T) fetchFromApiPath(apiPath, JsonUtils.getSerializer(SuccessResponse.class, clazz), method, accessToken,
                 body, extraHeaders).data;
-
     }
 
     private <T> T fetchFromApiPath(String apiPath, JsonDeserializer<T> deserializer, HttpMethod method,
@@ -387,15 +387,14 @@ public class AcrolinxEndpoint
                             + (acrolinxUri.getPath().length() == 0 || acrolinxUri.getPath().endsWith("/") ? "" : "/")
                             + "api/v1/" + apiPath).build();
         } catch (URISyntaxException e) {
-            logger.debug("Uri formation failed: {}\nAPI-Path: {}\nAcrolinx URL: {}", e.getMessage(), apiPath,
-                    acrolinxUri);
-            throw new AcrolinxException(e);
+            throw new AcrolinxException("Uri creation failed, apiPath: " + apiPath + ", acrolinxUri: " + acrolinxUri,
+                    e);
         }
+
         try {
             return fetchFromUrl(uri, deserializer, method, accessToken, body, extraHeaders);
         } catch (IOException e) {
-            logger.debug("fetchFromUrl {} failed: {}", uri, e.getMessage());
-            throw new AcrolinxException(e);
+            throw new AcrolinxException("fetch from URL failed: " + uri, e);
         }
     }
 
@@ -431,7 +430,7 @@ public class AcrolinxEndpoint
 
     private Map<String, String> getCommonHeaders(AccessToken accessToken)
     {
-        HashMap<String, String> headersMap = new HashMap<>();
+        Map<String, String> headersMap = new HashMap<>();
 
         if (accessToken != null && !accessToken.isEmpty()) {
             headersMap.put("X-Acrolinx-Auth", accessToken.getAccessTokenAsString());

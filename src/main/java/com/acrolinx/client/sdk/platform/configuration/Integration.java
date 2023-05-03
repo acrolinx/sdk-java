@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class Integration
 {
-    private Map<String, String> properties;
+    private final Map<String, String> properties;
 
     public Integration(Map<String, String> properties)
     {

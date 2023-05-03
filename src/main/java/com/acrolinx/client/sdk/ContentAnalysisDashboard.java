@@ -10,7 +10,7 @@ import com.acrolinx.client.sdk.platform.Link;
 
 public class ContentAnalysisDashboard
 {
-    private List<Link> links;
+    private final List<Link> links;
 
     public ContentAnalysisDashboard(List<Link> links)
     {

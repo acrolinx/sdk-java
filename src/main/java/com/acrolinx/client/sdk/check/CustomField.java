@@ -6,8 +6,8 @@ package com.acrolinx.client.sdk.check;
 
 public class CustomField
 {
-    private String key;
-    private String value;
+    private final String key;
+    private final String value;
 
     public CustomField(String key, String value)
     {

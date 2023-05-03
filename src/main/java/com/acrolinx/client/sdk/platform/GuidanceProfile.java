@@ -6,9 +6,9 @@ package com.acrolinx.client.sdk.platform;
 
 public class GuidanceProfile
 {
-    private String id;
-    private String displayName;
-    private Language language;
+    private final String id;
+    private final String displayName;
+    private final Language language;
 
     public GuidanceProfile(String id, String displayName, Language language)
     {

@@ -11,7 +11,7 @@ import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 
 public class CheckRequestBuilder
 {
-    private String content;
+    private final String content;
     private CheckRequest.ContentEncoding contentEncoding;
     private CheckOptions checkOptions;
     private DocumentDescriptorRequest document;

@@ -8,7 +8,7 @@ import java.util.Objects;
 
 public class AccessToken
 {
-    private String token;
+    private final String token;
 
     public AccessToken(String token)
     {
@@ -29,8 +29,8 @@ public class AccessToken
         if (object == null || getClass() != object.getClass()) {
             return false;
         }
-        AccessToken that = (AccessToken) object;
-        return Objects.equals(token, that.token);
+        AccessToken other = (AccessToken) object;
+        return token.equals(other.token);
     }
 
     @Override

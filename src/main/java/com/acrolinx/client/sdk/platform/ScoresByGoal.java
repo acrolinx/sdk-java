@@ -6,8 +6,8 @@ package com.acrolinx.client.sdk.platform;
 
 public class ScoresByGoal
 {
-    private String id;
-    private Integer score;
+    private final String id;
+    private final Integer score;
 
     public ScoresByGoal(String id, Integer score)
     {
