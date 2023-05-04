@@ -13,6 +13,11 @@ public class AcrolinxException extends Exception
         super(message);
     }
 
+    public AcrolinxException(String message, Throwable cause)
+    {
+        super(message, cause);
+    }
+
     public AcrolinxException(Throwable cause)
     {
         super(cause);

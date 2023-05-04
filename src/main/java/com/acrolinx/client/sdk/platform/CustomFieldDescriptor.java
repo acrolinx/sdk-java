@@ -8,11 +8,11 @@ import java.util.List;
 
 public class CustomFieldDescriptor
 {
-    private String key;
-    private String displayName;
-    private String inputType;
-    private String type;
-    private List<String> possibleValues;
+    private final String key;
+    private final String displayName;
+    private final String inputType;
+    private final String type;
+    private final List<String> possibleValues;
 
     public CustomFieldDescriptor(String key, String displayName, String inputType, String type,
             List<String> possibleValues)

@@ -32,8 +32,9 @@ import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 
 public class ApacheHttpClient implements AcrolinxHttpClient
 {
-    private CloseableHttpClient httpClient;
     private static final Logger logger = LoggerFactory.getLogger(ApacheHttpClient.class);
+
+    private final CloseableHttpClient httpClient;
 
     public ApacheHttpClient()
     {

@@ -12,12 +12,12 @@ import com.acrolinx.client.sdk.check.ReportType;
 
 public class CheckingCapabilities
 {
-    private List<GuidanceProfile> guidanceProfiles;
-    private List<ContentFormat> contentFormats;
-    private List<CheckRequest.ContentEncoding> contentEncodings;
-    private String referencePattern;
-    private List<CheckType> checkTypes;
-    private List<ReportType> reportTypes;
+    private final List<GuidanceProfile> guidanceProfiles;
+    private final List<ContentFormat> contentFormats;
+    private final List<CheckRequest.ContentEncoding> contentEncodings;
+    private final String referencePattern;
+    private final List<CheckType> checkTypes;
+    private final List<ReportType> reportTypes;
 
     public CheckingCapabilities(List<GuidanceProfile> guidanceProfiles, List<ContentFormat> contentFormats,
             List<CheckRequest.ContentEncoding> contentEncodings, String referencePattern, List<CheckType> checkTypes,

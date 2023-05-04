@@ -13,6 +13,8 @@ import static com.acrolinx.client.sdk.wiremock.common.WireMockUtils.mockUrlOfApi
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 
+import java.net.URISyntaxException;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -25,17 +27,17 @@ import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import com.acrolinx.client.sdk.internal.SignInPollResponse;
 import com.acrolinx.client.sdk.internal.SignInResponse;
 import com.acrolinx.client.sdk.platform.configuration.Integration;
-import com.acrolinx.client.sdk.wiremock.common.MockedTestBase;
+import com.acrolinx.client.sdk.wiremock.common.WireMockUtils;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import com.github.tomakehurst.wiremock.stubbing.Scenario;
 import com.google.common.collect.Maps;
 
 @WireMockTest(httpPort = PLATFORM_PORT_MOCKED)
-class SignInInteractiveTest extends MockedTestBase
+class SignInInteractiveTest
 {
-    private static final String mockedInteractiveUrl = mockUrlOfApiPath("auth/sign-ins/interactive");
-    private static final String mockedPollPath = "auth/sign-ins/poll";
-    private static final String mockedPollUrl = mockUrlOfApiPath(mockedPollPath);
+    private static final String MOCKED_INTERACTIVE_URL = mockUrlOfApiPath("auth/sign-ins/interactive");
+    private static final String MOCKED_POLL_PATH = "auth/sign-ins/poll";
+    private static final String MOCKED_POLL_URL = mockUrlOfApiPath(MOCKED_POLL_PATH);
 
     private final InteractiveCallback interactiveCallback = Mockito.mock(InteractiveCallback.class);
     private final SignInSuccess expectedSignInSuccess = new SignInSuccess("dummyAccessToken",
@@ -44,7 +46,7 @@ class SignInInteractiveTest extends MockedTestBase
     private final SignInPollResponse.Progress mockedSignInPollMoreResponse = new SignInPollResponse.Progress(
             new Progress(1.0, null, null));
     private final SignInResponse.SignInLinks mockedSignInLinksResponse = new SignInResponse.SignInLinks(
-            new SignInResponse.SignInLinksInternal(mockedInteractiveUrl, mockedPollUrl),
+            new SignInResponse.SignInLinksInternal(MOCKED_INTERACTIVE_URL, MOCKED_POLL_URL),
             new SignInResponse.SignInLinksData(10000.0));
 
     @BeforeEach
@@ -54,29 +56,29 @@ class SignInInteractiveTest extends MockedTestBase
     }
 
     @Test
-    void signInWithImmediatePollSuccess() throws AcrolinxException, InterruptedException
+    void signInWithImmediatePollSuccess() throws AcrolinxException, InterruptedException, URISyntaxException
     {
-        mockSuccessResponse(mockedPollPath, expectedSignInSuccess);
+        mockSuccessResponse(MOCKED_POLL_PATH, expectedSignInSuccess);
 
-        SignInSuccess signInSuccess = acrolinxEndpoint.signInInteractive(interactiveCallback);
+        SignInSuccess signInSuccess = WireMockUtils.createTestAcrolinxEndpoint().signInInteractive(interactiveCallback);
 
-        verify(interactiveCallback).onInteractiveUrl(mockedInteractiveUrl);
+        verify(interactiveCallback).onInteractiveUrl(MOCKED_INTERACTIVE_URL);
         assertEquals(expectedSignInSuccess.getAccessToken(), signInSuccess.getAccessToken());
     }
 
     @Test
-    void signInWithLaterPollSuccess() throws AcrolinxException, InterruptedException
+    void signInWithLaterPollSuccess() throws AcrolinxException, InterruptedException, URISyntaxException
     {
         final String scenario = "laterPollSuccess";
-        final String SIGNED_IN_STATE = "SIGNED_IN_STATE";
+        final String signedInState = "SIGNED_IN_STATE";
 
-        mockGetResponseInScenario(mockedPollPath, mockedSignInPollMoreResponse, scenario, Scenario.STARTED,
-                SIGNED_IN_STATE);
-        mockSuccessResponseInScenario(mockedPollPath, expectedSignInSuccess, scenario, SIGNED_IN_STATE);
+        mockGetResponseInScenario(MOCKED_POLL_PATH, mockedSignInPollMoreResponse, scenario, Scenario.STARTED,
+                signedInState);
+        mockSuccessResponseInScenario(MOCKED_POLL_PATH, expectedSignInSuccess, scenario, signedInState);
 
-        SignInSuccess signInSuccess = acrolinxEndpoint.signInInteractive(interactiveCallback);
+        SignInSuccess signInSuccess = WireMockUtils.createTestAcrolinxEndpoint().signInInteractive(interactiveCallback);
 
-        verify(interactiveCallback).onInteractiveUrl(mockedInteractiveUrl);
+        verify(interactiveCallback).onInteractiveUrl(MOCKED_INTERACTIVE_URL);
         assertEquals(expectedSignInSuccess.getAccessToken().getAccessTokenAsString(),
                 signInSuccess.getAccessToken().getAccessTokenAsString());
     }

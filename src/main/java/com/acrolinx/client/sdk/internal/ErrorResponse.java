@@ -20,6 +20,7 @@ public class ErrorResponse
     public static class AcrolinxServiceError implements Serializable
     {
         private static final long serialVersionUID = 3601811551143045429L;
+
         private final String type;
         private final String title;
         private final String detail;

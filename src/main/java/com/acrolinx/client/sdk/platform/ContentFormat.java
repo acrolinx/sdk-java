@@ -6,8 +6,8 @@ package com.acrolinx.client.sdk.platform;
 
 public class ContentFormat
 {
-    private String id;
-    private String displayName;
+    private final String id;
+    private final String displayName;
 
     public ContentFormat(String id, String displayName)
     {

@@ -6,8 +6,8 @@ package com.acrolinx.client.sdk.platform;
 
 public class Link
 {
-    private String linkType;
-    private String link;
+    private final String linkType;
+    private final String link;
 
     public Link(String linkType, String link)
     {

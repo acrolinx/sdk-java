@@ -74,6 +74,7 @@ public class AcrolinxServiceException extends AcrolinxException
     public static class HttpRequest implements Serializable
     {
         private static final long serialVersionUID = -2800135231507144829L;
+
         private final URI url;
         private final HttpMethod method;
 

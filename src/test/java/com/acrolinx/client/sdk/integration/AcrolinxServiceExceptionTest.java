@@ -56,5 +56,4 @@ class AcrolinxServiceExceptionTest extends IntegrationTestBase
             acrolinxEndpoint.close();
         }
     }
-
 }

@@ -8,7 +8,7 @@ import java.util.List;
 
 public class Document
 {
-    private List<CustomFieldDescriptor> customFields;
+    private final List<CustomFieldDescriptor> customFields;
 
     public Document(List<CustomFieldDescriptor> customFields)
     {
