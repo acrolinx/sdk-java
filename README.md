@@ -17,7 +17,7 @@ for consulting and getting your integration certified.
 The tests in this SDK work with a test license on an internal Acrolinx URL.
 This license is only meant for demonstration and developing purposes.
 Once you finished your integration, you'll have to get a license for your integration from Acrolinx.
-  
+
 Acrolinx offers different other SDKs, and examples for developing integrations.
 
 Before you start developing your own integration, you might benefit from looking into:
@@ -37,9 +37,9 @@ Before you start developing your own integration, you might benefit from looking
 
 ```xml
 <dependency>
-    <groupId>com.acrolinx.client</groupId>
-    <artifactId>sdk</artifactId>
-    <version>1.0.21</version>
+	<groupId>com.acrolinx.client</groupId>
+	<artifactId>sdk</artifactId>
+	<version>1.0.21</version>
 </dependency>
 ```
 
@@ -47,11 +47,11 @@ Before you start developing your own integration, you might benefit from looking
 
 ```groovy
 repositories {
-    mavenCentral()
+	mavenCentral()
 }
 
 dependencies {
-    implementation 'com.acrolinx.client:sdk:1.0.21'
+	implementation 'com.acrolinx.client:sdk:1.0.21'
 }
 ```
 
@@ -74,8 +74,8 @@ In order to run the integration tests locally:
 
 * You need access to the Acrolinx Platform
 * You need to create an `.env`-file similar to the [`.env.template`](.env.template) file.
-  Alternately you can set the corresponding environment variables in a different way.
-  
+Alternately you can set the corresponding environment variables in a different way.
+
 ## Contributing to This SDK
 
 See: [`CONTRIBUTING.md`](CONTRIBUTING.md)
