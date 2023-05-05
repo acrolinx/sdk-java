@@ -12,7 +12,7 @@ It does NOT offer an interface to work with the Acrolinx Sidebar (see [Sidebar J
 
 ### Prerequisites
 
-Please contact [Acrolinx SDK support](https://github.com/acrolinx/acrolinx-coding-guidance/blob/master/topics/sdk-support.md)
+Please contact [Acrolinx SDK support](https://github.com/acrolinx/acrolinx-coding-guidance/blob/main/topics/sdk-support.md)
 for consulting and getting your integration certified.
 The tests in this SDK work with a test license on an internal Acrolinx URL.
 This license is only meant for demonstration and developing purposes.
@@ -57,7 +57,7 @@ dependencies {
 
 ### Usage
 
-**See the [Acrolinx Java SDK demo](https://github.com/acrolinx/sdk-demo-java/blob/master/src/main/java/com/acrolinx/client/demo/SdkDemo.java)
+**See the [Acrolinx Java SDK demo](https://github.com/acrolinx/sdk-demo-java/blob/main/src/main/java/com/acrolinx/client/demo/SdkDemo.java)
 for a quickstart example.**
 
 Create instance of `AcrolinxEndpoint` to begin.

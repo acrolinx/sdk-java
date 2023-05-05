@@ -13,4 +13,9 @@ public final class TestConstants
     public static final String DEVELOPMENT_SIGNATURE = ACROLINX_DEV_SIGNATURE.isEmpty()
             ? "SW50ZWdyYXRpb25EZXZlbG9wbWVudERlbW9Pbmx5"
             : ACROLINX_DEV_SIGNATURE;
+
+    private TestConstants()
+    {
+        throw new IllegalStateException();
+    }
 }

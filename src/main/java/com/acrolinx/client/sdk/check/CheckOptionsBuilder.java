@@ -108,8 +108,8 @@ public class CheckOptionsBuilder
      * for input types to common file extensions.
      * 
      * @see <a href=
-     *      "https://github.com/acrolinx/acrolinx-coding-guidance/blob/master/topics/text-extraction.md#check-format-and-supporting-multiformat-editors">Check
-     *      Coding Guidance on GitHub for more information</a>
+     *      "https://github.com/acrolinx/acrolinx-coding-guidance/blob/main/topics/text-extraction.md#input-types-and-integrating-with-multiformat-editors">Input
+     *      Types and Integrating with Multiformat Editors</a>
      */
     public CheckOptionsBuilder withContentFormat(String contentFormat)
     {

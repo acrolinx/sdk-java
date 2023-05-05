@@ -22,4 +22,9 @@ public final class TestUtils
         byte[] content = Resources.toByteArray(Resources.getResource(resourcePath));
         return Base64.getEncoder().encodeToString(content);
     }
+
+    private TestUtils()
+    {
+        throw new IllegalStateException();
+    }
 }

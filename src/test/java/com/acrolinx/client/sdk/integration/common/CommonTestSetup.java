@@ -30,4 +30,9 @@ public final class CommonTestSetup
     {
         return new AcrolinxEndpoint(new URI(ACROLINX_URL), DEVELOPMENT_SIGNATURE, "1.2.3.4", "en");
     }
+
+    private CommonTestSetup()
+    {
+        throw new IllegalStateException();
+    }
 }

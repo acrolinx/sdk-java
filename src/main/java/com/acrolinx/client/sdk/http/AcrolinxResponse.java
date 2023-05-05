@@ -6,8 +6,8 @@ package com.acrolinx.client.sdk.http;
 
 public class AcrolinxResponse
 {
-    private String result = "";
-    private int status = 0;
+    private String result;
+    private int status;
 
     public String getResult()
     {

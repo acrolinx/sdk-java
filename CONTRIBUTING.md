@@ -4,7 +4,7 @@
 
 1. Check out the project, create, and configure an `.env` file as described above.
 
-2. Please add new features using the `master` branch, or submit a pull request.
+2. Please add new features using the `main` branch, or submit a pull request.
 To install dependencies, build, and test the project, run:
 
 ```bash
@@ -25,17 +25,9 @@ TravisCI will also automatically create a release tag on GitHub.
 
 5. Once the tag is pushed to GitHub, Actions will automatically update the [API documentation on the GitHub Pages](https://acrolinx.github.io/sdk-java/).
 6. Don't forget to commit and push a new SNAPSHOT version.
-7. Update referenced versions is [`README.md`](https://github.com/acrolinx/sdk-java/edit/master/README.md).
-8. Update referenced versions is [Acrolinx Java SDK Demo Project](https://github.com/acrolinx/sdk-demo-java/edit/master/build.gradle).
+7. Update referenced versions is [`README.md`](https://github.com/acrolinx/sdk-java/edit/main/README.md).
+8. Update referenced versions is [Acrolinx Java SDK Demo Project](https://github.com/acrolinx/sdk-demo-java/edit/main/build.gradle).
 
 ## Updating Dependencies
 
 ```./gradlew useLatestVersions && ./gradlew useLatestVersionsCheck```
-
-## Updating Gradle Version
-
-Gradle releases: https://gradle.org/releases/
-
-```shell
-./gradlew wrapper --gradle-version 7.5
-```

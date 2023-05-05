@@ -79,7 +79,7 @@ class CheckTest extends IntegrationTestBase
     /**
      * This text should need some seconds to check.
      */
-    static final String longTestText = Strings.repeat("This sentence is nice. \n", 300);
+    static final String LONG_TEST_TEXT = Strings.repeat("This sentence is nice. \n", 300);
 
     GuidanceProfile guidanceProfileEn;
     final ProgressListener progressListener = Mockito.mock(ProgressListener.class);
@@ -407,7 +407,7 @@ class CheckTest extends IntegrationTestBase
     @Test
     void checkALargeTextAndGetProgress() throws AcrolinxException
     {
-        CheckResult checkResult = checkEnglishText(longTestText);
+        CheckResult checkResult = checkEnglishText(LONG_TEST_TEXT);
 
         verify(progressListener, atLeast(2)).onProgress(argThat(new ProgressMatcher()));
 
@@ -421,7 +421,7 @@ class CheckTest extends IntegrationTestBase
     @Test
     void cancelCheck() throws InterruptedException
     {
-        CheckRequest.ofDocumentContent(longTestText).withContentReference(("file.txt")).withCheckOptions(
+        CheckRequest.ofDocumentContent(LONG_TEST_TEXT).withContentReference(("file.txt")).withCheckOptions(
                 CheckOptions.getBuilder().withGuidanceProfileId(guidanceProfileEn.getId()).build()).build();
 
         ExecutorService executorService = Executors.newFixedThreadPool(1);
@@ -429,7 +429,7 @@ class CheckTest extends IntegrationTestBase
             @Override
             public CheckResult call() throws Exception
             {
-                return checkEnglishText(longTestText);
+                return checkEnglishText(LONG_TEST_TEXT);
             }
         });
 
@@ -572,7 +572,7 @@ class CheckTest extends IntegrationTestBase
 
     static class ProgressMatcher implements ArgumentMatcher<Progress>
     {
-        private double prevPercent = 0;
+        private double prevPercent;
 
         @Override
         public boolean matches(Progress value)
