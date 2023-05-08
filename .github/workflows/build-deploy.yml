@@ -5,7 +5,7 @@ on:
   pull_request:
     branches: [ main ]
   schedule:
-    - cron: "0 2 * * *" # Everyday at 2:00AM
+    - cron: '0 3 * * *'
   workflow_dispatch:
     inputs:
       reason:
