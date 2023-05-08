@@ -37,7 +37,6 @@ package com.acrolinx.client.sdk.check;
  * document.</td>
  * </tr>
  * </table>
- *
  */
 public enum CheckType
 {

@@ -43,12 +43,11 @@ public class ApacheHttpClient implements AcrolinxHttpClient
 
     private static CloseableHttpClient createHttpClient()
     {
-        final PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
-        final HttpClientBuilder httpClientBuilder = HttpClientBuilder.create().setConnectionManager(cm);
-        RequestConfig localConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build();
-        httpClientBuilder.setDefaultRequestConfig(localConfig);
-        httpClientBuilder.useSystemProperties();
-        return httpClientBuilder.build();
+        PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager();
+        RequestConfig requestConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build();
+
+        return HttpClientBuilder.create().setConnectionManager(connectionManager).setDefaultRequestConfig(
+                requestConfig).useSystemProperties().build();
     }
 
     @Override
@@ -68,6 +67,7 @@ public class ApacheHttpClient implements AcrolinxHttpClient
         acrolinxResponse.setStatus(statusCode);
 
         HttpEntity responseEntity = response.getEntity();
+
         try {
             String result = EntityUtils.toString(responseEntity);
             acrolinxResponse.setResult(result);
@@ -75,6 +75,7 @@ public class ApacheHttpClient implements AcrolinxHttpClient
         } catch (ParseException | IOException e) {
             throw new AcrolinxException(e);
         }
+
         return acrolinxResponse;
     }
 

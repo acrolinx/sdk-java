@@ -127,7 +127,6 @@ public class AcrolinxEndpoint
 
         String responseText = acrolinxHttpResponse.getResult();
         if (Strings.isNullOrEmpty(responseText)) {
-            logger.debug("Response is empty");
             throw new AcrolinxException("Fetch failed with status " + statusCode + " and no result.");
         }
 
@@ -137,11 +136,9 @@ public class AcrolinxEndpoint
             logger.debug("Error response text: {}", responseText);
             acrolinxServiceError = parseJson(responseText, ErrorResponse.class).error;
             if (acrolinxServiceError == null) {
-                logger.error("Unable to parse JSON response");
                 throw new AcrolinxException("Invalid error class generated");
             }
         } catch (RuntimeException e) {
-            logger.debug("Invalid JSON exception occurred. ");
             throw new AcrolinxException("Fetch failed with status " + statusCode + " and unexpected result\""
                     + responseText + "\"." + e.getMessage() + "\".");
         }
@@ -236,9 +233,9 @@ public class AcrolinxEndpoint
                 Thread.sleep(sleepTimeMs);
             }
         } catch (AcrolinxException | URISyntaxException | IOException e) {
-            logger.debug("Sign-in failed {}", e.getMessage());
-            throw new AcrolinxException(e);
+            throw new AcrolinxException("Sign-in failed", e);
         }
+
         throw new SignInException("Timeout");
     }
 

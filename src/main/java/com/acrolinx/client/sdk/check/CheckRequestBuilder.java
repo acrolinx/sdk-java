@@ -15,8 +15,8 @@ public class CheckRequestBuilder
     private CheckRequest.ContentEncoding contentEncoding;
     private CheckOptions checkOptions;
     private DocumentDescriptorRequest document;
-    private ExternalContent externalContent = null;
-    private String reference = null;
+    private ExternalContent externalContent;
+    private String reference;
     private List<CustomField> customFields = new ArrayList<>();
 
     CheckRequestBuilder(Document document) throws AcrolinxException

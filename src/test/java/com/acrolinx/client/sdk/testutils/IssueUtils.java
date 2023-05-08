@@ -31,4 +31,9 @@ public final class IssueUtils
 
         return null;
     }
+
+    private IssueUtils()
+    {
+        throw new IllegalStateException();
+    }
 }

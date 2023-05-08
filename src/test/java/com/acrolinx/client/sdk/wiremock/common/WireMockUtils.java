@@ -111,4 +111,9 @@ public final class WireMockUtils
     {
         return ACROLINX_URL + API_PATH_PREFIX + apiPath;
     }
+
+    private WireMockUtils()
+    {
+        throw new IllegalStateException();
+    }
 }

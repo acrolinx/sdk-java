@@ -2,24 +2,13 @@
 
 echo "Starting publish script"
 
-GRADLE_PROPERTIES_FILE=gradle.properties
-
-is_not_substring(){
-	if [ -z "${2##*$1*}" ]; then
-			return 1
-		else return 0
-	fi
-}
-
-getProperty()
-{
+getProperty() {
 	PROP_KEY=$1
 	PROP_VALUE=`cat "./gradle.properties" | grep "$PROP_KEY" | cut -d'=' -f2`
 	echo $PROP_VALUE
 }
 
-
-PROJECT_VERSION=$(getProperty "CURRENT_VERSION")
+readonly PROJECT_VERSION=$(getProperty "CURRENT_VERSION")
 echo "Current Version: $PROJECT_VERSION"
 
 if [[ "$PROJECT_VERSION" == *"SNAPSHOT"* ]]; then
@@ -39,12 +28,12 @@ else
 			echo "Done with release step."
 			echo "Trying to create Github Release Tag"
 			if ./gradlew createGithubReleaseTag; then
-			echo "::set-output name=TAGNAME::release-$PROJECT_VERSION"
-			echo "::set-output name=RELEASE::true"
-			exit 0
+				echo "::set-output name=TAGNAME::release-$PROJECT_VERSION"
+				echo "::set-output name=RELEASE::true"
+				exit 0
 			else
-			echo "Can't create Github Release Tag. Please do manually."
-			exit 1
+				echo "Can't create Github Release Tag. Please do manually."
+				exit 1
 			fi
 		else
 			exit 1

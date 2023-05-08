@@ -75,18 +75,18 @@ public class AcrolinxServiceException extends AcrolinxException
     {
         private static final long serialVersionUID = -2800135231507144829L;
 
-        private final URI url;
+        private final URI uri;
         private final HttpMethod method;
 
         public HttpRequest(URI url, HttpMethod method)
         {
-            this.url = url;
+            this.uri = url;
             this.method = method;
         }
 
         public URI getUrl()
         {
-            return url;
+            return uri;
         }
 
         public HttpMethod getMethod()
@@ -97,7 +97,7 @@ public class AcrolinxServiceException extends AcrolinxException
         @Override
         public String toString()
         {
-            return "HttpRequest{" + "url=" + url + ", method=" + method + '}';
+            return "HttpRequest{" + "url=" + uri + ", method=" + method + '}';
         }
     }
 }
