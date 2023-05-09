@@ -494,16 +494,12 @@ class CheckTest extends IntegrationTestBase
 
         for (int i = 0; i < numberOfChecks; i++) {
             final String uuid = UUID.randomUUID().toString();
-            Future<CheckResult> futureResult = executorService.submit(new Callable<CheckResult>() {
-                @Override
-                public CheckResult call() throws Exception
-                {
-                    return acrolinxEndpoint.check(ACROLINX_API_TOKEN,
-                            CheckRequest.ofDocumentContent(uuid).withContentReference((uuid + ".txt")).withCheckOptions(
-                                    CheckOptions.getBuilder().withGuidanceProfileId(
-                                            guidanceProfileEn.getId()).build()).build(),
-                            progressListener);
-                }
+            Future<CheckResult> futureResult = executorService.submit(() -> {
+                return acrolinxEndpoint.check(ACROLINX_API_TOKEN,
+                        CheckRequest.ofDocumentContent(uuid).withContentReference((uuid + ".txt")).withCheckOptions(
+                                CheckOptions.getBuilder().withGuidanceProfileId(
+                                        guidanceProfileEn.getId()).build()).build(),
+                        progressListener);
             });
             checks.add(futureResult);
         }
@@ -575,10 +571,10 @@ class CheckTest extends IntegrationTestBase
         private double prevPercent;
 
         @Override
-        public boolean matches(Progress value)
+        public boolean matches(Progress progress)
         {
-            boolean valid = value.getPercent() >= this.prevPercent && value.getMessage() != null;
-            this.prevPercent = value.getPercent();
+            boolean valid = progress.getPercent() >= this.prevPercent && progress.getMessage() != null;
+            this.prevPercent = progress.getPercent();
             return valid;
         }
     }

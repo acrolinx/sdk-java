@@ -58,7 +58,7 @@ class SignInInteractiveTest extends IntegrationTestBase
     void testSignInWithPollingWithInvalidAccessToken()
     {
         SignInException signInException = Assertions.assertThrows(SignInException.class,
-                () -> acrolinxEndpoint.signInInteractive(interactiveCallback, new AccessToken("accesstoken"), 1000L));
+                () -> acrolinxEndpoint.signInInteractive(interactiveCallback, new AccessToken("accesstoken"), 1_000L));
         assertEquals("Timeout", signInException.getMessage());
         verify(interactiveCallback, times(1)).onInteractiveUrl(ArgumentMatchers.startsWith(ACROLINX_URL));
     }
@@ -66,7 +66,7 @@ class SignInInteractiveTest extends IntegrationTestBase
     @Test
     void testSignCancel()
     {
-        final long timeoutMs = 1000;
+        final long timeoutMs = 1_000;
 
         ExecutorService executorService = Executors.newFixedThreadPool(1);
         Future<SignInSuccess> future = executorService.submit(new Callable<SignInSuccess>() {
@@ -77,8 +77,7 @@ class SignInInteractiveTest extends IntegrationTestBase
             }
         });
 
-        boolean cancelled = future.cancel(true);
-        assertTrue(cancelled);
+        assertTrue(future.cancel(true));
 
         Assertions.assertThrows(CancellationException.class, () -> future.get(timeoutMs, TimeUnit.MILLISECONDS));
     }

@@ -5,7 +5,6 @@
 package com.acrolinx.client.sdk;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.notNull;
@@ -30,166 +29,169 @@ import com.acrolinx.client.sdk.http.HttpMethod;
 
 class AcrolinxEndpointTests
 {
-    private final AcrolinxHttpClient client = Mockito.mock(AcrolinxHttpClient.class);
-    private AcrolinxEndpoint acrolinxEndpoint;
-    private final AcrolinxResponse response = Mockito.mock(AcrolinxResponse.class);
+    private final AcrolinxHttpClient acrolinxHttpClient = Mockito.mock(AcrolinxHttpClient.class);
+    private final AcrolinxResponse acrolinxResponse = Mockito.mock(AcrolinxResponse.class);
     private final ArgumentCaptor<Map<String, String>> headersCaptor = ArgumentCaptor.forClass(Map.class);
 
     @BeforeEach
     void beforeEach() throws IOException, AcrolinxException
     {
-        when(client.fetch(any(URI.class), any(HttpMethod.class), notNull(), eq((String) null))).thenReturn(response);
+        when(acrolinxHttpClient.fetch(any(URI.class), any(HttpMethod.class), notNull(), eq((String) null))).thenReturn(acrolinxResponse);
 
-        when(response.getStatus()).thenReturn(200);
-        when(response.getResult()).thenReturn("{\"data\":{} }");
+        when(acrolinxResponse.getStatus()).thenReturn(200);
+        when(acrolinxResponse.getResult()).thenReturn("{\"data\":{} }");
     }
 
     @Test
     void ensureUrlSetCorrectly() throws AcrolinxException, URISyntaxException, IOException
     {
-        acrolinxEndpoint = new AcrolinxEndpoint(client, new URI("https://www.acrolinx.com"), "foo", "1.2.3.97", "bar");
+        try (AcrolinxEndpoint acrolinxEndpoint = new AcrolinxEndpoint(acrolinxHttpClient,
+                new URI("https://www.acrolinx.com"), "foo", "1.2.3.97", "bar")) {
+            acrolinxEndpoint.getPlatformInformation();
 
-        acrolinxEndpoint.getPlatformInformation();
-
-        verify(client).fetch(eq(new URI("https://www.acrolinx.com/api/v1/")), eq(HttpMethod.GET), notNull(),
-                eq((String) null));
+            verify(acrolinxHttpClient).fetch(eq(new URI("https://www.acrolinx.com/api/v1/")), eq(HttpMethod.GET),
+                    notNull(), eq((String) null));
+        }
     }
 
     @Test
     void ensureUrlWithSlashSetCorrectly() throws AcrolinxException, URISyntaxException, IOException
     {
-        acrolinxEndpoint = new AcrolinxEndpoint(client, new URI("https://www.acrolinx.com/"), "foo", "1.2.3.97", "bar");
+        try (AcrolinxEndpoint acrolinxEndpoint = new AcrolinxEndpoint(acrolinxHttpClient,
+                new URI("https://www.acrolinx.com/"), "foo", "1.2.3.97", "bar")) {
+            acrolinxEndpoint.getPlatformInformation();
 
-        acrolinxEndpoint.getPlatformInformation();
-
-        verify(client).fetch(eq(new URI("https://www.acrolinx.com/api/v1/")), eq(HttpMethod.GET), notNull(),
-                eq((String) null));
+            verify(acrolinxHttpClient).fetch(eq(new URI("https://www.acrolinx.com/api/v1/")), eq(HttpMethod.GET),
+                    notNull(), eq((String) null));
+        }
     }
 
     @Test
     void ensureUrlWithPathSetCorrectly() throws AcrolinxException, URISyntaxException, IOException
     {
-        acrolinxEndpoint = new AcrolinxEndpoint(client, new URI("https://www.acrolinx.com/proxy"), "foo", "1.2.3.97",
-                "bar");
+        try (AcrolinxEndpoint acrolinxEndpoint = new AcrolinxEndpoint(acrolinxHttpClient,
+                new URI("https://www.acrolinx.com/proxy"), "foo", "1.2.3.97", "bar")) {
+            acrolinxEndpoint.getPlatformInformation();
 
-        acrolinxEndpoint.getPlatformInformation();
-
-        verify(client).fetch(eq(new URI("https://www.acrolinx.com/proxy/api/v1/")), eq(HttpMethod.GET), notNull(),
-                eq((String) null));
+            verify(acrolinxHttpClient).fetch(eq(new URI("https://www.acrolinx.com/proxy/api/v1/")), eq(HttpMethod.GET),
+                    notNull(), eq((String) null));
+        }
     }
 
     @Test
     void ensureUrlWithPathAndSlashSetCorrectly() throws AcrolinxException, URISyntaxException, IOException
     {
-        acrolinxEndpoint = new AcrolinxEndpoint(client, new URI("https://www.acrolinx.com/proxy/"), "foo", "1.2.3.97",
-                "bar");
+        try (AcrolinxEndpoint acrolinxEndpoint = new AcrolinxEndpoint(acrolinxHttpClient,
+                new URI("https://www.acrolinx.com/proxy/"), "foo", "1.2.3.97", "bar")) {
+            acrolinxEndpoint.getPlatformInformation();
 
-        acrolinxEndpoint.getPlatformInformation();
-
-        verify(client).fetch(eq(new URI("https://www.acrolinx.com/proxy/api/v1/")), eq(HttpMethod.GET), notNull(),
-                eq((String) null));
+            verify(acrolinxHttpClient).fetch(eq(new URI("https://www.acrolinx.com/proxy/api/v1/")), eq(HttpMethod.GET),
+                    notNull(), eq((String) null));
+        }
     }
 
     @Test
     void ensureBaseUrlSetCorrectly() throws AcrolinxException, URISyntaxException, IOException
     {
-        acrolinxEndpoint = new AcrolinxEndpoint(client, new URI("https://www.acrolinx.com"), "foo", "1.2.3.97", "bar");
+        try (AcrolinxEndpoint acrolinxEndpoint = new AcrolinxEndpoint(acrolinxHttpClient,
+                new URI("https://www.acrolinx.com"), "foo", "1.2.3.97", "bar")) {
+            acrolinxEndpoint.getPlatformInformation();
 
-        acrolinxEndpoint.getPlatformInformation();
+            verify(acrolinxHttpClient).fetch(any(URI.class), eq(HttpMethod.GET), headersCaptor.capture(),
+                    eq((String) null));
 
-        verify(client).fetch(any(URI.class), eq(HttpMethod.GET), headersCaptor.capture(), eq((String) null));
-
-        final Map<String, String> headers = headersCaptor.getValue();
-        assertTrue(headers.containsKey("X-Acrolinx-Base-Url"));
-        assertEquals("https://www.acrolinx.com", headers.get("X-Acrolinx-Base-Url"));
+            final Map<String, String> headers = headersCaptor.getValue();
+            assertEquals("https://www.acrolinx.com", headers.get("X-Acrolinx-Base-Url"));
+        }
     }
 
     @Test
     void testCapabilitiesCall() throws AcrolinxException, URISyntaxException, IOException
     {
-        acrolinxEndpoint = new AcrolinxEndpoint(client, new URI("https://www.acrolinx.com"), "foo", "1.2.3.97", "bar");
+        try (AcrolinxEndpoint acrolinxEndpoint = new AcrolinxEndpoint(acrolinxHttpClient,
+                new URI("https://www.acrolinx.com"), "foo", "1.2.3.97", "bar")) {
+            acrolinxEndpoint.getCapabilities(new AccessToken("abc"));
 
-        acrolinxEndpoint.getCapabilities(new AccessToken("abc"));
+            verify(acrolinxHttpClient).fetch(eq(new URI("https://www.acrolinx.com/api/v1/capabilities")),
+                    eq(HttpMethod.GET), headersCaptor.capture(), eq((String) null));
 
-        verify(client).fetch(eq(new URI("https://www.acrolinx.com/api/v1/capabilities")), eq(HttpMethod.GET),
-                headersCaptor.capture(), eq((String) null));
-
-        final Map<String, String> headers = headersCaptor.getValue();
-        assertTrue(headers.containsKey("X-Acrolinx-Base-Url"));
-        assertEquals("https://www.acrolinx.com", headers.get("X-Acrolinx-Base-Url"));
+            final Map<String, String> headers = headersCaptor.getValue();
+            assertEquals("https://www.acrolinx.com", headers.get("X-Acrolinx-Base-Url"));
+        }
     }
 
     @Test
     void testCapabilitiesCallWithPath() throws AcrolinxException, URISyntaxException, IOException
     {
-        acrolinxEndpoint = new AcrolinxEndpoint(client, new URI("https://www.acrolinx.com/foo"), "foo", "1.2.3.97",
-                "bar");
+        try (AcrolinxEndpoint acrolinxEndpoint = new AcrolinxEndpoint(acrolinxHttpClient,
+                new URI("https://www.acrolinx.com/foo"), "foo", "1.2.3.97", "bar")) {
+            acrolinxEndpoint.getCapabilities(new AccessToken("abc"));
 
-        acrolinxEndpoint.getCapabilities(new AccessToken("abc"));
+            verify(acrolinxHttpClient).fetch(eq(new URI("https://www.acrolinx.com/foo/api/v1/capabilities")),
+                    eq(HttpMethod.GET), headersCaptor.capture(), eq((String) null));
 
-        verify(client).fetch(eq(new URI("https://www.acrolinx.com/foo/api/v1/capabilities")), eq(HttpMethod.GET),
-                headersCaptor.capture(), eq((String) null));
-
-        final Map<String, String> headers = headersCaptor.getValue();
-        assertTrue(headers.containsKey("X-Acrolinx-Base-Url"));
-        assertEquals("https://www.acrolinx.com/foo", headers.get("X-Acrolinx-Base-Url"));
+            final Map<String, String> headers = headersCaptor.getValue();
+            assertEquals("https://www.acrolinx.com/foo", headers.get("X-Acrolinx-Base-Url"));
+        }
     }
 
     @Test
     void ensureBaseUrlWithSlashSetCorrectly() throws AcrolinxException, URISyntaxException, IOException
     {
-        acrolinxEndpoint = new AcrolinxEndpoint(client, new URI("https://www.acrolinx.com/"), "foo", "1.2.3.97", "bar");
+        try (AcrolinxEndpoint acrolinxEndpoint = new AcrolinxEndpoint(acrolinxHttpClient,
+                new URI("https://www.acrolinx.com/"), "foo", "1.2.3.97", "bar")) {
+            acrolinxEndpoint.getPlatformInformation();
 
-        acrolinxEndpoint.getPlatformInformation();
+            verify(acrolinxHttpClient).fetch(any(URI.class), eq(HttpMethod.GET), headersCaptor.capture(),
+                    eq((String) null));
 
-        verify(client).fetch(any(URI.class), eq(HttpMethod.GET), headersCaptor.capture(), eq((String) null));
-
-        final Map<String, String> headers = headersCaptor.getValue();
-        assertTrue(headers.containsKey("X-Acrolinx-Base-Url"));
-        assertEquals("https://www.acrolinx.com/", headers.get("X-Acrolinx-Base-Url"));
+            final Map<String, String> headers = headersCaptor.getValue();
+            assertEquals("https://www.acrolinx.com/", headers.get("X-Acrolinx-Base-Url"));
+        }
     }
 
     @Test
     void ensureBaseUrlWithPathSetCorrectly() throws AcrolinxException, URISyntaxException, IOException
     {
-        acrolinxEndpoint = new AcrolinxEndpoint(client, new URI("https://www.acrolinx.com/proxy"), "foo", "1.2.3.97",
-                "bar");
+        try (AcrolinxEndpoint acrolinxEndpoint = new AcrolinxEndpoint(acrolinxHttpClient,
+                new URI("https://www.acrolinx.com/proxy"), "foo", "1.2.3.97", "bar")) {
+            acrolinxEndpoint.getPlatformInformation();
 
-        acrolinxEndpoint.getPlatformInformation();
+            verify(acrolinxHttpClient).fetch(any(URI.class), eq(HttpMethod.GET), headersCaptor.capture(),
+                    eq((String) null));
 
-        verify(client).fetch(any(URI.class), eq(HttpMethod.GET), headersCaptor.capture(), eq((String) null));
-
-        final Map<String, String> headers = headersCaptor.getValue();
-        assertTrue(headers.containsKey("X-Acrolinx-Base-Url"));
-        assertEquals("https://www.acrolinx.com/proxy", headers.get("X-Acrolinx-Base-Url"));
+            final Map<String, String> headers = headersCaptor.getValue();
+            assertEquals("https://www.acrolinx.com/proxy", headers.get("X-Acrolinx-Base-Url"));
+        }
     }
 
     @Test
     void ensureBaseUrlWithPathAndSlashSetCorrectly() throws AcrolinxException, URISyntaxException, IOException
     {
-        acrolinxEndpoint = new AcrolinxEndpoint(client, new URI("https://www.acrolinx.com/proxy/"), "foo", "1.2.3.97",
-                "bar");
+        try (AcrolinxEndpoint acrolinxEndpoint = new AcrolinxEndpoint(acrolinxHttpClient,
+                new URI("https://www.acrolinx.com/proxy/"), "foo", "1.2.3.97", "bar")) {
+            acrolinxEndpoint.getPlatformInformation();
 
-        acrolinxEndpoint.getPlatformInformation();
+            verify(acrolinxHttpClient).fetch(any(URI.class), eq(HttpMethod.GET), headersCaptor.capture(),
+                    eq((String) null));
 
-        verify(client).fetch(any(URI.class), eq(HttpMethod.GET), headersCaptor.capture(), eq((String) null));
-
-        final Map<String, String> headers = headersCaptor.getValue();
-        assertTrue(headers.containsKey("X-Acrolinx-Base-Url"));
-        assertEquals("https://www.acrolinx.com/proxy/", headers.get("X-Acrolinx-Base-Url"));
+            final Map<String, String> headers = headersCaptor.getValue();
+            assertEquals("https://www.acrolinx.com/proxy/", headers.get("X-Acrolinx-Base-Url"));
+        }
     }
 
     @Test
-    void errorHandledInCaseOfNoResult() throws URISyntaxException
+    void errorHandledInCaseOfNoResult() throws URISyntaxException, IOException
     {
-        when(response.getStatus()).thenReturn(700);
-        when(response.getResult()).thenReturn(null);
+        when(acrolinxResponse.getStatus()).thenReturn(700);
+        when(acrolinxResponse.getResult()).thenReturn(null);
 
-        acrolinxEndpoint = new AcrolinxEndpoint(client, new URI("https://www.acrolinx.com/proxy"), "foo", "1.2.3.97",
-                "bar");
+        try (AcrolinxEndpoint acrolinxEndpoint = new AcrolinxEndpoint(acrolinxHttpClient, new URI("https://www.acrolinx.com/proxy"),
+                "foo", "1.2.3.97", "bar")) {
 
-        AcrolinxException acrolinxException = Assertions.assertThrows(AcrolinxException.class,
-                () -> acrolinxEndpoint.getPlatformInformation());
-        assertEquals("Fetch failed with status 700 and no result.", acrolinxException.getMessage());
+            AcrolinxException acrolinxException = Assertions.assertThrows(AcrolinxException.class,
+                    () -> acrolinxEndpoint.getPlatformInformation());
+            assertEquals("Fetch failed with status 700 and no result.", acrolinxException.getMessage());
+        }
     }
 }
