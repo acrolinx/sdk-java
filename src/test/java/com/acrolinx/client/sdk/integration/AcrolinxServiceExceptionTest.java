@@ -46,14 +46,11 @@ class AcrolinxServiceExceptionTest extends IntegrationTestBase
     @Test
     void test404ErrorCodeCheckApi() throws URISyntaxException, IOException
     {
-        AcrolinxEndpoint acrolinxEndpoint = new AcrolinxEndpoint(new URI(ACROLINX_URL + "/unknown"), "invlaid",
-                "1.2.3.4", "en");
-        try {
+        try (AcrolinxEndpoint acrolinxEndpoint = new AcrolinxEndpoint(new URI(ACROLINX_URL + "/unknown"), "invlaid",
+                "1.2.3.4", "en")) {
             AcrolinxException acrolinxException = Assertions.assertThrows(AcrolinxException.class,
                     () -> acrolinxEndpoint.getPlatformInformation());
             assertTrue(acrolinxException.getMessage().contains("404"));
-        } finally {
-            acrolinxEndpoint.close();
         }
     }
 }

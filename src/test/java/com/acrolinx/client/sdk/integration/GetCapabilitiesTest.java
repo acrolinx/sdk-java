@@ -6,7 +6,6 @@ package com.acrolinx.client.sdk.integration;
 
 import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.ACROLINX_API_TOKEN;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
@@ -29,7 +28,6 @@ class GetCapabilitiesTest extends IntegrationTestBase
         assertNotNull(capabilities.getCheckingCapabilities());
 
         List<GuidanceProfile> guidanceProfiles = capabilities.getCheckingCapabilities().getGuidanceProfiles();
-        assertTrue(guidanceProfiles.size() > 0);
 
         GuidanceProfile guidanceProfile = guidanceProfiles.get(0);
         assertNotNull(guidanceProfile.getId());

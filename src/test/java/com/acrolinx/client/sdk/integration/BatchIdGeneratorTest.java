@@ -17,15 +17,13 @@ class BatchIdGeneratorTest extends IntegrationTestBase
     @Test
     void testBatchIdGeneratorEmpty()
     {
-        String batchid = BatchCheckIdGenerator.getId("");
-        assertTrue(batchid.contains("javaSDK"));
+        assertTrue(BatchCheckIdGenerator.getId("").contains("javaSDK"));
     }
 
     @Test
     void testIntegrationNameContainsSpaces()
     {
-        String batchid = BatchCheckIdGenerator.getId("acrolinx for java");
-        assertFalse(batchid.contains(" "));
+        assertFalse(BatchCheckIdGenerator.getId("acrolinx for java").contains(" "));
     }
 
     @Test

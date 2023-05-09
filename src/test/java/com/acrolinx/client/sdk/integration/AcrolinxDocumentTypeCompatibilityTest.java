@@ -20,23 +20,18 @@ class AcrolinxDocumentTypeCompatibilityTest extends IntegrationTestBase
     @Test
     void testSimpleValidFile() throws AcrolinxException
     {
-        boolean documentTypeCheckable = acrolinxEndpoint.isDocumentTypeCheckable(".xml", ACROLINX_API_TOKEN);
-        assertTrue(documentTypeCheckable);
+        assertTrue(acrolinxEndpoint.isDocumentTypeCheckable(".xml", ACROLINX_API_TOKEN));
     }
 
     @Test
     void testPath() throws AcrolinxException
     {
-        boolean documentTypeCheckable = acrolinxEndpoint.isDocumentTypeCheckable("https://acrolinx.com/index.html",
-                ACROLINX_API_TOKEN);
-        assertTrue(documentTypeCheckable);
+        assertTrue(acrolinxEndpoint.isDocumentTypeCheckable("https://acrolinx.com/index.html", ACROLINX_API_TOKEN));
     }
 
     @Test
     void testSimpleInvalid() throws AcrolinxException
     {
-        boolean documentTypeCheckable = acrolinxEndpoint.isDocumentTypeCheckable(UUID.randomUUID().toString(),
-                ACROLINX_API_TOKEN);
-        assertFalse(documentTypeCheckable);
+        assertFalse(acrolinxEndpoint.isDocumentTypeCheckable(UUID.randomUUID().toString(), ACROLINX_API_TOKEN));
     }
 }

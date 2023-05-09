@@ -6,6 +6,7 @@ package com.acrolinx.client.sdk;
 
 import static com.acrolinx.client.sdk.internal.JsonUtils.parseJson;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -42,7 +43,7 @@ import com.acrolinx.client.sdk.platform.Capabilities;
 import com.acrolinx.client.sdk.platform.Link;
 import com.google.common.base.Strings;
 
-public class AcrolinxEndpoint
+public class AcrolinxEndpoint implements Closeable
 {
     private static final Logger logger = LoggerFactory.getLogger(AcrolinxEndpoint.class);
 
@@ -149,6 +150,7 @@ public class AcrolinxEndpoint
     /**
      * Close Endpoint after use.
      */
+    @Override
     public void close() throws IOException
     {
         logger.info("Endpoint terminated");
@@ -330,9 +332,8 @@ public class AcrolinxEndpoint
             return pollForCheckResult(accessToken, checkResponse, progressListener);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            logger.error("Polling interrupted. Check will be cancelled");
             cancelCheck(accessToken, checkResponse);
-            throw new AcrolinxException("Polling interrupted. Cancelled check.");
+            throw new AcrolinxException("Polling interrupted. Cancelled check", e);
         }
     }
 
