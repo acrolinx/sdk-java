@@ -1,24 +1,16 @@
-.gradle
-.idea
-.eclipse
-.private
-
-/build
-/spotless-sdk-java/**/build/
-
-*.class
-*.war
-*.ear
-*.logs
-*.iml
-
-.env
-.attach_pid*
-/out
-/infer-out
+# Eclipse
+.settings/
 .classpath
 .project
-.settings
-bin
-sdk-java.ipr
-sdk-java.iws
+/bin/
+
+# Gradle
+.gradle/
+**/build/
+
+# IntelliJ IDEA
+.idea/
+.iml
+
+# Other files
+.env
