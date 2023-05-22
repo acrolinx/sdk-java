@@ -14,7 +14,6 @@ import io.github.cdimascio.dotenv.Dotenv;
 public final class CommonTestSetup
 {
     private static final Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
-
     public static final String ACROLINX_URL = dotenv.get("ACROLINX_URL");
     public static final String ACROLINX_API_SSO_TOKEN = dotenv.get("ACROLINX_API_SSO_TOKEN");
     public static final String ACROLINX_API_USERNAME = dotenv.get("ACROLINX_API_USERNAME");
