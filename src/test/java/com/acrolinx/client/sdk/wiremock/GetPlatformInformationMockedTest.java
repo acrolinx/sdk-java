@@ -1,7 +1,4 @@
-/**
- * Copyright (c) 2019-present Acrolinx GmbH
- */
-
+/* Copyright (c) 2018-present Acrolinx GmbH */
 package com.acrolinx.client.sdk.wiremock;
 
 import static com.acrolinx.client.sdk.wiremock.common.WireMockUtils.PLATFORM_PORT_MOCKED;
