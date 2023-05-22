@@ -1,7 +1,4 @@
-/**
- * Copyright (c) 2020-present Acrolinx GmbH
- */
-
+/* Copyright (c) 2018-present Acrolinx GmbH */
 package com.acrolinx.client.sdk.check;
 
 public class Counts
