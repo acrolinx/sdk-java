@@ -33,7 +33,8 @@ class AcrolinxEndpointTests
     @BeforeEach
     void beforeEach() throws IOException, AcrolinxException
     {
-        when(acrolinxHttpClient.fetch(any(URI.class), any(HttpMethod.class), notNull(), eq((String) null))).thenReturn(acrolinxResponse);
+        when(acrolinxHttpClient.fetch(any(URI.class), any(HttpMethod.class), notNull(), eq((String) null))).thenReturn(
+                acrolinxResponse);
 
         when(acrolinxResponse.getStatus()).thenReturn(200);
         when(acrolinxResponse.getResult()).thenReturn("{\"data\":{} }");
@@ -183,8 +184,8 @@ class AcrolinxEndpointTests
         when(acrolinxResponse.getStatus()).thenReturn(700);
         when(acrolinxResponse.getResult()).thenReturn(null);
 
-        try (AcrolinxEndpoint acrolinxEndpoint = new AcrolinxEndpoint(acrolinxHttpClient, new URI("https://www.acrolinx.com/proxy"),
-                "foo", "1.2.3.97", "bar")) {
+        try (AcrolinxEndpoint acrolinxEndpoint = new AcrolinxEndpoint(acrolinxHttpClient,
+                new URI("https://www.acrolinx.com/proxy"), "foo", "1.2.3.97", "bar")) {
 
             AcrolinxException acrolinxException = Assertions.assertThrows(AcrolinxException.class,
                     () -> acrolinxEndpoint.getPlatformInformation());
