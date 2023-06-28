@@ -69,7 +69,7 @@ public class AcrolinxEndpoint implements Closeable
      * Examples:
      * <ul>
      * <li>An SSO-proxy is used to access the Scorecard and the Content Analysis dashboard, but the SDK
-     * in an automated environment isn’t able to use the same route.
+     * in an automated environment isn't able to use the same route.
      * https://yourcompany.myintegration.com/proxy/ vs. https://yourcompany.acrolinx.com.</li>
      * <li>An integration can connect directly to the Acrolinx Platform using an internal URL, where a
      * user has to access it using an external URL. http://localhost:8031 vs.
