@@ -186,7 +186,6 @@ class AcrolinxEndpointTests
 
         try (AcrolinxEndpoint acrolinxEndpoint = new AcrolinxEndpoint(acrolinxHttpClient,
                 new URI("https://www.acrolinx.com/proxy"), "foo", "1.2.3.97", "bar")) {
-
             AcrolinxException acrolinxException = Assertions.assertThrows(AcrolinxException.class,
                     () -> acrolinxEndpoint.getPlatformInformation());
             assertEquals("Fetch failed with status 700 and no result.", acrolinxException.getMessage());
