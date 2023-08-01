@@ -215,6 +215,7 @@ class CheckTest extends IntegrationTestBase
                                 documentName).withCheckOptions(
                                         CheckOptions.getBuilder().withGuidanceProfileId(
                                                 guidanceProfileEn.getId()).build()).build());
+
         for (Issue issue : checkResult.getIssues()) {
             for (Match match : issue.getPositionalInformation().getMatches()) {
                 if ("tesst".equals(match.getOriginalPart())) {
@@ -498,6 +499,7 @@ class CheckTest extends IntegrationTestBase
                                         guidanceProfileEn.getId()).build()).build(),
                         progressListener);
             });
+
             checks.add(futureResult);
         }
 

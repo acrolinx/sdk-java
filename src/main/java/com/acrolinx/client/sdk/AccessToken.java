@@ -23,9 +23,11 @@ public class AccessToken
         if (this == object) {
             return true;
         }
+
         if (object == null || getClass() != object.getClass()) {
             return false;
         }
+
         AccessToken other = (AccessToken) object;
         return token.equals(other.token);
     }

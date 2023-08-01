@@ -119,11 +119,13 @@ public class AcrolinxEndpoint implements Closeable
             throws AcrolinxException
     {
         int statusCode = acrolinxHttpResponse.getStatus();
+
         if (statusCode >= 200 && statusCode < 300) {
             return;
         }
 
         String responseText = acrolinxHttpResponse.getResult();
+
         if (Strings.isNullOrEmpty(responseText)) {
             throw new AcrolinxException("Fetch failed with status " + statusCode + " and no result.");
         }
@@ -133,6 +135,7 @@ public class AcrolinxEndpoint implements Closeable
         try {
             logger.debug("Error response text: {}", responseText);
             acrolinxServiceError = parseJson(responseText, ErrorResponse.class).error;
+
             if (acrolinxServiceError == null) {
                 throw new AcrolinxException("Invalid error class generated");
             }
@@ -221,9 +224,11 @@ public class AcrolinxEndpoint implements Closeable
             while (System.currentTimeMillis() < endTime) {
                 SignInPollResponse pollResponse = fetchFromUrl(new URI(signInLinks.links.getPoll()),
                         JsonUtils.getSerializer(SignInPollResponse.class), HttpMethod.GET, null, null, null);
+
                 if (pollResponse instanceof SignInPollResponse.Success) {
                     return ((SignInPollResponse.Success) pollResponse).data;
                 }
+
                 logger.debug("Poll response: {}", pollResponse);
                 Progress progress = ((SignInPollResponse.Progress) pollResponse).progress;
                 logger.debug("SignIn polling: {}", progress.getPercent());
@@ -283,6 +288,7 @@ public class AcrolinxEndpoint implements Closeable
                 return link.getLink();
             }
         }
+
         logger.debug("Failed to fetch Content Analysis dashboard.");
         throw new AcrolinxException("Could not fetch Content Analysis dashboard.");
     }
@@ -343,10 +349,13 @@ public class AcrolinxEndpoint implements Closeable
         while (true) {
             CheckPollResponse pollResponse = fetchFromUrl(pollUri, JsonUtils.getSerializer(CheckPollResponse.class),
                     HttpMethod.GET, accessToken, null, null);
+
             if (pollResponse instanceof CheckPollResponse.Success) {
                 return ((CheckPollResponse.Success) pollResponse).data;
             }
+
             Progress progress = ((CheckPollResponse.Progress) pollResponse).progress;
+
             if (progressListener != null) {
                 progressListener.onProgress(progress);
             }
@@ -398,6 +407,7 @@ public class AcrolinxEndpoint implements Closeable
             throws IOException, AcrolinxException
     {
         Map<String, String> headers = getCommonHeaders(accessToken);
+
         if (extraHeaders != null) {
             headers.putAll(extraHeaders);
         }
@@ -430,6 +440,7 @@ public class AcrolinxEndpoint implements Closeable
         if (accessToken != null && !accessToken.isEmpty()) {
             headersMap.put("X-Acrolinx-Auth", accessToken.getAccessTokenAsString());
         }
+
         headersMap.put("X-Acrolinx-Base-Url", this.acrolinxUri.toString());
         headersMap.put("X-Acrolinx-Client-Locale", this.clientLocale);
         headersMap.put("X-Acrolinx-Client", this.signature + "; " + this.clientVersion);

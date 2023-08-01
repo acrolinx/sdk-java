@@ -14,6 +14,7 @@ public final class IssueUtils
                 return issue;
             }
         }
+
         return null;
     }
 
@@ -21,6 +22,7 @@ public final class IssueUtils
     {
         for (Issue issue : issues) {
             Issue.Suggestion suggestion = issue.getSuggestions().get(0);
+
             if (suggestion != null && suggestion.getSurface().equals(suggestionSurface)) {
                 return issue;
             }

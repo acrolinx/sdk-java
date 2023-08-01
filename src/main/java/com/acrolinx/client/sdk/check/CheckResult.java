@@ -32,6 +32,7 @@ public class CheckResult
                 goalsObj = new Goals(goals);
             }
         }
+
         return goalsObj;
     }
 

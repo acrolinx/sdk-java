@@ -92,10 +92,12 @@ public class ApacheHttpClient implements AcrolinxHttpClient
                 return new HttpDelete(uri);
             case POST:
                 HttpPost httpPost = new HttpPost(uri);
+
                 if (jsonBody != null) {
                     StringEntity entity = new StringEntity(jsonBody, ContentType.APPLICATION_JSON);
                     httpPost.setEntity(entity);
                 }
+
                 return httpPost;
             default:
                 throw new IllegalArgumentException("Illegal HttpMethod " + httpMethod);

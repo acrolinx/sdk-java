@@ -14,6 +14,7 @@ public class Goals
     {
         this.goals = goals;
         this.goalsMap = new HashMap<>();
+
         for (Goal goal : goals) {
             goalsMap.put(goal.getId(), goal);
         }
