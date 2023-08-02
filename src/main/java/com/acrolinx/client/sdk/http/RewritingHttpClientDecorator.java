@@ -40,6 +40,7 @@ public class RewritingHttpClientDecorator implements AcrolinxHttpClient
                 || !url.getPath().toLowerCase().startsWith(from.getPath().toLowerCase())) {
             return url;
         }
+
         try {
             return new URI(to.getScheme(), to.getAuthority(),
                     to.getPath() + "/" + url.getPath().substring(from.getPath().length()), url.getQuery(),

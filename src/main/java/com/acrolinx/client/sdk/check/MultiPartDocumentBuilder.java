@@ -50,6 +50,7 @@ public class MultiPartDocumentBuilder
             logger.debug("Unable to create Document Builder Factory.");
             throw new AcrolinxException(e);
         }
+
         this.document = documentBuilder.newDocument();
 
         if (publicId != null || systemId != null) {
@@ -74,14 +75,17 @@ public class MultiPartDocumentBuilder
             @Nullable Map<String, String> attributes)
     {
         Element element = this.document.createElement(partName);
+
         if (attributes != null) {
             logger.debug("Adding attributes to node");
+
             for (Map.Entry<String, String> entry : attributes.entrySet()) {
                 Attr attribute = this.document.createAttribute(entry.getKey());
                 attribute.setValue(entry.getValue());
                 element.setAttributeNode(attribute);
             }
         }
+
         Text textNode = this.document.createTextNode(content);
         element.appendChild(textNode);
         this.root.appendChild(element);
@@ -112,11 +116,10 @@ public class MultiPartDocumentBuilder
 
     public Document build() throws AcrolinxException
     {
-        TransformerFactory tf = TransformerFactory.newInstance();
-        Transformer transformer;
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
         try {
             logger.debug("Applying transformation to XML.");
-            transformer = tf.newTransformer();
+            Transformer transformer = transformerFactory.newTransformer();
             transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
             transformer.setOutputProperty(OutputKeys.METHOD, "xml");
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
@@ -124,6 +127,7 @@ public class MultiPartDocumentBuilder
             transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 
             DocumentType doctype = this.document.getDoctype();
+
             if (doctype != null) {
                 transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, doctype.getPublicId());
                 transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, doctype.getSystemId());

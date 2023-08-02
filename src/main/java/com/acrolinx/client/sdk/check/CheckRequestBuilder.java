@@ -62,6 +62,7 @@ public class CheckRequestBuilder
         if (this.reference != null) {
             this.document = new DocumentDescriptorRequest(this.reference, this.customFields);
         }
+
         return new CheckRequest(content, contentEncoding, checkOptions, document, this.externalContent);
     }
 }
