@@ -12,22 +12,30 @@ jobs:
   Sonar-Check:
     runs-on: ubuntu-latest
     env:
-      SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      ACROLINX_URL: ${{ secrets.ACROLINX_URL }}
+      ACROLINX_API_USERNAME: ${{ secrets.ACROLINX_API_USERNAME }}
+      ACROLINX_API_TOKEN: ${{ secrets.ACROLINX_API_TOKEN }}
+      ACROLINX_API_SSO_TOKEN: ${{ secrets.ACROLINX_API_SSO_TOKEN }}
+      ACROLINX_DEV_SIGNATURE: ${{ secrets.ACROLINX_DEV_SIGNATURE }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
-      - name: Set up JDK 11
+      - name: Setup Java
         uses: actions/setup-java@v3
         with:
           java-version: '11'
           distribution: 'temurin'
 
-      - name: Sonar Scan Project
-        run: ./gradlew sonar
+      - name: Sonar analysis
+        uses: gradle/gradle-build-action@a4cf152f482c7ca97ef56ead29bf08bcd953284c
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
+        with:
+          arguments: jacocoTestReport sonar
 
   Build-And-Deploy:
     runs-on: ubuntu-latest
@@ -48,7 +56,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up JDK 8
+      - name: Setup Java
         uses: actions/setup-java@v3
         with:
           java-version: '8'
@@ -57,11 +65,15 @@ jobs:
       - name: Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@56b90f209b02bf6d1deae490e9ef18b21a389cd4
 
-      - name: Build Gradle Project
-        run: ./gradlew build
+      - name: Gradle build
+        uses: gradle/gradle-build-action@a4cf152f482c7ca97ef56ead29bf08bcd953284c
+        with:
+          arguments: build
 
-      - name: Create Java Doc
-        run: ./gradlew javadoc
+      - name: Create Javadoc
+        uses: gradle/gradle-build-action@a4cf152f482c7ca97ef56ead29bf08bcd953284c
+        with:
+          arguments: javadoc
 
       - name: Deploy artifacts
         id: deploy
@@ -75,7 +87,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CUSTOM_TAG: ${{ steps.deploy.outputs.TAGNAME }}
 
-      - name: Deploy Java Doc
+      - name: Deploy Javadoc
         uses: JamesIves/github-pages-deploy-action@v4.4.3
         if: steps.deploy.outputs.RELEASE == 'true' && github.ref == 'refs/heads/main'
         with:

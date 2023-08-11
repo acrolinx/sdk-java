@@ -64,9 +64,9 @@ def sonatypeUsername = hasProperty('sonatypeUsername') && sonatypeUsername.lengt
 def sonatypePassword = hasProperty('sonatypePassword') && sonatypePassword.length() > 0 ? sonatypePassword : System.getenv('SONATYPE_PW')
 
 jacocoTestReport {
+	dependsOn test
 	reports {
 		xml.required = true
-		html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
 	}
 }
 
