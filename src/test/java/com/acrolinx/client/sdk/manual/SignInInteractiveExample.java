@@ -6,7 +6,6 @@ import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.createT
 import java.net.URISyntaxException;
 
 import com.acrolinx.client.sdk.AcrolinxEndpoint;
-import com.acrolinx.client.sdk.InteractiveCallback;
 import com.acrolinx.client.sdk.SignInSuccess;
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 
@@ -16,13 +15,9 @@ public class SignInInteractiveExample
     {
         AcrolinxEndpoint acrolinxEndpoint = createTestAcrolinxEndpoint();
 
-        SignInSuccess signInSuccess = acrolinxEndpoint.signInInteractive(new InteractiveCallback() {
-            @Override
-            public void onInteractiveUrl(String url)
-            {
-                System.out.println("Please open the following URL:");
-                System.out.println(url);
-            }
+        SignInSuccess signInSuccess = acrolinxEndpoint.signInInteractive(urlString -> {
+            System.out.println("Please open the following URL:");
+            System.out.println(urlString);
         });
 
         System.out.println("accessToken = " + signInSuccess.getAccessToken().getAccessTokenAsString());
