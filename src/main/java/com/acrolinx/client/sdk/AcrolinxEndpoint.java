@@ -185,29 +185,31 @@ public class AcrolinxEndpoint implements Closeable
     /**
      * An interactive sign-in where user can open a URL in a browser to sign in.
      * 
-     * @param callback Provide a method that can be called to open sign-in link in the browser.
+     * @param interactiveCallback Provide a method that can be called to open sign-in link in the
+     *        browser.
      * @return SignInSuccess holds the access token that is required to initiate check
      */
-    public SignInSuccess signInInteractive(InteractiveCallback callback) throws AcrolinxException, InterruptedException
+    public SignInSuccess signInInteractive(InteractiveCallback interactiveCallback)
+            throws AcrolinxException, InterruptedException
     {
-        return signInInteractive(callback, null, 30L * 60L * 1000L);
+        return signInInteractive(interactiveCallback, null, 30 * 60 * 1_000);
     }
 
     /**
      * An interactive sign-in where user can open URL in a browser to sign in.
      *
-     * @param callback Provide a method that can be called to open sign-in link in the browser.
+     * @param interactiveCallback Provide a method that can be called to open sign-in link in the
+     *        browser.
      * @param accessToken Provide an already available access to check its validity
-     * @param timeoutMs Provide timeout in milliseconds
+     * @param timeoutInMillis Provide timeout in milliseconds
      * @return SignInSuccess holds the access token that is required to initiate check
      */
-    public SignInSuccess signInInteractive(final InteractiveCallback callback, AccessToken accessToken, long timeoutMs)
-            throws AcrolinxException, InterruptedException
+    public SignInSuccess signInInteractive(final InteractiveCallback interactiveCallback, AccessToken accessToken,
+            long timeoutInMillis) throws AcrolinxException, InterruptedException
     {
-        final SignInResponse signInResponse;
         try {
-            signInResponse = fetchFromApiPath("auth/sign-ins", JsonUtils.getSerializer(SignInResponse.class),
-                    HttpMethod.POST, accessToken, null, null);
+            final SignInResponse signInResponse = fetchFromApiPath("auth/sign-ins",
+                    JsonUtils.getSerializer(SignInResponse.class), HttpMethod.POST, accessToken, null, null);
 
             if (signInResponse instanceof SignInResponse.Success) {
                 logger.debug("Signed In with already available access token.");
@@ -215,25 +217,25 @@ public class AcrolinxEndpoint implements Closeable
             }
 
             SignInResponse.SignInLinks signInLinks = (SignInResponse.SignInLinks) signInResponse;
-            callback.onInteractiveUrl(signInLinks.links.getInteractive());
+            interactiveCallback.onInteractiveUrl(signInLinks.links.getInteractive());
             logger.debug("Sigin In link provided. Polling until user signs in dashboard.");
 
             // An upper limit for polling.
-            long endTime = System.currentTimeMillis() + timeoutMs;
+            long endTimeInMillis = System.currentTimeMillis() + timeoutInMillis;
 
-            while (System.currentTimeMillis() < endTime) {
-                SignInPollResponse pollResponse = fetchFromUrl(new URI(signInLinks.links.getPoll()),
+            while (System.currentTimeMillis() < endTimeInMillis) {
+                SignInPollResponse signInPollResponse = fetchFromUrl(new URI(signInLinks.links.getPoll()),
                         JsonUtils.getSerializer(SignInPollResponse.class), HttpMethod.GET, null, null, null);
 
-                if (pollResponse instanceof SignInPollResponse.Success) {
-                    return ((SignInPollResponse.Success) pollResponse).data;
+                if (signInPollResponse instanceof SignInPollResponse.Success) {
+                    return ((SignInPollResponse.Success) signInPollResponse).data;
                 }
 
-                logger.debug("Poll response: {}", pollResponse);
-                Progress progress = ((SignInPollResponse.Progress) pollResponse).progress;
+                logger.debug("Poll response: {}", signInPollResponse);
+                Progress progress = ((SignInPollResponse.Progress) signInPollResponse).progress;
                 logger.debug("SignIn polling: {}", progress.getPercent());
 
-                long sleepTimeMs = progress.getRetryAfterMs();
+                long sleepTimeMs = Math.round(progress.getRetryAfter() * 1_000.0);
                 Thread.sleep(sleepTimeMs);
             }
         } catch (AcrolinxException | URISyntaxException | IOException e) {
