@@ -32,7 +32,6 @@ jobs:
       - name: Sonar analysis
         uses: gradle/gradle-build-action@243af859f8ca30903d9d7f7936897ca0358ba691
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
         with:
           arguments: jacocoTestReport sonar
@@ -84,7 +83,6 @@ jobs:
         uses: anothrNick/github-tag-action@1.67.0
         if: steps.deploy.outputs.RELEASE == 'true' && github.ref == 'refs/heads/main'
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CUSTOM_TAG: ${{ steps.deploy.outputs.TAGNAME }}
 
       - name: Deploy Javadoc

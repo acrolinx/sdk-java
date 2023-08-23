@@ -63,6 +63,11 @@ def isReleaseBuild = !fullVersion.contains('SNAPSHOT')
 def sonatypeUsername = hasProperty('sonatypeUsername') && sonatypeUsername.length() > 0 ? sonatypeUsername : System.getenv('SONATYPE_USERNAME')
 def sonatypePassword = hasProperty('sonatypePassword') && sonatypePassword.length() > 0 ? sonatypePassword : System.getenv('SONATYPE_PW')
 
+java {
+	withJavadocJar()
+	withSourcesJar()
+}
+
 jacocoTestReport {
 	dependsOn test
 	reports {
@@ -76,16 +81,6 @@ sonar {
 		property 'sonar.projectKey', 'acrolinx_sdk-java'
 		property "sonar.host.url", "https://sonarcloud.io"
 	}
-}
-
-task sourcesJar(type: Jar) {
-	archiveClassifier = 'sources'
-	from sourceSets.main.allJava
-}
-
-task javadocJar(type: Jar) {
-	archiveClassifier = 'javadoc'
-	from javadoc.destinationDir
 }
 
 downloadLicenses {
@@ -121,12 +116,6 @@ jar {
 	}
 }
 
-artifacts {
-	archives jar
-	archives javadocJar
-	archives sourcesJar
-}
-
 publishing {
 	repositories {
 		maven {
@@ -152,8 +141,6 @@ publishing {
 			groupId = 'com.acrolinx.client'
 			artifactId = 'sdk'
 			from components.java
-			artifact sourcesJar
-			artifact javadocJar
 
 			pom {
 				name = 'Acrolinx Platform SDK'
@@ -257,6 +244,5 @@ spotless {
 jar.dependsOn 'downloadLicenses'
 test.dependsOn javadoc
 check.dependsOn 'spotlessCheck'
-javadocJar.dependsOn javadoc
 spotlessJava.dependsOn 'compileJava'
 spotlessMisc.dependsOn spotlessJava
