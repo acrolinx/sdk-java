@@ -5,11 +5,6 @@ import static com.acrolinx.client.sdk.wiremock.common.WireMockUtils.PLATFORM_POR
 import static com.acrolinx.client.sdk.wiremock.common.WireMockUtils.mockSuccessResponse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.net.URISyntaxException;
-
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import com.acrolinx.client.sdk.AcrolinxEndpoint;
 import com.acrolinx.client.sdk.PlatformInformation;
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
@@ -18,6 +13,9 @@ import com.acrolinx.client.sdk.wiremock.common.WireMockUtils;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonSyntaxException;
+import java.net.URISyntaxException;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 @WireMockTest(httpPort = PLATFORM_PORT_MOCKED)
 class GetPlatformInformationMockedTest

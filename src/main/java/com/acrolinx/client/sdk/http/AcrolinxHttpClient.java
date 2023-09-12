@@ -1,11 +1,10 @@
 /* Copyright (c) 2018-present Acrolinx GmbH */
 package com.acrolinx.client.sdk.http;
 
+import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
-
-import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 
 public interface AcrolinxHttpClient
 {

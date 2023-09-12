@@ -5,13 +5,11 @@ import static com.acrolinx.client.sdk.internal.JsonUtils.parseJson;
 import static com.acrolinx.client.sdk.testutils.TestUtils.readResource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.io.IOException;
-
-import org.junit.jupiter.api.Test;
-
 import com.acrolinx.client.sdk.internal.SignInResponse;
 import com.acrolinx.client.sdk.internal.SuccessResponse;
 import com.acrolinx.client.sdk.platform.Server;
+import java.io.IOException;
+import org.junit.jupiter.api.Test;
 
 class GsonTest
 {

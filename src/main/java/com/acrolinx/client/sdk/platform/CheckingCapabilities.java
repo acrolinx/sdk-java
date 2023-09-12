@@ -1,11 +1,10 @@
 /* Copyright (c) 2018-present Acrolinx GmbH */
 package com.acrolinx.client.sdk.platform;
 
-import java.util.List;
-
 import com.acrolinx.client.sdk.check.CheckRequest;
 import com.acrolinx.client.sdk.check.CheckType;
 import com.acrolinx.client.sdk.check.ReportType;
+import java.util.List;
 
 public class CheckingCapabilities
 {

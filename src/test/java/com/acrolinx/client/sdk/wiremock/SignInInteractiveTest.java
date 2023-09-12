@@ -10,12 +10,6 @@ import static com.acrolinx.client.sdk.wiremock.common.WireMockUtils.mockUrlOfApi
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 
-import java.net.URISyntaxException;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-
 import com.acrolinx.client.sdk.InteractiveCallback;
 import com.acrolinx.client.sdk.Progress;
 import com.acrolinx.client.sdk.SignInSuccess;
@@ -28,6 +22,10 @@ import com.acrolinx.client.sdk.wiremock.common.WireMockUtils;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import com.github.tomakehurst.wiremock.stubbing.Scenario;
 import com.google.common.collect.Maps;
+import java.net.URISyntaxException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 @WireMockTest(httpPort = PLATFORM_PORT_MOCKED)
 class SignInInteractiveTest

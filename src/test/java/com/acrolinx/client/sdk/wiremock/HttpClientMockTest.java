@@ -6,19 +6,17 @@ import static com.acrolinx.client.sdk.wiremock.common.WireMockUtils.httpClientMo
 import static com.acrolinx.client.sdk.wiremock.common.WireMockUtils.httpClientMockTimeOut;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Collections;
-
-import org.junit.jupiter.api.Test;
-
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import com.acrolinx.client.sdk.http.AcrolinxResponse;
 import com.acrolinx.client.sdk.http.ApacheHttpClient;
 import com.acrolinx.client.sdk.http.HttpMethod;
 import com.acrolinx.client.sdk.wiremock.common.WireMockUtils;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Collections;
+import org.junit.jupiter.api.Test;
 
 @WireMockTest(httpPort = PLATFORM_PORT_MOCKED)
 class HttpClientMockTest

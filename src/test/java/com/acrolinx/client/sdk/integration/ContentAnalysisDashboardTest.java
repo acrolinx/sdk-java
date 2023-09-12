@@ -4,10 +4,9 @@ package com.acrolinx.client.sdk.integration;
 import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.ACROLINX_API_TOKEN;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-import org.junit.jupiter.api.Test;
-
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import com.acrolinx.client.sdk.integration.common.IntegrationTestBase;
+import org.junit.jupiter.api.Test;
 
 class ContentAnalysisDashboardTest extends IntegrationTestBase
 {

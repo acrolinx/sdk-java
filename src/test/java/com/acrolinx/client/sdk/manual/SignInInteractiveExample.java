@@ -3,11 +3,10 @@ package com.acrolinx.client.sdk.manual;
 
 import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.createTestAcrolinxEndpoint;
 
-import java.net.URISyntaxException;
-
 import com.acrolinx.client.sdk.AcrolinxEndpoint;
 import com.acrolinx.client.sdk.SignInSuccess;
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
+import java.net.URISyntaxException;
 
 public class SignInInteractiveExample
 {

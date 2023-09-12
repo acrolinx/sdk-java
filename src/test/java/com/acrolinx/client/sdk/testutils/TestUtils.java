@@ -1,11 +1,10 @@
 /* Copyright (c) 2018-present Acrolinx GmbH */
 package com.acrolinx.client.sdk.testutils;
 
+import com.google.common.io.Resources;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-
-import com.google.common.io.Resources;
 
 public final class TestUtils
 {

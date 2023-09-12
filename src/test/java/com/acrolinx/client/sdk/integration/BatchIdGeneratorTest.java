@@ -4,10 +4,9 @@ package com.acrolinx.client.sdk.integration;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.Test;
-
 import com.acrolinx.client.sdk.integration.common.IntegrationTestBase;
 import com.acrolinx.client.sdk.utils.BatchCheckIdGenerator;
+import org.junit.jupiter.api.Test;
 
 class BatchIdGeneratorTest extends IntegrationTestBase
 {

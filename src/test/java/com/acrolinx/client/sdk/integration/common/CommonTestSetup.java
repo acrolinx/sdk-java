@@ -3,13 +3,11 @@ package com.acrolinx.client.sdk.integration.common;
 
 import static com.acrolinx.client.sdk.testutils.TestConstants.DEVELOPMENT_SIGNATURE;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-
 import com.acrolinx.client.sdk.AccessToken;
 import com.acrolinx.client.sdk.AcrolinxEndpoint;
-
 import io.github.cdimascio.dotenv.Dotenv;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 public final class CommonTestSetup
 {

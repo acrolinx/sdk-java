@@ -1,15 +1,13 @@
 /* Copyright (c) 2018-present Acrolinx GmbH */
 package com.acrolinx.client.sdk.http;
 
+import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 
 public class RewritingHttpClientDecorator implements AcrolinxHttpClient
 {

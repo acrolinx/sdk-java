@@ -1,12 +1,11 @@
 /* Copyright (c) 2018-present Acrolinx GmbH */
 package com.acrolinx.client.sdk.http;
 
+import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
-
 import javax.annotation.Nullable;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.ParseException;
@@ -24,8 +23,6 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 
 public class ApacheHttpClient implements AcrolinxHttpClient
 {

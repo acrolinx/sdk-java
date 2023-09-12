@@ -10,17 +10,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import com.acrolinx.client.sdk.AcrolinxEndpoint;
 import com.acrolinx.client.sdk.SignInSuccess;
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import com.acrolinx.client.sdk.integration.common.IntegrationTestBase;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
+import java.net.URI;
+import java.net.URISyntaxException;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 @WireMockTest(httpPort = PLATFORM_PORT_MOCKED)
 class SignInSsoTest extends IntegrationTestBase
