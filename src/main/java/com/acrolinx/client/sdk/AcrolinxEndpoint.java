@@ -3,19 +3,6 @@ package com.acrolinx.client.sdk;
 
 import static com.acrolinx.client.sdk.internal.JsonUtils.parseJson;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.annotation.Nullable;
-
-import org.apache.http.client.utils.URIBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.acrolinx.client.sdk.check.CheckCancelledResponse;
 import com.acrolinx.client.sdk.check.CheckPollResponse;
 import com.acrolinx.client.sdk.check.CheckRequest;
@@ -39,6 +26,16 @@ import com.acrolinx.client.sdk.internal.SuccessResponse;
 import com.acrolinx.client.sdk.platform.Capabilities;
 import com.acrolinx.client.sdk.platform.Link;
 import com.google.common.base.Strings;
+import java.io.Closeable;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
+import javax.annotation.Nullable;
+import org.apache.http.client.utils.URIBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AcrolinxEndpoint implements Closeable
 {

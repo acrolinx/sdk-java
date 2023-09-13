@@ -2,7 +2,6 @@
 package com.acrolinx.client.sdk.internal;
 
 import com.acrolinx.client.sdk.SignInSuccess;
-
 import io.gsonfire.TypeSelector;
 
 /**

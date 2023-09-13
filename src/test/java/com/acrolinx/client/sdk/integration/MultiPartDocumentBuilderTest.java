@@ -4,14 +4,12 @@ package com.acrolinx.client.sdk.integration;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.jupiter.api.Test;
-
 import com.acrolinx.client.sdk.check.MultiPartDocumentBuilder;
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import com.acrolinx.client.sdk.integration.common.IntegrationTestBase;
+import java.util.HashMap;
+import java.util.Map;
+import org.junit.jupiter.api.Test;
 
 class MultiPartDocumentBuilderTest extends IntegrationTestBase
 {

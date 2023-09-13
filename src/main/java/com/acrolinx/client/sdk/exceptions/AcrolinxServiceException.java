@@ -1,13 +1,11 @@
 /* Copyright (c) 2018-present Acrolinx GmbH */
 package com.acrolinx.client.sdk.exceptions;
 
-import java.io.Serializable;
-import java.net.URI;
-
-import javax.annotation.Nullable;
-
 import com.acrolinx.client.sdk.http.HttpMethod;
 import com.acrolinx.client.sdk.internal.ErrorResponse;
+import java.io.Serializable;
+import java.net.URI;
+import javax.annotation.Nullable;
 
 /**
  * An exception that is thrown by the Acrolinx web service.

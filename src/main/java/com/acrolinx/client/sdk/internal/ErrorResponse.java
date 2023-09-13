@@ -2,7 +2,6 @@
 package com.acrolinx.client.sdk.internal;
 
 import java.io.Serializable;
-
 import javax.annotation.Nullable;
 
 public class ErrorResponse

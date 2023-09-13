@@ -1,9 +1,8 @@
 /* Copyright (c) 2018-present Acrolinx GmbH */
 package com.acrolinx.client.sdk.testutils;
 
-import java.util.List;
-
 import com.acrolinx.client.sdk.check.Issue;
+import java.util.List;
 
 public final class IssueUtils
 {

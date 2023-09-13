@@ -4,10 +4,6 @@ package com.acrolinx.client.sdk.integration;
 import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.ACROLINX_API_TOKEN;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import com.acrolinx.client.sdk.integration.common.IntegrationTestBase;
 import com.acrolinx.client.sdk.platform.Capabilities;
@@ -15,6 +11,8 @@ import com.acrolinx.client.sdk.platform.CheckingCapabilities;
 import com.acrolinx.client.sdk.platform.CustomFieldDescriptor;
 import com.acrolinx.client.sdk.platform.GuidanceProfile;
 import com.acrolinx.client.sdk.platform.Language;
+import java.util.List;
+import org.junit.jupiter.api.Test;
 
 class GetCapabilitiesTest extends IntegrationTestBase
 {

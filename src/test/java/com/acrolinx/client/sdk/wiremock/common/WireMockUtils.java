@@ -9,12 +9,11 @@ import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-
 import com.acrolinx.client.sdk.AcrolinxEndpoint;
 import com.acrolinx.client.sdk.internal.JsonUtils;
 import com.acrolinx.client.sdk.internal.SuccessResponse;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 public final class WireMockUtils
 {

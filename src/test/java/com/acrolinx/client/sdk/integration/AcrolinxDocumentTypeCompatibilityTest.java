@@ -5,12 +5,10 @@ import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.ACROLIN
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.UUID;
-
-import org.junit.jupiter.api.Test;
-
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import com.acrolinx.client.sdk.integration.common.IntegrationTestBase;
+import java.util.UUID;
+import org.junit.jupiter.api.Test;
 
 class AcrolinxDocumentTypeCompatibilityTest extends IntegrationTestBase
 {

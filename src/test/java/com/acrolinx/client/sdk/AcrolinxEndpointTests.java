@@ -8,21 +8,19 @@ import static org.mockito.ArgumentMatchers.notNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.acrolinx.client.sdk.exceptions.AcrolinxException;
+import com.acrolinx.client.sdk.http.AcrolinxHttpClient;
+import com.acrolinx.client.sdk.http.AcrolinxResponse;
+import com.acrolinx.client.sdk.http.HttpMethod;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
-
-import com.acrolinx.client.sdk.exceptions.AcrolinxException;
-import com.acrolinx.client.sdk.http.AcrolinxHttpClient;
-import com.acrolinx.client.sdk.http.AcrolinxResponse;
-import com.acrolinx.client.sdk.http.HttpMethod;
 
 class AcrolinxEndpointTests
 {

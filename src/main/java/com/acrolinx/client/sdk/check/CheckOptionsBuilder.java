@@ -1,10 +1,9 @@
 /* Copyright (c) 2018-present Acrolinx GmbH */
 package com.acrolinx.client.sdk.check;
 
-import java.util.List;
-
 import com.acrolinx.client.sdk.AccessToken;
 import com.acrolinx.client.sdk.utils.BatchCheckIdGenerator;
+import java.util.List;
 
 public class CheckOptionsBuilder
 {

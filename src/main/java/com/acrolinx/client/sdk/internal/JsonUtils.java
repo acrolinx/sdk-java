@@ -1,13 +1,11 @@
 /* Copyright (c) 2018-present Acrolinx GmbH */
 package com.acrolinx.client.sdk.internal;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-
 import com.acrolinx.client.sdk.check.CheckPollResponse;
 import com.google.gson.Gson;
-
 import io.gsonfire.GsonFireBuilder;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 
 public class JsonUtils
 {

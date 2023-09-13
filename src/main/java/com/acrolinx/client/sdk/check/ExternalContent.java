@@ -1,9 +1,8 @@
 /* Copyright (c) 2018-present Acrolinx GmbH */
 package com.acrolinx.client.sdk.check;
 
-import java.util.List;
-
 import com.google.gson.Gson;
+import java.util.List;
 
 /**
  * Only supported with Acrolinx Platform 2019.10 and newer.
