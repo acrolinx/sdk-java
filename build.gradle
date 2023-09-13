@@ -37,7 +37,7 @@ repositories {
 	}
 }
 
-project.version = CURRENT_VERSION
+project.version = currentVersion
 group 'com.acrolinx.client'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -50,7 +50,7 @@ def devId = "Acrolinx Open Source"
 def devName = "Acrolinx"
 def devEmail = "opensource@acrolinx.com"
 
-def buildNumber = System.getenv('TRAVIS_BUILD_NUMBER') || System.getenv('BUILD_NUMBER');
+def buildNumber = System.getenv('BUILD_NUMBER');
 
 def buildVersion = buildNumber != null ? buildNumber : 123
 

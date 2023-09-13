@@ -8,7 +8,7 @@ getProperty() {
 	echo $PROP_VALUE
 }
 
-readonly PROJECT_VERSION=$(getProperty "CURRENT_VERSION")
+readonly PROJECT_VERSION=$(getProperty "currentVersion")
 echo "Current Version: $PROJECT_VERSION"
 
 if [[ "$PROJECT_VERSION" == *"SNAPSHOT"* ]]; then
