@@ -9,19 +9,16 @@ import java.net.URISyntaxException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
-public abstract class IntegrationTestBase
-{
-    protected AcrolinxEndpoint acrolinxEndpoint;
+public abstract class IntegrationTestBase {
+  protected AcrolinxEndpoint acrolinxEndpoint;
 
-    @BeforeEach
-    void beforeEachBase() throws URISyntaxException
-    {
-        acrolinxEndpoint = createTestAcrolinxEndpoint();
-    }
+  @BeforeEach
+  void beforeEachBase() throws URISyntaxException {
+    acrolinxEndpoint = createTestAcrolinxEndpoint();
+  }
 
-    @AfterEach
-    void afterEachBase() throws IOException
-    {
-        acrolinxEndpoint.close();
-    }
+  @AfterEach
+  void afterEachBase() throws IOException {
+    acrolinxEndpoint.close();
+  }
 }

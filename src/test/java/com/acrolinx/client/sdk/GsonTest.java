@@ -11,50 +11,46 @@ import com.acrolinx.client.sdk.platform.Server;
 import java.io.IOException;
 import org.junit.jupiter.api.Test;
 
-class GsonTest
-{
-    @Test
-    void testParseServer() throws IOException
-    {
-        String json = readResource("server.json");
+class GsonTest {
+  @Test
+  void testParseServer() throws IOException {
+    String json = readResource("server.json");
 
-        Server server = parseJson(json, Server.class);
+    Server server = parseJson(json, Server.class);
 
-        assertEquals("ServerName", server.getName());
-        assertEquals("ServerVersion", server.getVersion());
-    }
+    assertEquals("ServerName", server.getName());
+    assertEquals("ServerVersion", server.getVersion());
+  }
 
-    @Test
-    void testParseSuccessResponse() throws IOException
-    {
-        String json = readResource("server-success-response.json");
+  @Test
+  void testParseSuccessResponse() throws IOException {
+    String json = readResource("server-success-response.json");
 
-        SuccessResponse<Server> server = parseJson(json, SuccessResponse.class, Server.class);
+    SuccessResponse<Server> server = parseJson(json, SuccessResponse.class, Server.class);
 
-        assertEquals("ServerName", server.data.getName());
-        assertEquals("ServerVersion", server.data.getVersion());
-    }
+    assertEquals("ServerName", server.data.getName());
+    assertEquals("ServerVersion", server.data.getVersion());
+  }
 
-    @Test
-    void testParseSignInSuccessResponse() throws IOException
-    {
-        String json = readResource("sign-in-success-response.json");
+  @Test
+  void testParseSignInSuccessResponse() throws IOException {
+    String json = readResource("sign-in-success-response.json");
 
-        SignInResponse signInResponse = parseJson(json, SignInResponse.class);
+    SignInResponse signInResponse = parseJson(json, SignInResponse.class);
 
-        SignInSuccess signInSuccess = ((SignInResponse.Success) signInResponse).data;
-        assertEquals(new AccessToken("dummyAccessToken"), signInSuccess.getAccessToken());
-    }
+    SignInSuccess signInSuccess = ((SignInResponse.Success) signInResponse).data;
+    assertEquals(new AccessToken("dummyAccessToken"), signInSuccess.getAccessToken());
+  }
 
-    @Test
-    void testParseSignInLinksResponse() throws IOException
-    {
-        String json = readResource("sign-in-links-response.json");
+  @Test
+  void testParseSignInLinksResponse() throws IOException {
+    String json = readResource("sign-in-links-response.json");
 
-        SignInResponse signInResponse = parseJson(json, SignInResponse.class);
+    SignInResponse signInResponse = parseJson(json, SignInResponse.class);
 
-        SignInResponse.SignInLinksInternal links = ((SignInResponse.SignInLinks) signInResponse).links;
-        assertEquals("https://acrolinx.com/signin/?ticket_id=2b3db9c6-79e3-4cc0-b760-624fb19802e9",
-                links.getInteractive());
-    }
+    SignInResponse.SignInLinksInternal links = ((SignInResponse.SignInLinks) signInResponse).links;
+    assertEquals(
+        "https://acrolinx.com/signin/?ticket_id=2b3db9c6-79e3-4cc0-b760-624fb19802e9",
+        links.getInteractive());
+  }
 }

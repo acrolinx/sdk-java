@@ -2,9 +2,9 @@
 package com.acrolinx.client.sdk.check;
 
 /**
- * <p>
  * How to choose a correct Check Type? Following are different use cases of the check with
  * corresponding check type:
+ *
  * <table summary="" border="1">
  * <tr>
  * <td>Check Type</td>
@@ -35,7 +35,9 @@ package com.acrolinx.client.sdk.check;
  * </tr>
  * </table>
  */
-public enum CheckType
-{
-    batch, interactive, baseline, automated
+public enum CheckType {
+  batch,
+  interactive,
+  baseline,
+  automated
 }

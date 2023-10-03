@@ -8,25 +8,21 @@ import com.acrolinx.client.sdk.integration.common.IntegrationTestBase;
 import com.acrolinx.client.sdk.utils.BatchCheckIdGenerator;
 import org.junit.jupiter.api.Test;
 
-class BatchIdGeneratorTest extends IntegrationTestBase
-{
-    @Test
-    void testBatchIdGeneratorEmpty()
-    {
-        assertTrue(BatchCheckIdGenerator.getId("").contains("javaSDK"));
-    }
+class BatchIdGeneratorTest extends IntegrationTestBase {
+  @Test
+  void testBatchIdGeneratorEmpty() {
+    assertTrue(BatchCheckIdGenerator.getId("").contains("javaSDK"));
+  }
 
-    @Test
-    void testIntegrationNameContainsSpaces()
-    {
-        assertFalse(BatchCheckIdGenerator.getId("acrolinx for java").contains(" "));
-    }
+  @Test
+  void testIntegrationNameContainsSpaces() {
+    assertFalse(BatchCheckIdGenerator.getId("acrolinx for java").contains(" "));
+  }
 
-    @Test
-    void testBatchIdGenerationSimple()
-    {
-        String batchid = BatchCheckIdGenerator.getId("cli");
-        assertTrue(batchid.contains("cli"));
-        assertTrue(batchid.contains("gen"));
-    }
+  @Test
+  void testBatchIdGenerationSimple() {
+    String batchid = BatchCheckIdGenerator.getId("cli");
+    assertTrue(batchid.contains("cli"));
+    assertTrue(batchid.contains("gen"));
+  }
 }
