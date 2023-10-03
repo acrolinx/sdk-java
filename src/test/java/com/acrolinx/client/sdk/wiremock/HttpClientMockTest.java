@@ -19,31 +19,31 @@ import java.util.Collections;
 import org.junit.jupiter.api.Test;
 
 @WireMockTest(httpPort = PLATFORM_PORT_MOCKED)
-class HttpClientMockTest
-{
-    private static final String ACROLINX_URL = "http://localhost:" + WireMockUtils.PLATFORM_PORT_MOCKED;
+class HttpClientMockTest {
+  private static final String ACROLINX_URL =
+      "http://localhost:" + WireMockUtils.PLATFORM_PORT_MOCKED;
 
-    @Test
-    void test404HttpClient() throws URISyntaxException, IOException, AcrolinxException
-    {
-        String api = "/api/v1/";
-        httpClientMockNotFoundResponse(api);
-        ApacheHttpClient apacheHttpClient = new ApacheHttpClient();
-        AcrolinxResponse acrolinxResponse = apacheHttpClient.fetch(new URI(ACROLINX_URL + api), HttpMethod.GET,
-                Collections.emptyMap(), null);
+  @Test
+  void test404HttpClient() throws URISyntaxException, IOException, AcrolinxException {
+    String api = "/api/v1/";
+    httpClientMockNotFoundResponse(api);
+    ApacheHttpClient apacheHttpClient = new ApacheHttpClient();
+    AcrolinxResponse acrolinxResponse =
+        apacheHttpClient.fetch(
+            new URI(ACROLINX_URL + api), HttpMethod.GET, Collections.emptyMap(), null);
 
-        assertEquals(404, acrolinxResponse.getStatus());
-    }
+    assertEquals(404, acrolinxResponse.getStatus());
+  }
 
-    @Test
-    void testTimeout() throws URISyntaxException, IOException, AcrolinxException
-    {
-        String api = "/api/v1/";
-        httpClientMockTimeOut(api);
-        ApacheHttpClient apacheHttpClient = new ApacheHttpClient();
-        AcrolinxResponse acrolinxResponse = apacheHttpClient.fetch(new URI(ACROLINX_URL + api), HttpMethod.GET,
-                Collections.emptyMap(), null);
+  @Test
+  void testTimeout() throws URISyntaxException, IOException, AcrolinxException {
+    String api = "/api/v1/";
+    httpClientMockTimeOut(api);
+    ApacheHttpClient apacheHttpClient = new ApacheHttpClient();
+    AcrolinxResponse acrolinxResponse =
+        apacheHttpClient.fetch(
+            new URI(ACROLINX_URL + api), HttpMethod.GET, Collections.emptyMap(), null);
 
-        assertEquals(408, acrolinxResponse.getStatus());
-    }
+    assertEquals(408, acrolinxResponse.getStatus());
+  }
 }

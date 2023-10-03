@@ -21,31 +21,31 @@ import java.net.URISyntaxException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class AcrolinxServiceExceptionTest extends IntegrationTestBase
-{
-    @Test
-    void testGetCapabilitiesWithInvalidAccessToken()
-    {
-        AcrolinxServiceException acrolinxServiceException = Assertions.assertThrows(AcrolinxServiceException.class,
-                () -> acrolinxEndpoint.getCapabilities(new AccessToken("invalid")));
+class AcrolinxServiceExceptionTest extends IntegrationTestBase {
+  @Test
+  void testGetCapabilitiesWithInvalidAccessToken() {
+    AcrolinxServiceException acrolinxServiceException =
+        Assertions.assertThrows(
+            AcrolinxServiceException.class,
+            () -> acrolinxEndpoint.getCapabilities(new AccessToken("invalid")));
 
-        assertEquals(AcrolinxServiceException.Type.auth.toString(), acrolinxServiceException.getType());
-        assertThat(acrolinxServiceException.getDetail(), not(emptyOrNullString()));
-        assertThat(acrolinxServiceException.getTitle(), not(emptyOrNullString()));
-        assertEquals(401, acrolinxServiceException.getStatus());
+    assertEquals(AcrolinxServiceException.Type.auth.toString(), acrolinxServiceException.getType());
+    assertThat(acrolinxServiceException.getDetail(), not(emptyOrNullString()));
+    assertThat(acrolinxServiceException.getTitle(), not(emptyOrNullString()));
+    assertEquals(401, acrolinxServiceException.getStatus());
 
-        assertEquals(HttpMethod.GET, acrolinxServiceException.getRequest().getMethod());
-        assertThat(acrolinxServiceException.getRequest().getUrl().toString(), startsWith(ACROLINX_URL));
+    assertEquals(HttpMethod.GET, acrolinxServiceException.getRequest().getMethod());
+    assertThat(acrolinxServiceException.getRequest().getUrl().toString(), startsWith(ACROLINX_URL));
+  }
+
+  @Test
+  void test404ErrorCodeCheckApi() throws URISyntaxException, IOException {
+    try (AcrolinxEndpoint acrolinxEndpoint =
+        new AcrolinxEndpoint(new URI(ACROLINX_URL + "/unknown"), "invlaid", "1.2.3.4", "en")) {
+      AcrolinxException acrolinxException =
+          Assertions.assertThrows(
+              AcrolinxException.class, () -> acrolinxEndpoint.getPlatformInformation());
+      assertTrue(acrolinxException.getMessage().contains("404"));
     }
-
-    @Test
-    void test404ErrorCodeCheckApi() throws URISyntaxException, IOException
-    {
-        try (AcrolinxEndpoint acrolinxEndpoint = new AcrolinxEndpoint(new URI(ACROLINX_URL + "/unknown"), "invlaid",
-                "1.2.3.4", "en")) {
-            AcrolinxException acrolinxException = Assertions.assertThrows(AcrolinxException.class,
-                    () -> acrolinxEndpoint.getPlatformInformation());
-            assertTrue(acrolinxException.getMessage().contains("404"));
-        }
-    }
+  }
 }

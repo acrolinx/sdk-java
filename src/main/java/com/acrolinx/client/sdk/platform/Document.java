@@ -3,17 +3,14 @@ package com.acrolinx.client.sdk.platform;
 
 import java.util.List;
 
-public class Document
-{
-    private final List<CustomFieldDescriptor> customFields;
+public class Document {
+  private final List<CustomFieldDescriptor> customFields;
 
-    public Document(List<CustomFieldDescriptor> customFields)
-    {
-        this.customFields = customFields;
-    }
+  public Document(List<CustomFieldDescriptor> customFields) {
+    this.customFields = customFields;
+  }
 
-    public List<CustomFieldDescriptor> getCustomFields()
-    {
-        return customFields;
-    }
+  public List<CustomFieldDescriptor> getCustomFields() {
+    return customFields;
+  }
 }

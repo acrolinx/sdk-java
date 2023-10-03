@@ -21,80 +21,81 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @WireMockTest(httpPort = PLATFORM_PORT_MOCKED)
-class SignInSsoTest extends IntegrationTestBase
-{
-    @Test
-    void testSignInWithSSO() throws AcrolinxException
-    {
-        assertNotNull(ACROLINX_API_USERNAME);
-        assertNotNull(ACROLINX_API_SSO_TOKEN);
+class SignInSsoTest extends IntegrationTestBase {
+  @Test
+  void testSignInWithSSO() throws AcrolinxException {
+    assertNotNull(ACROLINX_API_USERNAME);
+    assertNotNull(ACROLINX_API_SSO_TOKEN);
 
-        SignInSuccess signInSuccess = acrolinxEndpoint.signInWithSSO(ACROLINX_API_SSO_TOKEN, ACROLINX_API_USERNAME);
-        assertEquals(ACROLINX_API_USERNAME, signInSuccess.getUser().getUsername());
-    }
+    SignInSuccess signInSuccess =
+        acrolinxEndpoint.signInWithSSO(ACROLINX_API_SSO_TOKEN, ACROLINX_API_USERNAME);
+    assertEquals(ACROLINX_API_USERNAME, signInSuccess.getUser().getUsername());
+  }
 
-    @Test
-    void testSignInWithSSOIgnoreCase() throws AcrolinxException
-    {
-        assertNotNull(ACROLINX_API_USERNAME);
-        assertNotNull(ACROLINX_API_SSO_TOKEN);
+  @Test
+  void testSignInWithSSOIgnoreCase() throws AcrolinxException {
+    assertNotNull(ACROLINX_API_USERNAME);
+    assertNotNull(ACROLINX_API_SSO_TOKEN);
 
-        assertNotEquals("2020.04.22154", acrolinxEndpoint.getPlatformInformation().getServer().getVersion());
+    assertNotEquals(
+        "2020.04.22154", acrolinxEndpoint.getPlatformInformation().getServer().getVersion());
 
-        SignInSuccess signInSuccess = acrolinxEndpoint.signInWithSSO(ACROLINX_API_SSO_TOKEN,
-                ACROLINX_API_USERNAME.toUpperCase());
-        assertEquals(ACROLINX_API_USERNAME, signInSuccess.getUser().getUsername());
-    }
+    SignInSuccess signInSuccess =
+        acrolinxEndpoint.signInWithSSO(ACROLINX_API_SSO_TOKEN, ACROLINX_API_USERNAME.toUpperCase());
+    assertEquals(ACROLINX_API_USERNAME, signInSuccess.getUser().getUsername());
+  }
 
-    @Test
-    void testSignInWithSSOIgnoreCase2() throws AcrolinxException
-    {
-        assertNotNull(ACROLINX_API_USERNAME);
-        assertNotNull(ACROLINX_API_SSO_TOKEN);
+  @Test
+  void testSignInWithSSOIgnoreCase2() throws AcrolinxException {
+    assertNotNull(ACROLINX_API_USERNAME);
+    assertNotNull(ACROLINX_API_SSO_TOKEN);
 
-        assertNotEquals("2020.04.22154", acrolinxEndpoint.getPlatformInformation().getServer().getVersion());
+    assertNotEquals(
+        "2020.04.22154", acrolinxEndpoint.getPlatformInformation().getServer().getVersion());
 
-        SignInSuccess signInSuccess = acrolinxEndpoint.signInWithSSO(ACROLINX_API_SSO_TOKEN,
-                ACROLINX_API_USERNAME.toLowerCase());
-        assertEquals(ACROLINX_API_USERNAME, signInSuccess.getUser().getUsername());
-    }
+    SignInSuccess signInSuccess =
+        acrolinxEndpoint.signInWithSSO(ACROLINX_API_SSO_TOKEN, ACROLINX_API_USERNAME.toLowerCase());
+    assertEquals(ACROLINX_API_USERNAME, signInSuccess.getUser().getUsername());
+  }
 
-    @Test
-    void testSignInWithSsoThrowsException()
-    {
-        Assertions.assertThrows(AcrolinxException.class,
-                () -> acrolinxEndpoint.signInWithSSO("invalidGenericToken", "invalidUserName"));
-    }
+  @Test
+  void testSignInWithSsoThrowsException() {
+    Assertions.assertThrows(
+        AcrolinxException.class,
+        () -> acrolinxEndpoint.signInWithSSO("invalidGenericToken", "invalidUserName"));
+  }
 
-    @Test
-    void ssoWithUserAndSdkUrl() throws AcrolinxException, URISyntaxException
-    {
-        assertNotNull(ACROLINX_API_USERNAME);
-        assertNotNull(ACROLINX_API_SSO_TOKEN);
+  @Test
+  void ssoWithUserAndSdkUrl() throws AcrolinxException, URISyntaxException {
+    assertNotNull(ACROLINX_API_USERNAME);
+    assertNotNull(ACROLINX_API_SSO_TOKEN);
 
-        URI realAcrolinxURL = new URI(ACROLINX_URL);
-        URI userFacingAcrolinxURL = new URI("https://www.acrolinx.com/proxy");
+    URI realAcrolinxURL = new URI(ACROLINX_URL);
+    URI userFacingAcrolinxURL = new URI("https://www.acrolinx.com/proxy");
 
-        acrolinxEndpoint = new AcrolinxEndpoint(realAcrolinxURL, userFacingAcrolinxURL, DEVELOPMENT_SIGNATURE,
-                "1.2.3.4", "en");
+    acrolinxEndpoint =
+        new AcrolinxEndpoint(
+            realAcrolinxURL, userFacingAcrolinxURL, DEVELOPMENT_SIGNATURE, "1.2.3.4", "en");
 
-        SignInSuccess signInSuccess = acrolinxEndpoint.signInWithSSO(ACROLINX_API_SSO_TOKEN, ACROLINX_API_USERNAME);
-        assertEquals(ACROLINX_API_USERNAME, signInSuccess.getUser().getUsername());
-    }
+    SignInSuccess signInSuccess =
+        acrolinxEndpoint.signInWithSSO(ACROLINX_API_SSO_TOKEN, ACROLINX_API_USERNAME);
+    assertEquals(ACROLINX_API_USERNAME, signInSuccess.getUser().getUsername());
+  }
 
-    @Test
-    void ssoWithUserAndSdkUrl2() throws AcrolinxException, URISyntaxException
-    {
-        assertNotNull(ACROLINX_API_USERNAME);
-        assertNotNull(ACROLINX_API_SSO_TOKEN);
+  @Test
+  void ssoWithUserAndSdkUrl2() throws AcrolinxException, URISyntaxException {
+    assertNotNull(ACROLINX_API_USERNAME);
+    assertNotNull(ACROLINX_API_SSO_TOKEN);
 
-        URI realAcrolinxURL = new URI(ACROLINX_URL);
-        URI userFacingAcrolinxURL = new URI("https://www.acrolinx.com/proxy/");
+    URI realAcrolinxURL = new URI(ACROLINX_URL);
+    URI userFacingAcrolinxURL = new URI("https://www.acrolinx.com/proxy/");
 
-        acrolinxEndpoint = new AcrolinxEndpoint(realAcrolinxURL, userFacingAcrolinxURL, DEVELOPMENT_SIGNATURE,
-                "1.2.3.4", "en");
+    acrolinxEndpoint =
+        new AcrolinxEndpoint(
+            realAcrolinxURL, userFacingAcrolinxURL, DEVELOPMENT_SIGNATURE, "1.2.3.4", "en");
 
-        SignInSuccess signInSuccess = acrolinxEndpoint.signInWithSSO(ACROLINX_API_SSO_TOKEN, ACROLINX_API_USERNAME);
-        assertEquals(ACROLINX_API_USERNAME, signInSuccess.getUser().getUsername());
-    }
+    SignInSuccess signInSuccess =
+        acrolinxEndpoint.signInWithSSO(ACROLINX_API_SSO_TOKEN, ACROLINX_API_USERNAME);
+    assertEquals(ACROLINX_API_USERNAME, signInSuccess.getUser().getUsername());
+  }
 }

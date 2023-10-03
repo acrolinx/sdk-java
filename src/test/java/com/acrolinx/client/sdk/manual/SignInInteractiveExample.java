@@ -8,18 +8,19 @@ import com.acrolinx.client.sdk.SignInSuccess;
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import java.net.URISyntaxException;
 
-public class SignInInteractiveExample
-{
-    public static void main(String[] args) throws URISyntaxException, AcrolinxException, InterruptedException
-    {
-        AcrolinxEndpoint acrolinxEndpoint = createTestAcrolinxEndpoint();
+public class SignInInteractiveExample {
+  public static void main(String[] args)
+      throws URISyntaxException, AcrolinxException, InterruptedException {
+    AcrolinxEndpoint acrolinxEndpoint = createTestAcrolinxEndpoint();
 
-        SignInSuccess signInSuccess = acrolinxEndpoint.signInInteractive(urlString -> {
-            System.out.println("Please open the following URL:");
-            System.out.println(urlString);
-        });
+    SignInSuccess signInSuccess =
+        acrolinxEndpoint.signInInteractive(
+            urlString -> {
+              System.out.println("Please open the following URL:");
+              System.out.println(urlString);
+            });
 
-        System.out.println("accessToken = " + signInSuccess.getAccessToken().getAccessTokenAsString());
-        System.out.println("username = " + signInSuccess.getUser().getUsername());
-    }
+    System.out.println("accessToken = " + signInSuccess.getAccessToken().getAccessTokenAsString());
+    System.out.println("username = " + signInSuccess.getUser().getUsername());
+  }
 }

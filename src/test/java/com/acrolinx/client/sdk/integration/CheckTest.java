@@ -69,510 +69,584 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatcher;
 import org.mockito.Mockito;
 
-class CheckTest extends IntegrationTestBase
-{
-    /**
-     * This text should need some seconds to check.
-     */
-    static final String LONG_TEST_TEXT = Strings.repeat("This sentence is nice. \n", 300);
+class CheckTest extends IntegrationTestBase {
+  /** This text should need some seconds to check. */
+  static final String LONG_TEST_TEXT = Strings.repeat("This sentence is nice. \n", 300);
 
-    GuidanceProfile guidanceProfileEn;
-    final ProgressListener progressListener = Mockito.mock(ProgressListener.class);
+  GuidanceProfile guidanceProfileEn;
+  final ProgressListener progressListener = Mockito.mock(ProgressListener.class);
 
-    @BeforeEach
-    void beforeEach() throws AcrolinxException
-    {
-        assertNotNull(ACROLINX_API_TOKEN);
-        Capabilities capabilities = acrolinxEndpoint.getCapabilities(ACROLINX_API_TOKEN);
+  @BeforeEach
+  void beforeEach() throws AcrolinxException {
+    assertNotNull(ACROLINX_API_TOKEN);
+    Capabilities capabilities = acrolinxEndpoint.getCapabilities(ACROLINX_API_TOKEN);
 
-        for (GuidanceProfile profile : capabilities.getCheckingCapabilities().getGuidanceProfiles()) {
-            if (profile.getLanguage().getId().equals("en")) {
-                guidanceProfileEn = profile;
-                break;
-            }
+    for (GuidanceProfile profile : capabilities.getCheckingCapabilities().getGuidanceProfiles()) {
+      if (profile.getLanguage().getId().equals("en")) {
+        guidanceProfileEn = profile;
+        break;
+      }
+    }
+
+    assertNotNull(guidanceProfileEn);
+  }
+
+  @Test
+  void startACheck() throws AcrolinxException {
+    CheckResponse checkResponse =
+        acrolinxEndpoint.submitCheck(
+            ACROLINX_API_TOKEN,
+            CheckRequest.ofDocumentContent("This textt has ann erroor.")
+                .withContentReference(("file.txt"))
+                .withCheckOptions(
+                    CheckOptions.getBuilder()
+                        .withGuidanceProfileId(guidanceProfileEn.getId())
+                        .build())
+                .build());
+
+    assertThat(checkResponse.getData().getId(), not(emptyOrNullString()));
+    assertThat(checkResponse.getLinks().getResult(), startsWith(ACROLINX_URL));
+    assertThat(checkResponse.getLinks().getCancel(), startsWith(ACROLINX_URL));
+  }
+
+  /**
+   * The same works for all supported file types.
+   *
+   * @see <a href=
+   *     "https://github.com/acrolinx/acrolinx-coding-guidance/blob/main/topics/text-extraction.md">Text
+   *     Extraction</a>
+   */
+  @Test
+  void checkAWordDocument() throws AcrolinxException, IOException {
+    final String base64FileContent = TestUtils.readResourceAsBase64("document.docx");
+    final String wordDocumentName = "document.docx";
+    CheckResult checkResult =
+        acrolinxEndpoint.check(
+            ACROLINX_API_TOKEN,
+            CheckRequest.ofDocumentContent(base64FileContent)
+                .withContentEncoding(ContentEncoding.base64)
+                .withContentReference(wordDocumentName)
+                .withCheckOptions(
+                    CheckOptions.getBuilder()
+                        .withGuidanceProfileId(guidanceProfileEn.getId())
+                        .build())
+                .build());
+    assertThat(checkResult.getQuality().getStatus(), in(new Status[] {Status.red, Status.yellow}));
+    assertNotEquals(0, checkResult.getReports().get("scorecard").getLink().length());
+  }
+
+  @Test
+  void checkXmlWithCustomEntities() throws AcrolinxException {
+    final String documentName = "xmlWithReferences.xml";
+    String xmlContent = "<x>&special;</x>";
+
+    ExternalContentBuilder externalContentBuilder = new ExternalContentBuilder();
+    externalContentBuilder.addEntity("special", "&special2;");
+    externalContentBuilder.addEntity("special2", "This is an tesst!");
+
+    CheckResult checkResult =
+        acrolinxEndpoint.check(
+            ACROLINX_API_TOKEN,
+            CheckRequest.ofDocument(new SimpleDocument(xmlContent, externalContentBuilder.build()))
+                .withContentReference(documentName)
+                .withCheckOptions(
+                    CheckOptions.getBuilder()
+                        .withGuidanceProfileId(guidanceProfileEn.getId())
+                        .build())
+                .build());
+
+    for (Issue issue : checkResult.getIssues()) {
+      for (Match match : issue.getPositionalInformation().getMatches()) {
+        if ("tesst".equals(match.getOriginalPart())) {
+          return;
         }
-
-        assertNotNull(guidanceProfileEn);
+      }
     }
 
-    @Test
-    void startACheck() throws AcrolinxException
-    {
-        CheckResponse checkResponse = acrolinxEndpoint.submitCheck(ACROLINX_API_TOKEN,
-                CheckRequest.ofDocumentContent("This textt has ann erroor.").withContentReference(
-                        ("file.txt")).withCheckOptions(
-                                CheckOptions.getBuilder().withGuidanceProfileId(
-                                        guidanceProfileEn.getId()).build()).build());
+    fail(
+        "Issues don't contain an expected referenced issue with surface 'tesst'. Issues: "
+            + checkResult.getIssues());
+  }
 
-        assertThat(checkResponse.getData().getId(), not(emptyOrNullString()));
-        assertThat(checkResponse.getLinks().getResult(), startsWith(ACROLINX_URL));
-        assertThat(checkResponse.getLinks().getCancel(), startsWith(ACROLINX_URL));
-    }
+  @Test
+  void checkXmlWithPlainTextCustomEntities() throws AcrolinxException {
+    final String documentName = "xmlWithReferences.xml";
+    String xmlContent = "<x>&special;</x>";
 
-    /**
-     * The same works for all supported file types.
-     * 
-     * @see <a href=
-     *      "https://github.com/acrolinx/acrolinx-coding-guidance/blob/main/topics/text-extraction.md">Text
-     *      Extraction</a>
-     */
-    @Test
-    void checkAWordDocument() throws AcrolinxException, IOException
-    {
-        final String base64FileContent = TestUtils.readResourceAsBase64("document.docx");
-        final String wordDocumentName = "document.docx";
-        CheckResult checkResult = acrolinxEndpoint.check(ACROLINX_API_TOKEN,
-                CheckRequest.ofDocumentContent(base64FileContent).withContentEncoding(
-                        ContentEncoding.base64).withContentReference(wordDocumentName).withCheckOptions(
-                                CheckOptions.getBuilder().withGuidanceProfileId(
-                                        guidanceProfileEn.getId()).build()).build());
-        assertThat(checkResult.getQuality().getStatus(), in(new Status[]{Status.red, Status.yellow}));
-        assertNotEquals(0, checkResult.getReports().get("scorecard").getLink().length());
-    }
+    ExternalContentBuilder externalContentBuilder = new ExternalContentBuilder();
 
-    @Test
-    void checkXmlWithCustomEntities() throws AcrolinxException
-    {
-        final String documentName = "xmlWithReferences.xml";
-        String xmlContent = "<x>&special;</x>";
+    externalContentBuilder.addTextReplacement("special", "<y>This is &not; an tesst!</y>");
+    externalContentBuilder.addTextReplacement("&not;", "tost");
 
-        ExternalContentBuilder externalContentBuilder = new ExternalContentBuilder();
-        externalContentBuilder.addEntity("special", "&special2;");
-        externalContentBuilder.addEntity("special2", "This is an tesst!");
+    CheckResult checkResult =
+        acrolinxEndpoint.check(
+            ACROLINX_API_TOKEN,
+            CheckRequest.ofDocument(new SimpleDocument(xmlContent, externalContentBuilder.build()))
+                .withContentReference(documentName)
+                .withCheckOptions(
+                    CheckOptions.getBuilder()
+                        .withGuidanceProfileId(guidanceProfileEn.getId())
+                        .build())
+                .build());
 
-        CheckResult checkResult = acrolinxEndpoint.check(ACROLINX_API_TOKEN,
-                CheckRequest.ofDocument(
-                        new SimpleDocument(xmlContent, externalContentBuilder.build())).withContentReference(
-                                documentName).withCheckOptions(
-                                        CheckOptions.getBuilder().withGuidanceProfileId(
-                                                guidanceProfileEn.getId()).build()).build());
-
-        for (Issue issue : checkResult.getIssues()) {
-            for (Match match : issue.getPositionalInformation().getMatches()) {
-                if ("tesst".equals(match.getOriginalPart())) {
-                    return;
-                }
-            }
+    for (Issue issue : checkResult.getIssues()) {
+      for (Match match : issue.getPositionalInformation().getMatches()) {
+        if ("tost".equals(match.getOriginalPart())) {
+          fail(
+              "Content should not contain the second level entity 'tost' because it should not resolve recursively. Issues: "
+                  + checkResult.getIssues());
         }
-
-        fail("Issues don't contain an expected referenced issue with surface 'tesst'. Issues: "
-                + checkResult.getIssues());
+      }
     }
 
-    @Test
-    void checkXmlWithPlainTextCustomEntities() throws AcrolinxException
-    {
-        final String documentName = "xmlWithReferences.xml";
-        String xmlContent = "<x>&special;</x>";
-
-        ExternalContentBuilder externalContentBuilder = new ExternalContentBuilder();
-
-        externalContentBuilder.addTextReplacement("special", "<y>This is &not; an tesst!</y>");
-        externalContentBuilder.addTextReplacement("&not;", "tost");
-
-        CheckResult checkResult = acrolinxEndpoint.check(ACROLINX_API_TOKEN,
-                CheckRequest.ofDocument(
-                        new SimpleDocument(xmlContent, externalContentBuilder.build())).withContentReference(
-                                documentName).withCheckOptions(
-                                        CheckOptions.getBuilder().withGuidanceProfileId(
-                                                guidanceProfileEn.getId()).build()).build());
-
-        for (Issue issue : checkResult.getIssues()) {
-            for (Match match : issue.getPositionalInformation().getMatches()) {
-                if ("tost".equals(match.getOriginalPart())) {
-                    fail("Content should not contain the second level entity 'tost' because it should not resolve recursively. Issues: "
-                            + checkResult.getIssues());
-                }
-            }
+    for (Issue issue : checkResult.getIssues()) {
+      for (Match match : issue.getPositionalInformation().getMatches()) {
+        if ("tesst".equals(match.getOriginalPart())) {
+          return;
         }
+      }
+    }
 
-        for (Issue issue : checkResult.getIssues()) {
-            for (Match match : issue.getPositionalInformation().getMatches()) {
-                if ("tesst".equals(match.getOriginalPart())) {
-                    return;
-                }
-            }
+    fail(
+        "Issues don't contain an expected referenced issue with surface 'tesst'. Issues: "
+            + checkResult.getIssues());
+  }
+
+  @Test
+  void checkDitaMap() throws AcrolinxException, IOException {
+    final String documentName = "test.ditamap";
+    String xmlContent = TestUtils.readResource("test.ditamap");
+
+    ExternalContentBuilder externalContentBuilder = new ExternalContentBuilder();
+    externalContentBuilder.addDitaReference("some.dita", TestUtils.readResource("test.topic"));
+
+    CheckResult checkResult =
+        acrolinxEndpoint.check(
+            ACROLINX_API_TOKEN,
+            CheckRequest.ofDocument(new SimpleDocument(xmlContent, externalContentBuilder.build()))
+                .withContentReference(documentName)
+                .withCheckOptions(
+                    CheckOptions.getBuilder()
+                        .withGuidanceProfileId(guidanceProfileEn.getId())
+                        .build())
+                .build());
+
+    for (Issue issue : checkResult.getIssues()) {
+      for (Match match : issue.getPositionalInformation().getMatches()) {
+        if ("tesst".equals(match.getOriginalPart())) {
+          return;
         }
-
-        fail("Issues don't contain an expected referenced issue with surface 'tesst'. Issues: "
-                + checkResult.getIssues());
+      }
     }
 
-    @Test
-    void checkDitaMap() throws AcrolinxException, IOException
-    {
-        final String documentName = "test.ditamap";
-        String xmlContent = TestUtils.readResource("test.ditamap");
+    fail(
+        "Issues don't contain an expected referenced issue with surface 'tesst'. Issues: "
+            + checkResult.getIssues());
+  }
 
-        ExternalContentBuilder externalContentBuilder = new ExternalContentBuilder();
-        externalContentBuilder.addDitaReference("some.dita", TestUtils.readResource("test.topic"));
+  @Test
+  void checkAndGetResult() throws AcrolinxException {
+    CheckResult checkResult = checkEnglishText("This textt has ann erroor.");
 
-        CheckResult checkResult = acrolinxEndpoint.check(ACROLINX_API_TOKEN,
-                CheckRequest.ofDocument(
-                        new SimpleDocument(xmlContent, externalContentBuilder.build())).withContentReference(
-                                documentName).withCheckOptions(
-                                        CheckOptions.getBuilder().withGuidanceProfileId(
-                                                guidanceProfileEn.getId()).build()).build());
+    final Quality quality = checkResult.getQuality();
+    assertThat(quality.getScore(), lessThan(100));
+    assertThat(quality.getScore(), greaterThan(0));
+    assertNotNull(quality.getStatus());
+    assertNotNull(quality.getScoresByGoal());
 
-        for (Issue issue : checkResult.getIssues()) {
-            for (Match match : issue.getPositionalInformation().getMatches()) {
-                if ("tesst".equals(match.getOriginalPart())) {
-                    return;
-                }
-            }
-        }
+    assertEquals(1, checkResult.getReports().size());
+    CheckResult.Report scorecard = checkResult.getReport(ReportType.scorecard);
+    assertEquals("Score Card", scorecard.getDisplayName());
+    assertThat(scorecard.getLink(), startsWith(ACROLINX_URL));
+  }
 
-        fail("Issues don't contain an expected referenced issue with surface 'tesst'. Issues: "
-                + checkResult.getIssues());
+  @Test
+  void checkAndGetGoals() throws AcrolinxException {
+    CheckResult checkResult = checkEnglishText("This textt has ann erroor.");
+
+    assertThat(checkResult.getGoals().getAll(), not(empty()));
+    assertThat(checkResult.getIssues(), not(empty()));
+    assertSame(checkResult.getGoals(), checkResult.getGoals());
+    assertSame(checkResult.getGoals().getAll(), checkResult.getGoals().getAll());
+
+    for (Issue issue : checkResult.getIssues()) {
+      Goal goal = checkResult.getGoals().ofIssue(issue);
+      assertEquals(issue.getGoalId(), goal.getId());
+      assertThat(goal.getIssues(), not(0));
+      assertNotNull(goal.getColor());
+      assertNotNull(goal.getDisplayName());
+      assertThat(goal.getColor(), not(""));
+      assertThat(goal.getDisplayName(), not(""));
     }
 
-    @Test
-    void checkAndGetResult() throws AcrolinxException
-    {
-        CheckResult checkResult = checkEnglishText("This textt has ann erroor.");
-
-        final Quality quality = checkResult.getQuality();
-        assertThat(quality.getScore(), lessThan(100));
-        assertThat(quality.getScore(), greaterThan(0));
-        assertNotNull(quality.getStatus());
-        assertNotNull(quality.getScoresByGoal());
-
-        assertEquals(1, checkResult.getReports().size());
-        CheckResult.Report scorecard = checkResult.getReport(ReportType.scorecard);
-        assertEquals("Score Card", scorecard.getDisplayName());
-        assertThat(scorecard.getLink(), startsWith(ACROLINX_URL));
+    for (Goal goal : checkResult.getGoals().getAll()) {
+      assertNotNull(goal.getId());
+      assertNotNull(goal.getColor());
+      assertNotNull(goal.getDisplayName());
+      assertThat(goal.getId(), not(""));
+      assertThat(goal.getColor(), not(""));
+      assertThat(goal.getDisplayName(), not(""));
     }
+  }
 
-    @Test
-    void checkAndGetGoals() throws AcrolinxException
-    {
-        CheckResult checkResult = checkEnglishText("This textt has ann erroor.");
+  @Test
+  void checkAndGetMetrics() throws AcrolinxException {
+    CheckResult checkResult = checkEnglishText("This textt has ann erroor.");
 
-        assertThat(checkResult.getGoals().getAll(), not(empty()));
-        assertThat(checkResult.getIssues(), not(empty()));
-        assertSame(checkResult.getGoals(), checkResult.getGoals());
-        assertSame(checkResult.getGoals().getAll(), checkResult.getGoals().getAll());
+    assertNotNull(checkResult.getQuality().getMetrics());
+    assertThat(checkResult.getQuality().getMetrics(), not(empty()));
 
-        for (Issue issue : checkResult.getIssues()) {
-            Goal goal = checkResult.getGoals().ofIssue(issue);
-            assertEquals(issue.getGoalId(), goal.getId());
-            assertThat(goal.getIssues(), not(0));
-            assertNotNull(goal.getColor());
-            assertNotNull(goal.getDisplayName());
-            assertThat(goal.getColor(), not(""));
-            assertThat(goal.getDisplayName(), not(""));
-        }
-
-        for (Goal goal : checkResult.getGoals().getAll()) {
-            assertNotNull(goal.getId());
-            assertNotNull(goal.getColor());
-            assertNotNull(goal.getDisplayName());
-            assertThat(goal.getId(), not(""));
-            assertThat(goal.getColor(), not(""));
-            assertThat(goal.getDisplayName(), not(""));
-        }
+    for (Metric metric : checkResult.getQuality().getMetrics()) {
+      assertThat(metric.getId(), not(emptyOrNullString()));
+      assertThat(metric.getScore(), not(lessThanOrEqualTo(0)));
     }
+  }
 
-    @Test
-    void checkAndGetMetrics() throws AcrolinxException
-    {
-        CheckResult checkResult = checkEnglishText("This textt has ann erroor.");
+  @Test
+  void checkAndGetCounts() throws AcrolinxException {
+    CheckResult checkResult = checkEnglishText("This textt has ann erroor.");
 
-        assertNotNull(checkResult.getQuality().getMetrics());
-        assertThat(checkResult.getQuality().getMetrics(), not(empty()));
+    assertNotNull(checkResult.getCounts());
+    assertThat(checkResult.getCounts().getSentences(), not(0));
+    assertThat(checkResult.getCounts().getWords(), not(0));
+    assertEquals(checkResult.getCounts().getIssues(), checkResult.getIssues().size());
+  }
 
-        for (Metric metric : checkResult.getQuality().getMetrics()) {
-            assertThat(metric.getId(), not(emptyOrNullString()));
-            assertThat(metric.getScore(), not(lessThanOrEqualTo(0)));
-        }
-    }
+  @Test
+  void checkWithUserAndSdkUrl() throws AcrolinxException, URISyntaxException {
+    URI realAcrolinxURL = new URI(ACROLINX_URL);
+    URI userFacingAcrolinxURL = new URI("https://www.acrolinx.com/proxy");
 
-    @Test
-    void checkAndGetCounts() throws AcrolinxException
-    {
-        CheckResult checkResult = checkEnglishText("This textt has ann erroor.");
+    acrolinxEndpoint =
+        new AcrolinxEndpoint(
+            realAcrolinxURL, userFacingAcrolinxURL, DEVELOPMENT_SIGNATURE, "1.2.3.4", "en");
 
-        assertNotNull(checkResult.getCounts());
-        assertThat(checkResult.getCounts().getSentences(), not(0));
-        assertThat(checkResult.getCounts().getWords(), not(0));
-        assertEquals(checkResult.getCounts().getIssues(), checkResult.getIssues().size());
-    }
+    CheckResult checkResult =
+        acrolinxEndpoint.check(
+            ACROLINX_API_TOKEN,
+            CheckRequest.ofDocumentContent("This textt has ann erroor.")
+                .withContentReference(("file.txt"))
+                .build());
 
-    @Test
-    void checkWithUserAndSdkUrl() throws AcrolinxException, URISyntaxException
-    {
-        URI realAcrolinxURL = new URI(ACROLINX_URL);
-        URI userFacingAcrolinxURL = new URI("https://www.acrolinx.com/proxy");
+    assertThat(
+        checkResult.getReport(ReportType.scorecard).getLink(),
+        startsWith("https://www.acrolinx.com/proxy/"));
+    assertThat(
+        checkResult.getReport(ReportType.scorecard).getLink(),
+        not(startsWith("https://www.acrolinx.com/proxy//")));
+  }
 
-        acrolinxEndpoint = new AcrolinxEndpoint(realAcrolinxURL, userFacingAcrolinxURL, DEVELOPMENT_SIGNATURE,
-                "1.2.3.4", "en");
+  @Test
+  void checkWithUserAndSdkUrl2() throws AcrolinxException, URISyntaxException {
+    URI realAcrolinxURL = new URI(ACROLINX_URL);
+    URI userFacingAcrolinxURL = new URI("https://www.acrolinx.com/proxy/");
 
-        CheckResult checkResult = acrolinxEndpoint.check(ACROLINX_API_TOKEN,
-                CheckRequest.ofDocumentContent("This textt has ann erroor.").withContentReference(
-                        ("file.txt")).build());
+    acrolinxEndpoint =
+        new AcrolinxEndpoint(
+            realAcrolinxURL, userFacingAcrolinxURL, DEVELOPMENT_SIGNATURE, "1.2.3.4", "en");
 
-        assertThat(checkResult.getReport(ReportType.scorecard).getLink(),
-                startsWith("https://www.acrolinx.com/proxy/"));
-        assertThat(checkResult.getReport(ReportType.scorecard).getLink(),
-                not(startsWith("https://www.acrolinx.com/proxy//")));
-    }
+    CheckResult checkResult =
+        acrolinxEndpoint.check(
+            ACROLINX_API_TOKEN,
+            CheckRequest.ofDocumentContent("This textt has ann erroor.")
+                .withContentReference(("file.txt"))
+                .build());
 
-    @Test
-    void checkWithUserAndSdkUrl2() throws AcrolinxException, URISyntaxException
-    {
-        URI realAcrolinxURL = new URI(ACROLINX_URL);
-        URI userFacingAcrolinxURL = new URI("https://www.acrolinx.com/proxy/");
+    assertThat(
+        checkResult.getReport(ReportType.scorecard).getLink(),
+        startsWith("https://www.acrolinx.com/proxy/"));
+    assertThat(
+        checkResult.getReport(ReportType.scorecard).getLink(),
+        not(startsWith("https://www.acrolinx.com/proxy//")));
+  }
 
-        acrolinxEndpoint = new AcrolinxEndpoint(realAcrolinxURL, userFacingAcrolinxURL, DEVELOPMENT_SIGNATURE,
-                "1.2.3.4", "en");
+  @Test
+  void checkUtf8() throws AcrolinxException {
+    String documentContent = "an naïve approach";
+    CheckResult checkResult = checkEnglishText(documentContent);
 
-        CheckResult checkResult = acrolinxEndpoint.check(ACROLINX_API_TOKEN,
-                CheckRequest.ofDocumentContent("This textt has ann erroor.").withContentReference(
-                        ("file.txt")).build());
+    Issue issue = findIssueWithSurface(checkResult.getIssues(), "an naïve");
+    assertNotNull(issue);
+  }
 
-        assertThat(checkResult.getReport(ReportType.scorecard).getLink(),
-                startsWith("https://www.acrolinx.com/proxy/"));
-        assertThat(checkResult.getReport(ReportType.scorecard).getLink(),
-                not(startsWith("https://www.acrolinx.com/proxy//")));
-    }
+  @Test
+  void testCheckWithoutProgressListener() throws AcrolinxException {
+    CheckResult checkResult =
+        acrolinxEndpoint.check(
+            ACROLINX_API_TOKEN,
+            CheckRequest.ofDocumentContent("This text contaanis error")
+                .withCheckOptions(
+                    CheckOptions.getBuilder()
+                        .withContentFormat("TEXT")
+                        .withCheckType(CheckType.automated)
+                        .build())
+                .build());
 
-    @Test
-    void checkUtf8() throws AcrolinxException
-    {
-        String documentContent = "an naïve approach";
-        CheckResult checkResult = checkEnglishText(documentContent);
+    assertNotNull(checkResult);
+  }
 
-        Issue issue = findIssueWithSurface(checkResult.getIssues(), "an naïve");
-        assertNotNull(issue);
-    }
+  @Test
+  void testSetCheckBaseline() throws AcrolinxException {
+    CheckOptions checkOptions =
+        CheckOptions.getBuilder()
+            .withGuidanceProfileId(guidanceProfileEn.getId())
+            .withCheckType(CheckType.baseline)
+            .build();
 
-    @Test
-    void testCheckWithoutProgressListener() throws AcrolinxException
-    {
-        CheckResult checkResult = acrolinxEndpoint.check(ACROLINX_API_TOKEN,
-                CheckRequest.ofDocumentContent("This text contaanis error").withCheckOptions(
-                        CheckOptions.getBuilder().withContentFormat("TEXT").withCheckType(
-                                CheckType.automated).build()).build());
+    CheckResponse checkResponse =
+        acrolinxEndpoint.submitCheck(
+            ACROLINX_API_TOKEN,
+            CheckRequest.ofDocumentContent("This textt has ann erroor.")
+                .withContentReference(("file.txt"))
+                .withCheckOptions(checkOptions)
+                .build());
 
-        assertNotNull(checkResult);
-    }
+    assertNotNull(checkResponse);
+  }
 
-    @Test
-    void testSetCheckBaseline() throws AcrolinxException
-    {
-        CheckOptions checkOptions = CheckOptions.getBuilder().withGuidanceProfileId(
-                guidanceProfileEn.getId()).withCheckType(CheckType.baseline).build();
+  @Test
+  void checkResultContainsIssues() throws AcrolinxException {
+    CheckResult checkResult = checkEnglishText("A textt");
 
-        CheckResponse checkResponse = acrolinxEndpoint.submitCheck(ACROLINX_API_TOKEN,
-                CheckRequest.ofDocumentContent("This textt has ann erroor.").withContentReference(
-                        ("file.txt")).withCheckOptions(checkOptions).build());
+    Issue issue = findIssueWithFirstSuggestion(checkResult.getIssues(), "text");
 
-        assertNotNull(checkResponse);
-    }
+    assertThat(issue.getDisplayNameHtml(), not(emptyOrNullString()));
+    assertThat(issue.getGuidanceHtml(), not(emptyOrNullString()));
+    assertEquals("textt", issue.getDisplaySurface());
+    assertEquals("textt", issue.getDisplaySurface());
 
-    @Test
-    void checkResultContainsIssues() throws AcrolinxException
-    {
-        CheckResult checkResult = checkEnglishText("A textt");
+    Issue.Suggestion suggestion = issue.getSuggestions().get(0);
+    assertEquals("text", suggestion.getSurface());
 
-        Issue issue = findIssueWithFirstSuggestion(checkResult.getIssues(), "text");
+    List<Issue.Match> matches = issue.getPositionalInformation().getMatches();
+    assertThat(matches, hasSize(1));
+    Issue.Match match = matches.get(0);
 
-        assertThat(issue.getDisplayNameHtml(), not(emptyOrNullString()));
-        assertThat(issue.getGuidanceHtml(), not(emptyOrNullString()));
-        assertEquals("textt", issue.getDisplaySurface());
-        assertEquals("textt", issue.getDisplaySurface());
+    assertEquals(2, match.getOriginalBegin());
+    assertEquals(7, match.getOriginalEnd());
+    assertEquals("textt", match.getOriginalPart());
 
-        Issue.Suggestion suggestion = issue.getSuggestions().get(0);
-        assertEquals("text", suggestion.getSurface());
+    assertNotNull(issue.getGoalId());
+  }
 
-        List<Issue.Match> matches = issue.getPositionalInformation().getMatches();
-        assertThat(matches, hasSize(1));
-        Issue.Match match = matches.get(0);
+  /**
+   * This test might become pretty flaky, when the server is faster than expected. When we notice
+   * this problem, we should rewrite it using a mocked server.
+   */
+  @Test
+  void checkALargeTextAndGetProgress() throws AcrolinxException {
+    CheckResult checkResult = checkEnglishText(LONG_TEST_TEXT);
 
-        assertEquals(2, match.getOriginalBegin());
-        assertEquals(7, match.getOriginalEnd());
-        assertEquals("textt", match.getOriginalPart());
+    verify(progressListener, atLeast(2)).onProgress(argThat(new ProgressMatcher()));
 
-        assertNotNull(issue.getGoalId());
-    }
+    assertThat(checkResult.getQuality().getScore(), not(lessThan(40)));
+  }
 
-    /**
-     * This test might become pretty flaky, when the server is faster than expected. When we notice this
-     * problem, we should rewrite it using a mocked server.
-     */
-    @Test
-    void checkALargeTextAndGetProgress() throws AcrolinxException
-    {
-        CheckResult checkResult = checkEnglishText(LONG_TEST_TEXT);
+  /**
+   * This test might become pretty flaky, when the server is faster than expected. When we notice
+   * this problem, we should rewrite it using a mocked server.
+   */
+  @Test
+  void cancelCheck() throws InterruptedException {
+    CheckRequest.ofDocumentContent(LONG_TEST_TEXT)
+        .withContentReference(("file.txt"))
+        .withCheckOptions(
+            CheckOptions.getBuilder().withGuidanceProfileId(guidanceProfileEn.getId()).build())
+        .build();
 
-        verify(progressListener, atLeast(2)).onProgress(argThat(new ProgressMatcher()));
-
-        assertThat(checkResult.getQuality().getScore(), not(lessThan(40)));
-    }
-
-    /**
-     * This test might become pretty flaky, when the server is faster than expected. When we notice this
-     * problem, we should rewrite it using a mocked server.
-     */
-    @Test
-    void cancelCheck() throws InterruptedException
-    {
-        CheckRequest.ofDocumentContent(LONG_TEST_TEXT).withContentReference(("file.txt")).withCheckOptions(
-                CheckOptions.getBuilder().withGuidanceProfileId(guidanceProfileEn.getId()).build()).build();
-
-        ExecutorService executorService = Executors.newFixedThreadPool(1);
-        Future<CheckResult> future = executorService.submit(new Callable<CheckResult>() {
-            @Override
-            public CheckResult call() throws Exception
-            {
+    ExecutorService executorService = Executors.newFixedThreadPool(1);
+    Future<CheckResult> future =
+        executorService.submit(
+            new Callable<CheckResult>() {
+              @Override
+              public CheckResult call() throws Exception {
                 return checkEnglishText(LONG_TEST_TEXT);
-            }
-        });
-
-        Thread.sleep(100); // Give some time to start the check
-
-        future.cancel(true);
-
-        Thread.sleep(100); // Without waiting the Connection pool will shut down before we can
-        // send cancel.
-
-        Assertions.assertThrows(CancellationException.class, () -> future.get());
-    }
-
-    @Test
-    void testFireMultipleChecksWithoutWaitingForResult() throws AcrolinxException
-    {
-        int numberOfChecks = 5;
-
-        for (int i = 0; i < numberOfChecks; i++) {
-            String uuid = UUID.randomUUID().toString();
-            CheckOptions checkOptions = CheckOptions.getBuilder().withGuidanceProfileId(
-                    guidanceProfileEn.getId()).build();
-
-            CheckResponse checkResponse = acrolinxEndpoint.submitCheck(ACROLINX_API_TOKEN,
-                    CheckRequest.ofDocumentContent(uuid).withContentReference((uuid + ".txt")).withCheckOptions(
-                            checkOptions).build());
-
-            assertThat(checkResponse.getData().getId(), not(emptyOrNullString()));
-            assertThat(checkResponse.getLinks().getResult(), startsWith(ACROLINX_URL));
-            assertThat(checkResponse.getLinks().getCancel(), startsWith(ACROLINX_URL));
-        }
-    }
-
-    @Test
-    void testFireMultipleChecksWaitingForResult() throws AcrolinxException
-    {
-        int numberOfChecks = 5;
-
-        for (int i = 0; i < numberOfChecks; i++) {
-            String uuid = UUID.randomUUID().toString();
-
-            CheckResult checkResult = acrolinxEndpoint.check(ACROLINX_API_TOKEN,
-                    CheckRequest.ofDocumentContent(uuid).withContentReference((uuid + ".txt")).withCheckOptions(
-                            CheckOptions.getBuilder().withGuidanceProfileId(guidanceProfileEn.getId()).build()).build(),
-                    progressListener);
-
-            final Quality quality = checkResult.getQuality();
-            assertThat(quality.getScore(), lessThanOrEqualTo(100));
-            assertThat(quality.getScore(), not(lessThan(40)));
-            assertNotNull(quality.getStatus());
-        }
-    }
-
-    @Test
-    void testMultipleChecksParallelWaitingForResult() throws InterruptedException, ExecutionException
-    {
-        int numberOfChecks = 5;
-
-        ExecutorService executorService = Executors.newFixedThreadPool(numberOfChecks);
-
-        List<Future<CheckResult>> checks = Lists.newArrayList();
-
-        for (int i = 0; i < numberOfChecks; i++) {
-            final String uuid = UUID.randomUUID().toString();
-            Future<CheckResult> futureResult = executorService.submit(() -> {
-                return acrolinxEndpoint.check(ACROLINX_API_TOKEN,
-                        CheckRequest.ofDocumentContent(uuid).withContentReference((uuid + ".txt")).withCheckOptions(
-                                CheckOptions.getBuilder().withGuidanceProfileId(
-                                        guidanceProfileEn.getId()).build()).build(),
-                        progressListener);
+              }
             });
 
-            checks.add(futureResult);
-        }
+    Thread.sleep(100); // Give some time to start the check
 
-        for (Future<CheckResult> futureCheckResult : checks) {
-            final Quality quality = futureCheckResult.get().getQuality();
-            assertThat(quality.getScore(), lessThanOrEqualTo(100));
-            assertThat(quality.getScore(), not(lessThan(40)));
-            assertNotNull(quality.getStatus());
-        }
+    future.cancel(true);
+
+    Thread.sleep(100); // Without waiting the Connection pool will shut down before we can
+    // send cancel.
+
+    Assertions.assertThrows(CancellationException.class, () -> future.get());
+  }
+
+  @Test
+  void testFireMultipleChecksWithoutWaitingForResult() throws AcrolinxException {
+    int numberOfChecks = 5;
+
+    for (int i = 0; i < numberOfChecks; i++) {
+      String uuid = UUID.randomUUID().toString();
+      CheckOptions checkOptions =
+          CheckOptions.getBuilder().withGuidanceProfileId(guidanceProfileEn.getId()).build();
+
+      CheckResponse checkResponse =
+          acrolinxEndpoint.submitCheck(
+              ACROLINX_API_TOKEN,
+              CheckRequest.ofDocumentContent(uuid)
+                  .withContentReference((uuid + ".txt"))
+                  .withCheckOptions(checkOptions)
+                  .build());
+
+      assertThat(checkResponse.getData().getId(), not(emptyOrNullString()));
+      assertThat(checkResponse.getLinks().getResult(), startsWith(ACROLINX_URL));
+      assertThat(checkResponse.getLinks().getCancel(), startsWith(ACROLINX_URL));
+    }
+  }
+
+  @Test
+  void testFireMultipleChecksWaitingForResult() throws AcrolinxException {
+    int numberOfChecks = 5;
+
+    for (int i = 0; i < numberOfChecks; i++) {
+      String uuid = UUID.randomUUID().toString();
+
+      CheckResult checkResult =
+          acrolinxEndpoint.check(
+              ACROLINX_API_TOKEN,
+              CheckRequest.ofDocumentContent(uuid)
+                  .withContentReference((uuid + ".txt"))
+                  .withCheckOptions(
+                      CheckOptions.getBuilder()
+                          .withGuidanceProfileId(guidanceProfileEn.getId())
+                          .build())
+                  .build(),
+              progressListener);
+
+      final Quality quality = checkResult.getQuality();
+      assertThat(quality.getScore(), lessThanOrEqualTo(100));
+      assertThat(quality.getScore(), not(lessThan(40)));
+      assertNotNull(quality.getStatus());
+    }
+  }
+
+  @Test
+  void testMultipleChecksParallelWaitingForResult()
+      throws InterruptedException, ExecutionException {
+    int numberOfChecks = 5;
+
+    ExecutorService executorService = Executors.newFixedThreadPool(numberOfChecks);
+
+    List<Future<CheckResult>> checks = Lists.newArrayList();
+
+    for (int i = 0; i < numberOfChecks; i++) {
+      final String uuid = UUID.randomUUID().toString();
+      Future<CheckResult> futureResult =
+          executorService.submit(
+              () -> {
+                return acrolinxEndpoint.check(
+                    ACROLINX_API_TOKEN,
+                    CheckRequest.ofDocumentContent(uuid)
+                        .withContentReference((uuid + ".txt"))
+                        .withCheckOptions(
+                            CheckOptions.getBuilder()
+                                .withGuidanceProfileId(guidanceProfileEn.getId())
+                                .build())
+                        .build(),
+                    progressListener);
+              });
+
+      checks.add(futureResult);
     }
 
-    @Test
-    void checkWithOptions() throws AcrolinxException
-    {
-        CheckOptions checkOptions = CheckOptions.getBuilder().withGuidanceProfileId(
-                guidanceProfileEn.getId()).withBatchId(UUID.randomUUID().toString()).withCheckType(
-                        CheckType.baseline).withContentFormat("txt").build();
-
-        CheckResponse checkResponse = acrolinxEndpoint.submitCheck(ACROLINX_API_TOKEN,
-                CheckRequest.ofDocumentContent("This textt has ann erroor.").withContentReference(
-                        "file.txt").withCheckOptions(checkOptions).build());
-
-        assertThat(checkResponse.getData().getId(), not(emptyOrNullString()));
-        assertThat(checkResponse.getLinks().getResult(), startsWith(ACROLINX_URL));
-        assertThat(checkResponse.getLinks().getCancel(), startsWith(ACROLINX_URL));
+    for (Future<CheckResult> futureCheckResult : checks) {
+      final Quality quality = futureCheckResult.get().getQuality();
+      assertThat(quality.getScore(), lessThanOrEqualTo(100));
+      assertThat(quality.getScore(), not(lessThan(40)));
+      assertNotNull(quality.getStatus());
     }
+  }
 
-    CheckResult checkEnglishText(String documentContent) throws AcrolinxException
-    {
-        return acrolinxEndpoint.check(ACROLINX_API_TOKEN,
-                CheckRequest.ofDocumentContent(documentContent).withContentReference("file.txt").withCheckOptions(
-                        CheckOptions.getBuilder().withGuidanceProfileId(guidanceProfileEn.getId()).build()).build(),
-                progressListener);
+  @Test
+  void checkWithOptions() throws AcrolinxException {
+    CheckOptions checkOptions =
+        CheckOptions.getBuilder()
+            .withGuidanceProfileId(guidanceProfileEn.getId())
+            .withBatchId(UUID.randomUUID().toString())
+            .withCheckType(CheckType.baseline)
+            .withContentFormat("txt")
+            .build();
+
+    CheckResponse checkResponse =
+        acrolinxEndpoint.submitCheck(
+            ACROLINX_API_TOKEN,
+            CheckRequest.ofDocumentContent("This textt has ann erroor.")
+                .withContentReference("file.txt")
+                .withCheckOptions(checkOptions)
+                .build());
+
+    assertThat(checkResponse.getData().getId(), not(emptyOrNullString()));
+    assertThat(checkResponse.getLinks().getResult(), startsWith(ACROLINX_URL));
+    assertThat(checkResponse.getLinks().getCancel(), startsWith(ACROLINX_URL));
+  }
+
+  CheckResult checkEnglishText(String documentContent) throws AcrolinxException {
+    return acrolinxEndpoint.check(
+        ACROLINX_API_TOKEN,
+        CheckRequest.ofDocumentContent(documentContent)
+            .withContentReference("file.txt")
+            .withCheckOptions(
+                CheckOptions.getBuilder().withGuidanceProfileId(guidanceProfileEn.getId()).build())
+            .build(),
+        progressListener);
+  }
+
+  @Test
+  void testCheckWithDocumentMetaData() {
+    AcrolinxException acrolinxException =
+        Assertions.assertThrows(
+            AcrolinxException.class,
+            () ->
+                acrolinxEndpoint.check(
+                    ACROLINX_API_TOKEN,
+                    CheckRequest.ofDocumentContent("Thee sentencee contains errors")
+                        .withContentReference("file.txt")
+                        .withCustomField(new CustomField("Text Field", "Item"))
+                        .withCustomField(new CustomField("List Field", "List Item 1"))
+                        .withCheckOptions(
+                            CheckOptions.getBuilder()
+                                .withGuidanceProfileId(guidanceProfileEn.getId())
+                                .build())
+                        .build(),
+                    progressListener));
+    assertEquals("Custom field values are incorrect", acrolinxException.getMessage());
+  }
+
+  @Test
+  void testCheckWithDocumentMetaDataAsList() {
+    List<CustomField> customFieldList = new ArrayList<>();
+    customFieldList.add(
+        new CustomField(UUID.randomUUID().toString(), UUID.randomUUID().toString()));
+    customFieldList.add(
+        new CustomField(UUID.randomUUID().toString(), UUID.randomUUID().toString()));
+
+    Assertions.assertThrows(
+        AcrolinxException.class,
+        () ->
+            acrolinxEndpoint.check(
+                ACROLINX_API_TOKEN,
+                CheckRequest.ofDocumentContent("Thee sentencee contains errors")
+                    .withContentReference("file.txt")
+                    .withCustomFields(customFieldList)
+                    .withCheckOptions(
+                        CheckOptions.getBuilder()
+                            .withGuidanceProfileId(guidanceProfileEn.getId())
+                            .build())
+                    .build(),
+                progressListener));
+  }
+
+  static class ProgressMatcher implements ArgumentMatcher<Progress> {
+    private double prevPercent;
+
+    @Override
+    public boolean matches(Progress progress) {
+      boolean valid = progress.getPercent() >= this.prevPercent && progress.getMessage() != null;
+      this.prevPercent = progress.getPercent();
+      return valid;
     }
-
-    @Test
-    void testCheckWithDocumentMetaData()
-    {
-        AcrolinxException acrolinxException = Assertions.assertThrows(AcrolinxException.class,
-                () -> acrolinxEndpoint.check(ACROLINX_API_TOKEN,
-                        CheckRequest.ofDocumentContent("Thee sentencee contains errors").withContentReference(
-                                "file.txt").withCustomField(new CustomField("Text Field", "Item")).withCustomField(
-                                        new CustomField("List Field", "List Item 1")).withCheckOptions(
-                                                CheckOptions.getBuilder().withGuidanceProfileId(
-                                                        guidanceProfileEn.getId()).build()).build(),
-                        progressListener));
-        assertEquals("Custom field values are incorrect", acrolinxException.getMessage());
-    }
-
-    @Test
-    void testCheckWithDocumentMetaDataAsList()
-    {
-        List<CustomField> customFieldList = new ArrayList<>();
-        customFieldList.add(new CustomField(UUID.randomUUID().toString(), UUID.randomUUID().toString()));
-        customFieldList.add(new CustomField(UUID.randomUUID().toString(), UUID.randomUUID().toString()));
-
-        Assertions.assertThrows(AcrolinxException.class,
-                () -> acrolinxEndpoint.check(ACROLINX_API_TOKEN,
-                        CheckRequest.ofDocumentContent("Thee sentencee contains errors").withContentReference(
-                                "file.txt").withCustomFields(customFieldList).withCheckOptions(
-                                        CheckOptions.getBuilder().withGuidanceProfileId(
-                                                guidanceProfileEn.getId()).build()).build(),
-                        progressListener));
-    }
-
-    static class ProgressMatcher implements ArgumentMatcher<Progress>
-    {
-        private double prevPercent;
-
-        @Override
-        public boolean matches(Progress progress)
-        {
-            boolean valid = progress.getPercent() >= this.prevPercent && progress.getMessage() != null;
-            this.prevPercent = progress.getPercent();
-            return valid;
-        }
-    }
+  }
 }

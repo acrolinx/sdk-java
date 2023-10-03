@@ -3,49 +3,42 @@ package com.acrolinx.client.sdk;
 
 import java.util.Objects;
 
-public class AccessToken
-{
-    private final String token;
+public class AccessToken {
+  private final String token;
 
-    public AccessToken(String token)
-    {
-        this.token = token;
+  public AccessToken(String token) {
+    this.token = token;
+  }
+
+  public String getAccessTokenAsString() {
+    return token;
+  }
+
+  @Override
+  public boolean equals(Object object) {
+    if (this == object) {
+      return true;
     }
 
-    public String getAccessTokenAsString()
-    {
-        return token;
+    if (object == null || getClass() != object.getClass()) {
+      return false;
     }
 
-    @Override
-    public boolean equals(Object object)
-    {
-        if (this == object) {
-            return true;
-        }
+    AccessToken other = (AccessToken) object;
+    return token.equals(other.token);
+  }
 
-        if (object == null || getClass() != object.getClass()) {
-            return false;
-        }
+  @Override
+  public int hashCode() {
+    return Objects.hash(token);
+  }
 
-        AccessToken other = (AccessToken) object;
-        return token.equals(other.token);
-    }
+  @Override
+  public String toString() {
+    return "Access token is hidden for security reason";
+  }
 
-    @Override
-    public int hashCode()
-    {
-        return Objects.hash(token);
-    }
-
-    @Override
-    public String toString()
-    {
-        return "Access token is hidden for security reason";
-    }
-
-    public boolean isEmpty()
-    {
-        return this.token == null || this.token.isEmpty();
-    }
+  public boolean isEmpty() {
+    return this.token == null || this.token.isEmpty();
+  }
 }

@@ -10,23 +10,22 @@ import com.acrolinx.client.sdk.integration.common.IntegrationTestBase;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
-class AcrolinxDocumentTypeCompatibilityTest extends IntegrationTestBase
-{
-    @Test
-    void testSimpleValidFile() throws AcrolinxException
-    {
-        assertTrue(acrolinxEndpoint.isDocumentTypeCheckable(".xml", ACROLINX_API_TOKEN));
-    }
+class AcrolinxDocumentTypeCompatibilityTest extends IntegrationTestBase {
+  @Test
+  void testSimpleValidFile() throws AcrolinxException {
+    assertTrue(acrolinxEndpoint.isDocumentTypeCheckable(".xml", ACROLINX_API_TOKEN));
+  }
 
-    @Test
-    void testPath() throws AcrolinxException
-    {
-        assertTrue(acrolinxEndpoint.isDocumentTypeCheckable("https://acrolinx.com/index.html", ACROLINX_API_TOKEN));
-    }
+  @Test
+  void testPath() throws AcrolinxException {
+    assertTrue(
+        acrolinxEndpoint.isDocumentTypeCheckable(
+            "https://acrolinx.com/index.html", ACROLINX_API_TOKEN));
+  }
 
-    @Test
-    void testSimpleInvalid() throws AcrolinxException
-    {
-        assertFalse(acrolinxEndpoint.isDocumentTypeCheckable(UUID.randomUUID().toString(), ACROLINX_API_TOKEN));
-    }
+  @Test
+  void testSimpleInvalid() throws AcrolinxException {
+    assertFalse(
+        acrolinxEndpoint.isDocumentTypeCheckable(UUID.randomUUID().toString(), ACROLINX_API_TOKEN));
+  }
 }
