@@ -76,10 +76,6 @@ In order to run the integration tests locally:
 * You need to create an `.env`-file similar to the [`.env.template`](.env.template) file.
 Alternately you can set the corresponding environment variables in a different way.
 
-## Contributing to This SDK
-
-See: [`CONTRIBUTING.md`](CONTRIBUTING.md)
-
 ## License
 
 Copyright 2019-present Acrolinx GmbH
