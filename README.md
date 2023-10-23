@@ -37,9 +37,9 @@ Before you start developing your own integration, you might benefit from looking
 
 ```xml
 <dependency>
-	<groupId>com.acrolinx.client</groupId>
-	<artifactId>sdk</artifactId>
-	<version>1.0.21</version>
+    <groupId>com.acrolinx.client</groupId>
+    <artifactId>sdk</artifactId>
+    <version>1.0.21</version>
 </dependency>
 ```
 
@@ -47,11 +47,11 @@ Before you start developing your own integration, you might benefit from looking
 
 ```groovy
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	implementation 'com.acrolinx.client:sdk:1.0.21'
+    implementation 'com.acrolinx.client:sdk:1.0.21'
 }
 ```
 
