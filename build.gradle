@@ -56,14 +56,14 @@ group = 'com.acrolinx.client'
 compileJava.options.encoding = 'UTF-8'
 compileTestJava.options.encoding = 'UTF-8'
 
-def buildNumber = System.getenv('BUILD_NUMBER');
-def buildVersion = buildNumber != null ? buildNumber : 123
-def artifactName = "sdk"
-def fullVersion = "${project.version}.${buildVersion}"
-def isReleaseBuild = !fullVersion.contains('SNAPSHOT')
+final String buildNumber = System.getenv('BUILD_NUMBER');
+final String buildVersion = buildNumber != null ? buildNumber : 123
+final String artifactName = "sdk"
+final String fullVersion = "${project.version}.${buildVersion}"
+final boolean isReleaseBuild = !fullVersion.contains('SNAPSHOT')
 
-def sonatypeUsername = hasProperty('sonatypeUsername') && sonatypeUsername.length() > 0 ? sonatypeUsername : System.getenv('SONATYPE_USERNAME')
-def sonatypePassword = hasProperty('sonatypePassword') && sonatypePassword.length() > 0 ? sonatypePassword : System.getenv('SONATYPE_PW')
+final String sonatypeUsername = hasProperty('sonatypeUsername') && sonatypeUsername.length() > 0 ? sonatypeUsername : System.getenv('SONATYPE_USERNAME')
+final String sonatypePassword = hasProperty('sonatypePassword') && sonatypePassword.length() > 0 ? sonatypePassword : System.getenv('SONATYPE_PW')
 
 jar {
     archiveFileName = "${artifactName}-${fullVersion}.jar"
@@ -76,7 +76,7 @@ jar {
         )
 
     }
-    from("$buildDir/reports/license") {
+    from(layout.buildDirectory.dir("reports/license")) {
         include 'license-dependency.html'
     }
     from(project.projectDir) {
@@ -85,9 +85,9 @@ jar {
     }
 }
 
-def devId = "Acrolinx Open Source"
-def devName = "Acrolinx"
-def devEmail = "opensource@acrolinx.com"
+final String devId = "Acrolinx Open Source"
+final String devName = "Acrolinx"
+final String devEmail = "opensource@acrolinx.com"
 
 publishing {
     publications {
@@ -140,9 +140,7 @@ publishing {
                     username = sonatypeUsername
                     password = sonatypePassword
                 }
-            } else if (sonatypeUsername == null) {
-                url "$buildDir/repo"
-            } else if (!isReleaseBuild) {
+            } else {
                 url "https://oss.sonatype.org/content/repositories/snapshots/"
                 credentials {
                     username = sonatypeUsername
@@ -173,8 +171,8 @@ nexusPublishing {
 
 signing {
     required { isReleaseBuild }
-    def signingKey = findProperty("signingKey")
-    def signingPassword = findProperty("signingPassword")
+    String signingKey = findProperty("signingKey")
+    String signingPassword = findProperty("signingPassword")
     useInMemoryPgpKeys(signingKey, signingPassword)
     sign publishing.publications.mavenJava
 }
@@ -184,7 +182,7 @@ task createGithubReleaseTag {
         println 'Creating Github Release Tag'
         if (isReleaseBuild) {
             grgit.open(currentDir: rootDir)
-            def hasOldReleaseVersion = grgit.tag.list().find { it.getName() == "release-${project.version}" }
+            boolean hasOldReleaseVersion = grgit.tag.list().find { it.getName() == "release-${project.version}" }
             println 'Finding tags'
             if (!hasOldReleaseVersion) {
                 println 'is new release version'
@@ -192,7 +190,6 @@ task createGithubReleaseTag {
                 println 'This version was already released'
             }
         } else {
-            println 'NO RELEASE VERSION'
             throw new GradleException('NO APPROPRIATE RELEASE VERSION')
         }
     }
