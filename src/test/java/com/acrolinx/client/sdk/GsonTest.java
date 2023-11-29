@@ -1,4 +1,4 @@
-/* Copyright (c) 2018-present Acrolinx GmbH */
+/* Copyright (c) 2018 Acrolinx GmbH */
 package com.acrolinx.client.sdk;
 
 import static com.acrolinx.client.sdk.internal.JsonUtils.parseJson;

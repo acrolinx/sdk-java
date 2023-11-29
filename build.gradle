@@ -226,7 +226,7 @@ spotless {
         importOrder()
         removeUnusedImports()
         googleJavaFormat()
-        licenseHeader '/* Copyright (c) $YEAR-present Acrolinx GmbH */'
+        licenseHeader '/* Copyright (c) $YEAR Acrolinx GmbH */'
     }
     format 'misc', {
         target '*.gradle', '*.md', '.gitignore', '*.sh'
