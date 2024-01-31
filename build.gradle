@@ -56,7 +56,7 @@ group = 'com.acrolinx.client'
 compileJava.options.encoding = 'UTF-8'
 compileTestJava.options.encoding = 'UTF-8'
 
-final String buildNumber = System.getenv('BUILD_NUMBER');
+final String buildNumber = System.getenv('BUILD_NUMBER')
 final String buildVersion = buildNumber != null ? buildNumber : 123
 final String artifactName = "sdk"
 final String fullVersion = "${project.version}.${buildVersion}"
@@ -159,8 +159,8 @@ nexusStaging {
 }
 
 nexusPublishing {
-    connectTimeout = Duration.ofMinutes(5);
-    clientTimeout = Duration.ofMinutes(5);
+    connectTimeout = Duration.ofMinutes(5)
+    clientTimeout = Duration.ofMinutes(5)
     repositories {
         sonatype {
             username = sonatypeUsername
