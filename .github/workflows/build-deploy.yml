@@ -60,7 +60,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Validate Gradle wrapper
-        uses: gradle/wrapper-validation-action@27152f6fa06a6b8062ef7195c795692e51fc2c81
+        uses: gradle/wrapper-validation-action@v2
 
       - name: Gradle build
         uses: gradle/actions/setup-gradle@v3
@@ -78,13 +78,13 @@ jobs:
         run: ./deploy.sh
 
       - name: Bump version and push tag
-        uses: anothrNick/github-tag-action@1.67.0
+        uses: anothrNick/github-tag-action@v1
         if: steps.deploy.outputs.RELEASE == 'true' && github.ref == 'refs/heads/main'
         env:
           CUSTOM_TAG: ${{ steps.deploy.outputs.TAGNAME }}
 
       - name: Deploy Javadoc
-        uses: JamesIves/github-pages-deploy-action@v4.5.0
+        uses: JamesIves/github-pages-deploy-action@v4
         if: steps.deploy.outputs.RELEASE == 'true' && github.ref == 'refs/heads/main'
         with:
           branch: gh-pages
