@@ -612,7 +612,7 @@ class CheckTest extends IntegrationTestBase {
                                 .build())
                         .build(),
                     progressListener));
-    assertEquals("Custom field values are incorrect", acrolinxException.getMessage());
+    assertEquals("Incorrect user information", acrolinxException.getMessage());
   }
 
   @Test
