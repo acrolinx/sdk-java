@@ -5,11 +5,12 @@ package com.acrolinx.client.sdk.check;
  * How to choose a correct Check Type? Following are different use cases of the check with
  * corresponding check type:
  *
- * <table summary="" border="1">
+ * <table border="1">
+ * <caption>Check Type overview</caption>
  * <tr>
- * <td>Check Type</td>
- * <td>Ux</td>
- * <td>Use case</td>
+ * <th>Check Type</th>
+ * <th>Ux</th>
+ * <th>Use case</th>
  * </tr>
  * <tr>
  * <td>interactive</td>
