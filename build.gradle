@@ -31,8 +31,8 @@ dependencies {
 repositories {
     mavenCentral()
     maven {
-        name = "ajoberstar-backup"
-        url = "https://ajoberstar.org/bintray-backup/"
+        url "https://ajoberstar.org/bintray-backup/"
+        name "ajoberstar-backup"
     }
 }
 
@@ -59,10 +59,10 @@ final String sonatypePassword = hasProperty('sonatypePassword') && sonatypePassw
 jar {
     manifest {
         attributes(
-            "Implementation-Title": artifactName,
-            "Implementation-Version": version,
-            "Specification-Title": artifactName,
-            "Specification-Version": version
+                "Implementation-Title": artifactName,
+                "Implementation-Version": version,
+                "Specification-Title": artifactName,
+                "Specification-Version": version
         )
     }
     from(project.projectDir) {
@@ -159,9 +159,8 @@ nexusPublishing {
 }
 
 signing {
-    required { isReleaseBuild }
-    String signingKey = findProperty("signingKey")
-    String signingPassword = findProperty("signingPassword")
+    final String signingKey = findProperty("signingKey")
+    final String signingPassword = findProperty("signingPassword")
     useInMemoryPgpKeys(signingKey, signingPassword)
     sign publishing.publications.mavenJava
 }
@@ -184,12 +183,8 @@ task createGithubReleaseTag {
     }
 }
 
-test {
+tasks.named('test', Test) {
     useJUnitPlatform()
-    testLogging {
-        events "failed"
-        exceptionFormat "short"
-    }
 }
 
 java {
