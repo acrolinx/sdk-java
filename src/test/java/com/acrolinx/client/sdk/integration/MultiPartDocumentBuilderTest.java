@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.acrolinx.client.sdk.check.MultiPartDocumentBuilder;
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import com.acrolinx.client.sdk.integration.common.IntegrationTestBase;
-import java.util.HashMap;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
@@ -24,9 +23,7 @@ class MultiPartDocumentBuilderTest extends IntegrationTestBase {
   @Test
   void testMultiPartDocumentCreationWithAttributes() throws AcrolinxException {
     MultiPartDocumentBuilder multiPartDocument = new MultiPartDocumentBuilder("test");
-    Map<String, String> attributes = new HashMap<>();
-    attributes.put("attr", "val");
-    attributes.put("attr2", "val2");
+    Map<String, String> attributes = Map.of("attr", "val", "attr2", "val2");
 
     multiPartDocument.addDocumentPart("element", "This text contains errorss", attributes);
     String content = multiPartDocument.build().getContent();

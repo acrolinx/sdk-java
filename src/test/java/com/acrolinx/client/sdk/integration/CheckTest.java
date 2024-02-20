@@ -49,12 +49,10 @@ import com.acrolinx.client.sdk.integration.common.IntegrationTestBase;
 import com.acrolinx.client.sdk.platform.Capabilities;
 import com.acrolinx.client.sdk.platform.GuidanceProfile;
 import com.acrolinx.client.sdk.testutils.TestUtils;
-import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -71,7 +69,7 @@ import org.mockito.Mockito;
 
 class CheckTest extends IntegrationTestBase {
   /** This text should need some seconds to check. */
-  static final String LONG_TEST_TEXT = Strings.repeat("This sentence is nice. \n", 300);
+  static final String LONG_TEST_TEXT = "This sentence is nice. \n".repeat(300);
 
   GuidanceProfile guidanceProfileEn;
   final ProgressListener progressListener = Mockito.mock(ProgressListener.class);
@@ -617,11 +615,10 @@ class CheckTest extends IntegrationTestBase {
 
   @Test
   void testCheckWithDocumentMetaDataAsList() {
-    List<CustomField> customFieldList = new ArrayList<>();
-    customFieldList.add(
-        new CustomField(UUID.randomUUID().toString(), UUID.randomUUID().toString()));
-    customFieldList.add(
-        new CustomField(UUID.randomUUID().toString(), UUID.randomUUID().toString()));
+    List<CustomField> customFieldList =
+        List.of(
+            new CustomField(UUID.randomUUID().toString(), UUID.randomUUID().toString()),
+            new CustomField(UUID.randomUUID().toString(), UUID.randomUUID().toString()));
 
     Assertions.assertThrows(
         AcrolinxException.class,
