@@ -181,9 +181,7 @@ public class AcrolinxEndpoint implements Closeable {
    */
   public SignInSuccess signInWithSSO(String genericToken, String username)
       throws AcrolinxException {
-    Map<String, String> extraHeaders = new HashMap<>();
-    extraHeaders.put("password", genericToken);
-    extraHeaders.put("username", username);
+    Map<String, String> extraHeaders = Map.of("password", genericToken, "username", username);
 
     return fetchDataFromApiPath(
         "auth/sign-ins", SignInSuccess.class, HttpMethod.POST, null, null, extraHeaders);
