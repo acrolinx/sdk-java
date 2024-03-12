@@ -12,6 +12,14 @@ plugins {
     id 'com.diffplug.spotless' version '6.25.0'
 }
 
+repositories {
+    mavenCentral()
+    maven {
+        url "https://ajoberstar.org/bintray-backup/"
+        name "ajoberstar-backup"
+    }
+}
+
 dependencies {
     implementation 'org.slf4j:slf4j-api:2.0.12'
     implementation 'com.google.guava:guava:33.0.0-jre'
@@ -28,33 +36,33 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
-repositories {
-    mavenCentral()
-    maven {
-        url "https://ajoberstar.org/bintray-backup/"
-        name "ajoberstar-backup"
-    }
-}
-
-sonar {
-    properties {
-        property "sonar.organization", "acrolinx"
-        property "sonar.projectKey", "acrolinx_sdk-java"
-        property "sonar.host.url", "https://sonarcloud.io"
-    }
-}
-
 group = 'com.acrolinx.client'
 version = currentVersion
-
-compileJava.options.encoding = 'UTF-8'
-compileTestJava.options.encoding = 'UTF-8'
 
 final String artifactName = "sdk"
 final boolean isReleaseBuild = !currentVersion.contains('SNAPSHOT')
 
 final String sonatypeUsername = hasProperty('sonatypeUsername') && sonatypeUsername.length() > 0 ? sonatypeUsername : System.getenv('SONATYPE_USERNAME')
 final String sonatypePassword = hasProperty('sonatypePassword') && sonatypePassword.length() > 0 ? sonatypePassword : System.getenv('SONATYPE_PW')
+
+final String devId = "Acrolinx Open Source"
+final String devName = "Acrolinx"
+final String devEmail = "opensource@acrolinx.com"
+
+compileJava {
+    options.encoding = "UTF-8"
+}
+
+compileTestJava {
+    options.encoding = "UTF-8"
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+    }
+}
 
 jar {
     manifest {
@@ -70,12 +78,32 @@ jar {
     }
 }
 
-final String devId = "Acrolinx Open Source"
-final String devName = "Acrolinx"
-final String devEmail = "opensource@acrolinx.com"
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    withJavadocJar()
+    withSourcesJar()
+}
 
 javadoc {
     options.addStringOption('Xdoclint:all,-missing', '-quiet')
+}
+
+nexusPublishing {
+    connectTimeout = Duration.ofMinutes(5)
+    clientTimeout = Duration.ofMinutes(5)
+    repositories {
+        sonatype {
+            username = sonatypeUsername
+            password = sonatypePassword
+        }
+    }
+}
+
+nexusStaging {
+    numberOfRetries = 40
+    delayBetweenRetriesInMillis = 4000
+    username = sonatypeUsername
+    password = sonatypePassword
 }
 
 publishing {
@@ -140,29 +168,39 @@ publishing {
     }
 }
 
-nexusStaging {
-    numberOfRetries = 40
-    delayBetweenRetriesInMillis = 4000
-    username = sonatypeUsername
-    password = sonatypePassword
-}
-
-nexusPublishing {
-    connectTimeout = Duration.ofMinutes(5)
-    clientTimeout = Duration.ofMinutes(5)
-    repositories {
-        sonatype {
-            username = sonatypeUsername
-            password = sonatypePassword
-        }
-    }
-}
-
 signing {
     final String signingKey = findProperty("signingKey")
     final String signingPassword = findProperty("signingPassword")
     useInMemoryPgpKeys(signingKey, signingPassword)
     sign publishing.publications.mavenJava
+}
+
+sonar {
+    properties {
+        property "sonar.organization", "acrolinx"
+        property "sonar.projectKey", "acrolinx_sdk-java"
+        property "sonar.host.url", "https://sonarcloud.io"
+    }
+}
+
+spotless {
+    java {
+        importOrder()
+        removeUnusedImports()
+        googleJavaFormat()
+        licenseHeader '/* Copyright (c) $YEAR Acrolinx GmbH */'
+    }
+    format 'misc', {
+        target '*.gradle', '*.md', '.gitignore', '*.sh'
+
+        indentWithSpaces()
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+}
+
+tasks.named('test', Test) {
+    useJUnitPlatform()
 }
 
 task createGithubReleaseTag {
@@ -180,38 +218,5 @@ task createGithubReleaseTag {
         } else {
             throw new GradleException('NO APPROPRIATE RELEASE VERSION')
         }
-    }
-}
-
-tasks.named('test', Test) {
-    useJUnitPlatform()
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    withJavadocJar()
-    withSourcesJar()
-}
-
-jacocoTestReport {
-    dependsOn test
-    reports {
-        xml.required = true
-    }
-}
-
-spotless {
-    java {
-        importOrder()
-        removeUnusedImports()
-        googleJavaFormat()
-        licenseHeader '/* Copyright (c) $YEAR Acrolinx GmbH */'
-    }
-    format 'misc', {
-        target '*.gradle', '*.md', '.gitignore', '*.sh'
-
-        indentWithSpaces()
-        trimTrailingWhitespace()
-        endWithNewline()
     }
 }
