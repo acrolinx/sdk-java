@@ -15,8 +15,8 @@ plugins {
 repositories {
     mavenCentral()
     maven {
-        url "https://ajoberstar.org/bintray-backup/"
-        name "ajoberstar-backup"
+        url 'https://ajoberstar.org/bintray-backup/'
+        name 'ajoberstar-backup'
     }
 }
 
@@ -39,22 +39,22 @@ dependencies {
 group = 'com.acrolinx.client'
 version = currentVersion
 
-final String artifactName = "sdk"
+final String artifactName = 'sdk'
 final boolean isReleaseBuild = !currentVersion.contains('SNAPSHOT')
 
 final String sonatypeUsername = hasProperty('sonatypeUsername') && sonatypeUsername.length() > 0 ? sonatypeUsername : System.getenv('SONATYPE_USERNAME')
 final String sonatypePassword = hasProperty('sonatypePassword') && sonatypePassword.length() > 0 ? sonatypePassword : System.getenv('SONATYPE_PW')
 
-final String devId = "Acrolinx Open Source"
-final String devName = "Acrolinx"
-final String devEmail = "opensource@acrolinx.com"
+final String devId = 'Acrolinx Open Source'
+final String devName = 'Acrolinx'
+final String devEmail = 'opensource@acrolinx.com'
 
 compileJava {
-    options.encoding = "UTF-8"
+    options.encoding = 'UTF-8'
 }
 
 compileTestJava {
-    options.encoding = "UTF-8"
+    options.encoding = 'UTF-8'
 }
 
 jacocoTestReport {
@@ -67,10 +67,10 @@ jacocoTestReport {
 jar {
     manifest {
         attributes(
-                "Implementation-Title": artifactName,
-                "Implementation-Version": version,
-                "Specification-Title": artifactName,
-                "Specification-Version": version
+                'Implementation-Title': artifactName,
+                'Implementation-Version': version,
+                'Specification-Title': artifactName,
+                'Specification-Version': version
         )
     }
     from(project.projectDir) {
@@ -152,13 +152,13 @@ publishing {
     repositories {
         maven {
             if (isReleaseBuild) {
-                url "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+                url 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
                 credentials {
                     username = sonatypeUsername
                     password = sonatypePassword
                 }
             } else {
-                url "https://oss.sonatype.org/content/repositories/snapshots/"
+                url 'https://oss.sonatype.org/content/repositories/snapshots/'
                 credentials {
                     username = sonatypeUsername
                     password = sonatypePassword
@@ -169,17 +169,17 @@ publishing {
 }
 
 signing {
-    final String signingKey = findProperty("signingKey")
-    final String signingPassword = findProperty("signingPassword")
+    final String signingKey = findProperty('signingKey')
+    final String signingPassword = findProperty('signingPassword')
     useInMemoryPgpKeys(signingKey, signingPassword)
     sign publishing.publications.mavenJava
 }
 
 sonar {
     properties {
-        property "sonar.organization", "acrolinx"
-        property "sonar.projectKey", "acrolinx_sdk-java"
-        property "sonar.host.url", "https://sonarcloud.io"
+        property 'sonar.host.url', 'https://sonarcloud.io'
+        property 'sonar.organization', 'acrolinx'
+        property 'sonar.projectKey', 'acrolinx_sdk-java'
     }
 }
 
