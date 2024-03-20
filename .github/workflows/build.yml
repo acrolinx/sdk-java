@@ -1,0 +1,58 @@
+name: Build
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+env:
+  ACROLINX_URL: ${{ secrets.ACROLINX_URL }}
+  ACROLINX_API_USERNAME: ${{ secrets.ACROLINX_API_USERNAME }}
+  ACROLINX_API_TOKEN: ${{ secrets.ACROLINX_API_TOKEN }}
+  ACROLINX_API_SSO_TOKEN: ${{ secrets.ACROLINX_API_SSO_TOKEN }}
+  ACROLINX_DEV_SIGNATURE: ${{ secrets.ACROLINX_DEV_SIGNATURE }}
+
+jobs:
+  Sonar-Check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Sonar analysis
+        uses: gradle/actions/setup-gradle@v3
+        env:
+          SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
+        with:
+          arguments: jacocoTestReport sonar
+
+  Build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+
+      - name: Validate Gradle wrapper
+        uses: gradle/wrapper-validation-action@v2
+
+      - name: Gradle build
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          arguments: build
