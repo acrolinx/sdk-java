@@ -1,19 +1,16 @@
 name: Release Stable Version
 on:
   workflow_dispatch:
+permissions:
+  contents: write
+  pull-requests: write
 
 jobs:
   Release-Stable:
     runs-on: ubuntu-latest
     env:
-      ACROLINX_URL: ${{ secrets.ACROLINX_URL }}
-      ACROLINX_API_USERNAME: ${{ secrets.ACROLINX_API_USERNAME }}
-      ACROLINX_API_TOKEN: ${{ secrets.ACROLINX_API_TOKEN }}
-      ACROLINX_API_SSO_TOKEN: ${{ secrets.ACROLINX_API_SSO_TOKEN }}
-      ACROLINX_DEV_SIGNATURE: ${{ secrets.ACROLINX_DEV_SIGNATURE }}
-      ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.CODE_SIGNING_PWD }}
-      ORG_GRADLE_PROJECT_signingKey: ${{ secrets.CODE_SIGNING_PRIV_KEY }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GIT_USER_NAME: acrolinx-opensource
+      GIT_USER_EMAIL: opensource@acrolinx.com
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -21,37 +18,110 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
-          java-version: '8'
-          distribution: 'zulu'
-          java-package: 'jdk+fx'
+          java-version: '11'
+          distribution: 'temurin'
 
       - name: Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@v2
 
       - name: Gradle build
         uses: gradle/actions/setup-gradle@v3
+        env:
+          ACROLINX_URL: ${{ secrets.ACROLINX_URL }}
+          ACROLINX_API_USERNAME: ${{ secrets.ACROLINX_API_USERNAME }}
+          ACROLINX_API_TOKEN: ${{ secrets.ACROLINX_API_TOKEN }}
+          ACROLINX_API_SSO_TOKEN: ${{ secrets.ACROLINX_API_SSO_TOKEN }}
+          ACROLINX_DEV_SIGNATURE: ${{ secrets.ACROLINX_DEV_SIGNATURE }}
         with:
           arguments: build
 
-      - name: Create Javadoc
+      - name: Remove Snapshot Suffix
+        id: removeSnapshotSuffix
         uses: gradle/actions/setup-gradle@v3
         with:
-          arguments: javadoc
+          arguments: removeSnapshotSuffix
 
-      - name: Deploy artifacts
-        id: deploy
-        if: github.ref == 'refs/heads/main'
-        run: ./deploy-stable.sh
-
-      - name: Bump version and push tag
-        uses: anothrNick/github-tag-action@1.67.0
-        if: steps.deploy.outputs.RELEASE == 'true' && github.ref == 'refs/heads/main'
+      - name: Create PR Branch Name
+        id: createPrBranchName
         env:
-          CUSTOM_TAG: ${{ steps.deploy.outputs.TAGNAME }}
+          RELEASE_VERSION: ${{ steps.removeSnapshotSuffix.outputs.RELEASE_VERSION }}
+        run: echo "PR_BRANCH_NAME=publish-v$RELEASE_VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Commit Current Version
+        env:
+          OLD_SNAPSHOT_VERSION: ${{ steps.removeSnapshotSuffix.outputs.OLD_SNAPSHOT_VERSION }}
+          RELEASE_VERSION: ${{ steps.removeSnapshotSuffix.outputs.RELEASE_VERSION }}
+          PR_BRANCH_NAME: ${{ steps.createPrBranchName.outputs.PR_BRANCH_NAME }}
+        run: |
+          git config user.name $GIT_USER_NAME
+          git config user.email $GIT_USER_EMAIL
+          git checkout -b $PR_BRANCH_NAME
+          git add gradle.properties
+          git commit -m "Update version from $OLD_SNAPSHOT_VERSION to $RELEASE_VERSION"
+
+      - name: Create Tag Name
+        id: createTagName
+        env:
+          RELEASE_VERSION: ${{ steps.removeSnapshotSuffix.outputs.RELEASE_VERSION }}
+        run: echo "TAG_NAME=release-$RELEASE_VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Create Tag
+        env:
+          TAG_NAME: ${{ steps.createTagName.outputs.TAG_NAME }}
+        run: git tag $TAG_NAME
+
+      - name: Publish Artifacts
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          arguments: publishToSonatype closeAndReleaseSonatypeStagingRepository
+        env:
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.CODE_SIGNING_PRIV_KEY }}
+          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.CODE_SIGNING_PWD }}
+          ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.SONATYPE_USERNAME }}
+          ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.SONATYPE_PW }}
 
       - name: Deploy Javadoc
-        uses: JamesIves/github-pages-deploy-action@v4.5.0
-        if: steps.deploy.outputs.RELEASE == 'true' && github.ref == 'refs/heads/main'
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
-          folder: "docs/"
+          folder: "build/docs/javadoc/"
+
+      - name: Increment Version and Add Snapshot Suffix
+        id: incrementSnapshotVersion
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          arguments: incrementSnapshotVersion
+
+      - name: Commit New Snapshot Version
+        env:
+          RELEASE_VERSION: ${{ steps.removeSnapshotSuffix.outputs.RELEASE_VERSION }}
+          NEW_SNAPSHOT_VERSION: ${{ steps.incrementSnapshotVersion.outputs.NEW_SNAPSHOT_VERSION }}
+        run: |
+          git config user.name $GIT_USER_NAME
+          git config user.email $GIT_USER_EMAIL
+          git add gradle.properties
+          git commit -m "Update version from $RELEASE_VERSION to $NEW_SNAPSHOT_VERSION"
+
+      - name: Push Changes
+        env:
+          TAG_NAME: ${{ steps.createTagName.outputs.TAG_NAME }}
+        run: |
+          git config user.name $GIT_USER_NAME
+          git config user.email $GIT_USER_EMAIL
+          git push --atomic --set-upstream origin HEAD $TAG_NAME
+
+      - name: Create GitHub PR
+        env:
+          GH_TOKEN: ${{ secrets.PAT }}
+          RELEASE_VERSION: ${{ steps.removeSnapshotSuffix.outputs.RELEASE_VERSION }}
+          CHECKOUT_BRANCH_NAME: ${{ github.ref_name }}
+          PR_BRANCH_NAME: ${{ steps.createPrBranchName.outputs.PR_BRANCH_NAME }}
+        run: |
+          gh pr create --title "Release $RELEASE_VERSION" --body "" --base "$CHECKOUT_BRANCH_NAME" --reviewer ${{ github.actor }}
+          gh pr merge $PR_BRANCH_NAME --auto --rebase --delete-branch
+
+      - name: Create Draft Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG_NAME: ${{ steps.createTagName.outputs.TAG_NAME }}
+        run: gh release create $TAG_NAME --title $TAG_NAME --verify-tag --draft
