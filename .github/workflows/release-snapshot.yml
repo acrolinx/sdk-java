@@ -5,16 +5,6 @@ on:
 jobs:
   Release-Snapshot:
     runs-on: ubuntu-latest
-    env:
-      ACROLINX_URL: ${{ secrets.ACROLINX_URL }}
-      ACROLINX_API_USERNAME: ${{ secrets.ACROLINX_API_USERNAME }}
-      ACROLINX_API_TOKEN: ${{ secrets.ACROLINX_API_TOKEN }}
-      ACROLINX_API_SSO_TOKEN: ${{ secrets.ACROLINX_API_SSO_TOKEN }}
-      ACROLINX_DEV_SIGNATURE: ${{ secrets.ACROLINX_DEV_SIGNATURE }}
-      ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.CODE_SIGNING_PWD }}
-      ORG_GRADLE_PROJECT_signingKey: ${{ secrets.CODE_SIGNING_PRIV_KEY }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -22,23 +12,29 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
-          java-version: '8'
-          distribution: 'zulu'
-          java-package: 'jdk+fx'
+          java-version: '11'
+          distribution: 'temurin'
 
       - name: Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@v2
 
       - name: Gradle build
         uses: gradle/actions/setup-gradle@v3
+        env:
+          ACROLINX_URL: ${{ secrets.ACROLINX_URL }}
+          ACROLINX_API_USERNAME: ${{ secrets.ACROLINX_API_USERNAME }}
+          ACROLINX_API_TOKEN: ${{ secrets.ACROLINX_API_TOKEN }}
+          ACROLINX_API_SSO_TOKEN: ${{ secrets.ACROLINX_API_SSO_TOKEN }}
+          ACROLINX_DEV_SIGNATURE: ${{ secrets.ACROLINX_DEV_SIGNATURE }}
         with:
           arguments: build
 
-      - name: Create Javadoc
+      - name: Publish Artifacts
         uses: gradle/actions/setup-gradle@v3
         with:
-          arguments: javadoc
-
-      - name: Deploy artifacts
-        id: deploy
-        run: ./deploy-snapshot.sh
+          arguments: publishToSonatype
+        env:
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.CODE_SIGNING_PRIV_KEY }}
+          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.CODE_SIGNING_PWD }}
+          ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.SONATYPE_USERNAME }}
+          ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.SONATYPE_PW }}
