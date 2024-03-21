@@ -87,7 +87,7 @@ nexusPublishing {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            from components.java
+            from(components.java)
 
             pom {
                 name.set('Acrolinx Platform SDK')
@@ -107,9 +107,9 @@ publishing {
                     }
                 }
                 scm {
-                    url.set('https://github.com/acrolinx/sdk-java')
                     connection.set('scm:git@github.com:acrolinx/sdk-java.git')
                     developerConnection.set('scm:git@github.com:acrolinx/sdk-java.git')
+                    url.set('https://github.com/acrolinx/sdk-java')
                 }
             }
         }
@@ -117,6 +117,7 @@ publishing {
 }
 
 signing {
+    required = false
     final String signingKey = findProperty('signingKey')
     final String signingPassword = findProperty('signingPassword')
     useInMemoryPgpKeys(signingKey, signingPassword)
