@@ -15,7 +15,7 @@ import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collections;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 @WireMockTest(httpPort = PLATFORM_PORT_MOCKED)
@@ -29,8 +29,7 @@ class HttpClientMockTest {
     httpClientMockNotFoundResponse(api);
     ApacheHttpClient apacheHttpClient = new ApacheHttpClient();
     AcrolinxResponse acrolinxResponse =
-        apacheHttpClient.fetch(
-            new URI(ACROLINX_URL + api), HttpMethod.GET, Collections.emptyMap(), null);
+        apacheHttpClient.fetch(new URI(ACROLINX_URL + api), HttpMethod.GET, Map.of(), null);
 
     assertEquals(404, acrolinxResponse.getStatus());
   }
@@ -41,8 +40,7 @@ class HttpClientMockTest {
     httpClientMockTimeOut(api);
     ApacheHttpClient apacheHttpClient = new ApacheHttpClient();
     AcrolinxResponse acrolinxResponse =
-        apacheHttpClient.fetch(
-            new URI(ACROLINX_URL + api), HttpMethod.GET, Collections.emptyMap(), null);
+        apacheHttpClient.fetch(new URI(ACROLINX_URL + api), HttpMethod.GET, Map.of(), null);
 
     assertEquals(408, acrolinxResponse.getStatus());
   }
