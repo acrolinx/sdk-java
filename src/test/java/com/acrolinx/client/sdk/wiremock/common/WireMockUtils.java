@@ -32,7 +32,7 @@ public final class WireMockUtils {
     httpClientMockTimeOutwithDelay(path, 5_000);
   }
 
-  public static void httpClientMockTimeOutwithDelay(String path, int delayMs) {
+  private static void httpClientMockTimeOutwithDelay(String path, int delayMs) {
     stubFor(
         get(urlEqualTo(path))
             .willReturn(
@@ -47,30 +47,11 @@ public final class WireMockUtils {
                     .withFixedDelay(delayMs)));
   }
 
-  public static void httpClientMockSuccess(String path) {
-    httpClientMockSuccesswithDelay(path, 0);
-  }
-
-  public static void httpClientMockSuccesswithDelay(String path, int delayMs) {
-    stubFor(
-        get(urlEqualTo(path))
-            .willReturn(
-                aResponse()
-                    .withStatus(200)
-                    .withHeader("Content-Type", "application/json")
-                    .withBody(
-                        "{\n"
-                            + "\"statusCode\": 200,\n"
-                            + "\"description\": \"Request Timed Out\"\n"
-                            + "}")
-                    .withFixedDelay(delayMs)));
-  }
-
   public static void httpClientMockNotFoundResponse(String path) {
     httpClientMockNotFoundResponsewithDelay(path, 0);
   }
 
-  public static void httpClientMockNotFoundResponsewithDelay(String path, int delayMs) {
+  private static void httpClientMockNotFoundResponsewithDelay(String path, int delayMs) {
     stubFor(
         get(urlEqualTo(path))
             .willReturn(
@@ -82,20 +63,9 @@ public final class WireMockUtils {
                     .withFixedDelay(delayMs)));
   }
 
-  public static <T> void mockSuccessResponseWithDelay(String path, T data, int delayMs) {
+  private static <T> void mockSuccessResponseWithDelay(String path, T data, int delayMs) {
     stubFor(
         get(urlEqualTo(API_PATH_PREFIX + path))
-            .willReturn(
-                aResponse()
-                    .withStatus(200)
-                    .withHeader("Content-Type", "application/json")
-                    .withBody(JsonUtils.toJson(new SuccessResponse<>(data)))
-                    .withFixedDelay(delayMs)));
-  }
-
-  public static <T> void mockPostSuccessResponseWithDelay(String path, T data, int delayMs) {
-    stubFor(
-        post(urlEqualTo(API_PATH_PREFIX + path))
             .willReturn(
                 aResponse()
                     .withStatus(200)
