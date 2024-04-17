@@ -3,7 +3,7 @@
 [![Build](https://github.com/acrolinx/sdk-java/actions/workflows/build.yml/badge.svg)](https://github.com/acrolinx/sdk-java/actions/workflows/build.yml)
 
 This is a Java library to interact with the Acrolinx Platform API.
-It does NOT offer graphical user interface (GUI) to work with the Acrolinx Sidebar (see [Sidebar Java SDK](https://github.com/acrolinx/sidebar-sdk-java)).
+It does not offer a graphical user interface (GUI) to work with the Acrolinx Sidebar (see [Sidebar Java SDK](https://github.com/acrolinx/sidebar-sdk-java)).
 
 ## Get Started with Your Integration
 
@@ -36,7 +36,7 @@ To build this project with the [Gradle Wrapper](https://docs.gradle.org/current/
 ./gradlew build
 ```
 
-on an UNIX system, or
+on a UNIX system, or
 
 ```batch
 gradlew build
