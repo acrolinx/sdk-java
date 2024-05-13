@@ -30,7 +30,7 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
     testImplementation 'io.github.cdimascio:dotenv-java:3.0.0'
     testImplementation 'org.wiremock:wiremock:3.5.4'
-    testImplementation 'org.mockito:mockito-core:5.11.0'
+    testImplementation 'org.mockito:mockito-core:5.12.0'
     testImplementation 'org.hamcrest:hamcrest:2.2'
     testRuntimeOnly 'ch.qos.logback:logback-classic:1.5.6'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
