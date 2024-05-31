@@ -24,22 +24,21 @@ jobs:
       - name: Validate Gradle wrapper
         uses: gradle/actions/wrapper-validation@v3
 
-      - name: Gradle build
+      - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
+
+      - name: Gradle build
         env:
           ACROLINX_URL: ${{ secrets.ACROLINX_URL }}
           ACROLINX_API_USERNAME: ${{ secrets.ACROLINX_API_USERNAME }}
           ACROLINX_API_TOKEN: ${{ secrets.ACROLINX_API_TOKEN }}
           ACROLINX_API_SSO_TOKEN: ${{ secrets.ACROLINX_API_SSO_TOKEN }}
           ACROLINX_DEV_SIGNATURE: ${{ secrets.ACROLINX_DEV_SIGNATURE }}
-        with:
-          arguments: build
+        run: ./gradlew build
 
       - name: Remove Snapshot Suffix
         id: removeSnapshotSuffix
-        uses: gradle/actions/setup-gradle@v3
-        with:
-          arguments: removeSnapshotSuffix
+        run: ./gradlew removeSnapshotSuffix
 
       - name: Create PR Branch Name
         id: createPrBranchName
@@ -71,14 +70,12 @@ jobs:
         run: git tag $TAG_NAME
 
       - name: Publish Artifacts
-        uses: gradle/actions/setup-gradle@v3
-        with:
-          arguments: publishToSonatype closeAndReleaseSonatypeStagingRepository
         env:
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.CODE_SIGNING_PRIV_KEY }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.CODE_SIGNING_PWD }}
           ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.SONATYPE_USERNAME }}
           ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.SONATYPE_PW }}
+        run: ./gradlew publishToSonatype closeAndReleaseSonatypeStagingRepository
 
       - name: Deploy Javadoc
         uses: JamesIves/github-pages-deploy-action@v4
@@ -88,9 +85,7 @@ jobs:
 
       - name: Increment Version and Add Snapshot Suffix
         id: incrementSnapshotVersion
-        uses: gradle/actions/setup-gradle@v3
-        with:
-          arguments: incrementSnapshotVersion
+        run: ./gradlew incrementSnapshotVersion
 
       - name: Commit New Snapshot Version
         env:
