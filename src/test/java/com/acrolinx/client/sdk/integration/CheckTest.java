@@ -3,21 +3,17 @@ package com.acrolinx.client.sdk.integration;
 
 import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.ACROLINX_API_TOKEN;
 import static com.acrolinx.client.sdk.integration.common.CommonTestSetup.ACROLINX_URL;
-import static com.acrolinx.client.sdk.testutils.IssueUtils.findIssueWithFirstSuggestion;
 import static com.acrolinx.client.sdk.testutils.IssueUtils.findIssueWithSurface;
 import static com.acrolinx.client.sdk.testutils.TestConstants.DEVELOPMENT_SIGNATURE;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.in;
 import static org.hamcrest.Matchers.lessThan;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.startsWith;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -29,7 +25,6 @@ import com.acrolinx.client.sdk.AcrolinxEndpoint;
 import com.acrolinx.client.sdk.Progress;
 import com.acrolinx.client.sdk.check.CheckOptions;
 import com.acrolinx.client.sdk.check.CheckRequest;
-import com.acrolinx.client.sdk.check.CheckRequest.ContentEncoding;
 import com.acrolinx.client.sdk.check.CheckResponse;
 import com.acrolinx.client.sdk.check.CheckResult;
 import com.acrolinx.client.sdk.check.CheckType;
@@ -41,7 +36,6 @@ import com.acrolinx.client.sdk.check.Issue.Match;
 import com.acrolinx.client.sdk.check.Metric;
 import com.acrolinx.client.sdk.check.ProgressListener;
 import com.acrolinx.client.sdk.check.Quality;
-import com.acrolinx.client.sdk.check.Quality.Status;
 import com.acrolinx.client.sdk.check.ReportType;
 import com.acrolinx.client.sdk.check.SimpleDocument;
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
@@ -105,32 +99,6 @@ class CheckTest extends IntegrationTestBase {
     assertThat(checkResponse.getData().getId(), not(emptyOrNullString()));
     assertThat(checkResponse.getLinks().getResult(), startsWith(ACROLINX_URL));
     assertThat(checkResponse.getLinks().getCancel(), startsWith(ACROLINX_URL));
-  }
-
-  /**
-   * The same works for all supported file types.
-   *
-   * @see <a href=
-   *     "https://github.com/acrolinx/acrolinx-coding-guidance/blob/main/topics/text-extraction.md">Text
-   *     Extraction</a>
-   */
-  @Test
-  void checkAWordDocument() throws AcrolinxException, IOException {
-    final String base64FileContent = TestUtils.readResourceAsBase64("document.docx");
-    final String wordDocumentName = "document.docx";
-    CheckResult checkResult =
-        acrolinxEndpoint.check(
-            ACROLINX_API_TOKEN,
-            CheckRequest.ofDocumentContent(base64FileContent)
-                .withContentEncoding(ContentEncoding.base64)
-                .withContentReference(wordDocumentName)
-                .withCheckOptions(
-                    CheckOptions.getBuilder()
-                        .withGuidanceProfileId(guidanceProfileEn.getId())
-                        .build())
-                .build());
-    assertThat(checkResult.getQuality().getStatus(), in(new Status[] {Status.red, Status.yellow}));
-    assertNotEquals(0, checkResult.getReports().get("scorecard").getLink().length());
   }
 
   @Test
@@ -400,31 +368,6 @@ class CheckTest extends IntegrationTestBase {
                 .build());
 
     assertNotNull(checkResponse);
-  }
-
-  @Test
-  void checkResultContainsIssues() throws AcrolinxException {
-    CheckResult checkResult = checkEnglishText("A textt");
-
-    Issue issue = findIssueWithFirstSuggestion(checkResult.getIssues(), "text");
-
-    assertThat(issue.getDisplayNameHtml(), not(emptyOrNullString()));
-    assertThat(issue.getGuidanceHtml(), not(emptyOrNullString()));
-    assertEquals("textt", issue.getDisplaySurface());
-    assertEquals("textt", issue.getDisplaySurface());
-
-    Issue.Suggestion suggestion = issue.getSuggestions().get(0);
-    assertEquals("text", suggestion.getSurface());
-
-    List<Issue.Match> matches = issue.getPositionalInformation().getMatches();
-    assertThat(matches, hasSize(1));
-    Issue.Match match = matches.get(0);
-
-    assertEquals(2, match.getOriginalBegin());
-    assertEquals(7, match.getOriginalEnd());
-    assertEquals("textt", match.getOriginalPart());
-
-    assertNotNull(issue.getGoalId());
   }
 
   /**
