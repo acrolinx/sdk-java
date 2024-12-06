@@ -44,7 +44,7 @@ public class AcrolinxEndpoint implements Closeable {
   private final String clientVersion;
   private final String clientLocale;
   private final URI acrolinxUri;
-  private final AcrolinxHttpClient httpClient;
+  private final AcrolinxHttpClient acrolinxHttpClient;
 
   /**
    * @param acrolinxURL URL to your Acrolinx Platform for example: https://yourcompany.acrolinx.com
@@ -96,24 +96,24 @@ public class AcrolinxEndpoint implements Closeable {
   }
 
   /**
-   * @param httpClient Provide your own http Acrolinx Integration implementing {@link
+   * @param acrolinxHttpClient Provide your own http Acrolinx Integration implementing {@link
    *     AcrolinxHttpClient} interface
-   * @param acrolinxURL URL to your Acrolinx Platform for example: https://yourcompany.acrolinx.com
+   * @param acrolinxUri URL to your Acrolinx Platform for example: https://yourcompany.acrolinx.com
    * @param signature License to use integration with Acrolinx.
    * @param clientVersion Version number of your Acrolinx Integration for example: 1.2.5.37
    * @param clientLocale Locale of environment in which the integration is deployed.
    */
   public AcrolinxEndpoint(
-      AcrolinxHttpClient httpClient,
-      URI acrolinxURL,
+      AcrolinxHttpClient acrolinxHttpClient,
+      URI acrolinxUri,
       String signature,
       String clientVersion,
       String clientLocale) {
     this.signature = signature;
     this.clientVersion = clientVersion;
     this.clientLocale = clientLocale;
-    this.acrolinxUri = acrolinxURL;
-    this.httpClient = httpClient;
+    this.acrolinxUri = acrolinxUri;
+    this.acrolinxHttpClient = acrolinxHttpClient;
   }
 
   /**
@@ -164,7 +164,7 @@ public class AcrolinxEndpoint implements Closeable {
   @Override
   public void close() throws IOException {
     logger.info("Endpoint terminated");
-    this.httpClient.close();
+    this.acrolinxHttpClient.close();
   }
 
   /** Returns Information about Platform version and locales supported. */
@@ -417,7 +417,7 @@ public class AcrolinxEndpoint implements Closeable {
   private <T> T fetchDataFromApiPath(
       String apiPath,
       Class<T> clazz,
-      HttpMethod method,
+      HttpMethod httpMethod,
       AccessToken accessToken,
       String body,
       Map<String, String> extraHeaders)
@@ -426,7 +426,7 @@ public class AcrolinxEndpoint implements Closeable {
         fetchFromApiPath(
                 apiPath,
                 JsonUtils.getSerializer(SuccessResponse.class, clazz),
-                method,
+                httpMethod,
                 accessToken,
                 body,
                 extraHeaders)
@@ -435,8 +435,8 @@ public class AcrolinxEndpoint implements Closeable {
 
   private <T> T fetchFromApiPath(
       String apiPath,
-      JsonDeserializer<T> deserializer,
-      HttpMethod method,
+      JsonDeserializer<T> jsonDeserializer,
+      HttpMethod httpMethod,
       AccessToken accessToken,
       String body,
       Map<String, String> extraHeaders)
@@ -462,7 +462,7 @@ public class AcrolinxEndpoint implements Closeable {
     }
 
     try {
-      return fetchFromUrl(uri, deserializer, method, accessToken, body, extraHeaders);
+      return fetchFromUrl(uri, jsonDeserializer, httpMethod, accessToken, body, extraHeaders);
     } catch (IOException e) {
       throw new AcrolinxException("fetch from URL failed: " + uri, e);
     }
@@ -470,8 +470,8 @@ public class AcrolinxEndpoint implements Closeable {
 
   private <T> T fetchFromUrl(
       final URI uri,
-      final JsonDeserializer<T> deserializer,
-      final HttpMethod method,
+      final JsonDeserializer<T> jsonDeserializer,
+      final HttpMethod httpMethod,
       AccessToken accessToken,
       String body,
       @Nullable Map<String, String> extraHeaders)
@@ -482,9 +482,10 @@ public class AcrolinxEndpoint implements Closeable {
       headers.putAll(extraHeaders);
     }
 
-    final AcrolinxResponse acrolinxHttpResponse = httpClient.fetch(uri, method, headers, body);
-    validateHttpResponse(acrolinxHttpResponse, uri, method);
-    return deserializer.deserialize(acrolinxHttpResponse.getResult());
+    final AcrolinxResponse acrolinxHttpResponse =
+        acrolinxHttpClient.fetch(uri, httpMethod, headers, body);
+    validateHttpResponse(acrolinxHttpResponse, uri, httpMethod);
+    return jsonDeserializer.deserialize(acrolinxHttpResponse.getResult());
   }
 
   /**
