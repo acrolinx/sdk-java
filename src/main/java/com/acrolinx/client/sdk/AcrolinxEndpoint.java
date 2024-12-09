@@ -30,6 +30,8 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Nullable;
@@ -181,10 +183,15 @@ public class AcrolinxEndpoint implements Closeable {
    */
   public SignInSuccess signInWithSSO(String genericToken, String username)
       throws AcrolinxException {
-    Map<String, String> extraHeaders = Map.of("password", genericToken, "username", username);
+    Map<String, String> extraHeaders =
+        Map.of("password", urlEncode(genericToken), "username", urlEncode(username));
 
     return fetchDataFromApiPath(
         "auth/sign-ins", SignInSuccess.class, HttpMethod.POST, null, null, extraHeaders);
+  }
+
+  private static String urlEncode(String string) {
+    return URLEncoder.encode(string, StandardCharsets.UTF_8);
   }
 
   /**
