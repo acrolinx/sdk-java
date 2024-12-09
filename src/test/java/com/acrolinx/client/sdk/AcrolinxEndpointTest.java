@@ -13,6 +13,8 @@ import com.acrolinx.client.sdk.http.AcrolinxHttpClient;
 import com.acrolinx.client.sdk.http.AcrolinxResponse;
 import com.acrolinx.client.sdk.http.HttpMethod;
 import java.net.URI;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -241,7 +243,9 @@ class AcrolinxEndpointTest {
     try (AcrolinxEndpoint acrolinxEndpoint =
         new AcrolinxEndpoint(
             acrolinxHttpClient, new URI("https://www.acrolinx.com"), "foo", "1.2.3.97", "bar")) {
-      acrolinxEndpoint.signInWithSSO("passwordTest", "usernameTest");
+      final String username = "abcd äöüß";
+      final String password = "!#$%&<=>@?";
+      acrolinxEndpoint.signInWithSSO(password, username);
 
       verify(acrolinxHttpClient)
           .fetch(
@@ -250,9 +254,13 @@ class AcrolinxEndpointTest {
               headersCaptor.capture(),
               eq(null));
 
-      final Map<String, String> headers = headersCaptor.getValue();
-      assertEquals("passwordTest", headers.get("password"));
-      assertEquals("usernameTest", headers.get("username"));
+      assertEquals(username, urlDecode("username"));
+      assertEquals(password, urlDecode("password"));
     }
+  }
+
+  private String urlDecode(final String headerName) {
+    final Map<String, String> headers = headersCaptor.getValue();
+    return URLDecoder.decode(headers.get(headerName), StandardCharsets.UTF_8);
   }
 }
