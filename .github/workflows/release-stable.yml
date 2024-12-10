@@ -68,6 +68,11 @@ jobs:
 
       - name: Publish Artifacts
         env:
+          ACROLINX_URL: ${{ secrets.ACROLINX_URL }}
+          ACROLINX_API_USERNAME: ${{ secrets.ACROLINX_API_USERNAME }}
+          ACROLINX_API_TOKEN: ${{ secrets.ACROLINX_API_TOKEN }}
+          ACROLINX_API_SSO_TOKEN: ${{ secrets.ACROLINX_API_SSO_TOKEN }}
+          ACROLINX_DEV_SIGNATURE: ${{ secrets.ACROLINX_DEV_SIGNATURE }}
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.CODE_SIGNING_PRIV_KEY }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.CODE_SIGNING_PWD }}
           ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.SONATYPE_USERNAME }}
