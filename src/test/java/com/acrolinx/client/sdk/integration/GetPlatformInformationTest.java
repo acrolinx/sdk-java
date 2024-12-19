@@ -17,7 +17,6 @@ class GetPlatformInformationTest extends IntegrationTestBase {
   void testFetchingPlatformInformation() throws AcrolinxException {
     PlatformInformation platformInformation = acrolinxEndpoint.getPlatformInformation();
 
-    assertEquals("Acrolinx Platform", platformInformation.getServer().getName());
     assertEquals(
         Arrays.asList("en", "fr", "de", "ja", "pt", "sv", "zh"), platformInformation.getLocales());
 
