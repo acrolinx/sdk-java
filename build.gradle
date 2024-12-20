@@ -32,7 +32,7 @@ dependencies {
     testImplementation 'org.wiremock:wiremock:3.10.0'
     testImplementation 'org.mockito:mockito-core:5.14.2'
     testImplementation 'org.hamcrest:hamcrest:3.0'
-    testRuntimeOnly 'ch.qos.logback:logback-classic:1.5.12'
+    testRuntimeOnly 'ch.qos.logback:logback-classic:1.5.14'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
