@@ -1,12 +1,13 @@
-name: Release Stable Version
+name: Release
 on:
   workflow_dispatch:
 permissions:
   contents: write
   pull-requests: write
+  packages: write
 
 jobs:
-  Release-Stable:
+  Release:
     runs-on: ubuntu-latest
     env:
       GIT_USER_NAME: acrolinx-opensource
@@ -15,110 +16,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          java-version: '11'
-          distribution: 'temurin'
-
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
-
-      - name: Gradle build
-        env:
-          ACROLINX_URL: ${{ secrets.ACROLINX_URL }}
-          ACROLINX_API_USERNAME: ${{ secrets.ACROLINX_API_USERNAME }}
-          ACROLINX_API_TOKEN: ${{ secrets.ACROLINX_API_TOKEN }}
-          ACROLINX_API_SSO_TOKEN: ${{ secrets.ACROLINX_API_SSO_TOKEN }}
-          ACROLINX_DEV_SIGNATURE: ${{ secrets.ACROLINX_DEV_SIGNATURE }}
-        run: ./gradlew build
-
-      - name: Remove Snapshot Suffix
-        id: removeSnapshotSuffix
-        run: ./gradlew removeSnapshotSuffix
-
-      - name: Create PR Branch Name
-        id: createPrBranchName
-        env:
-          RELEASE_VERSION: ${{ steps.removeSnapshotSuffix.outputs.RELEASE_VERSION }}
-        run: echo "PR_BRANCH_NAME=publish-v$RELEASE_VERSION" >> "$GITHUB_OUTPUT"
-
-      - name: Commit Current Version
-        env:
-          OLD_SNAPSHOT_VERSION: ${{ steps.removeSnapshotSuffix.outputs.OLD_SNAPSHOT_VERSION }}
-          RELEASE_VERSION: ${{ steps.removeSnapshotSuffix.outputs.RELEASE_VERSION }}
-          PR_BRANCH_NAME: ${{ steps.createPrBranchName.outputs.PR_BRANCH_NAME }}
+      - name: Checkout test-branch
         run: |
           git config user.name $GIT_USER_NAME
           git config user.email $GIT_USER_EMAIL
-          git checkout -b $PR_BRANCH_NAME
-          git add gradle.properties
-          git commit -m "Update version from $OLD_SNAPSHOT_VERSION to $RELEASE_VERSION"
-
-      - name: Create Tag Name
-        id: createTagName
-        env:
-          RELEASE_VERSION: ${{ steps.removeSnapshotSuffix.outputs.RELEASE_VERSION }}
-        run: echo "TAG_NAME=release-$RELEASE_VERSION" >> "$GITHUB_OUTPUT"
-
-      - name: Create Tag
-        env:
-          TAG_NAME: ${{ steps.createTagName.outputs.TAG_NAME }}
-        run: git tag $TAG_NAME
-
-      - name: Publish Artifacts
-        env:
-          ACROLINX_URL: ${{ secrets.ACROLINX_URL }}
-          ACROLINX_API_USERNAME: ${{ secrets.ACROLINX_API_USERNAME }}
-          ACROLINX_API_TOKEN: ${{ secrets.ACROLINX_API_TOKEN }}
-          ACROLINX_API_SSO_TOKEN: ${{ secrets.ACROLINX_API_SSO_TOKEN }}
-          ACROLINX_DEV_SIGNATURE: ${{ secrets.ACROLINX_DEV_SIGNATURE }}
-          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.CODE_SIGNING_PRIV_KEY }}
-          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.CODE_SIGNING_PWD }}
-          ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.SONATYPE_USERNAME }}
-          ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.SONATYPE_PW }}
-        run: ./gradlew clean build publishToSonatype closeAndReleaseSonatypeStagingRepository
-
-      - name: Deploy Javadoc
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          branch: gh-pages
-          folder: "build/docs/javadoc/"
-
-      - name: Increment Version and Add Snapshot Suffix
-        id: incrementSnapshotVersion
-        run: ./gradlew incrementSnapshotVersion
-
-      - name: Commit New Snapshot Version
-        env:
-          RELEASE_VERSION: ${{ steps.removeSnapshotSuffix.outputs.RELEASE_VERSION }}
-          NEW_SNAPSHOT_VERSION: ${{ steps.incrementSnapshotVersion.outputs.NEW_SNAPSHOT_VERSION }}
-        run: |
-          git config user.name $GIT_USER_NAME
-          git config user.email $GIT_USER_EMAIL
-          git add gradle.properties
-          git commit -m "Update version from $RELEASE_VERSION to $NEW_SNAPSHOT_VERSION"
-
-      - name: Push Changes
-        env:
-          TAG_NAME: ${{ steps.createTagName.outputs.TAG_NAME }}
-        run: |
-          git config user.name $GIT_USER_NAME
-          git config user.email $GIT_USER_EMAIL
-          git push --atomic --set-upstream origin HEAD $TAG_NAME
+          git checkout -b test-branch
+          touch file.txt
+          echo "foo" >> file.txt
+          git add file.txt
+          git commit -m "Add file.txt"
+          git push -u origin HEAD
 
       - name: Create GitHub PR
         env:
           GH_TOKEN: ${{ secrets.PAT }}
-          RELEASE_VERSION: ${{ steps.removeSnapshotSuffix.outputs.RELEASE_VERSION }}
-          CHECKOUT_BRANCH_NAME: ${{ github.ref_name }}
-          PR_BRANCH_NAME: ${{ steps.createPrBranchName.outputs.PR_BRANCH_NAME }}
         run: |
-          gh pr create --title "Release $RELEASE_VERSION" --body "" --base "$CHECKOUT_BRANCH_NAME" --reviewer ${{ github.actor }}
-          gh pr merge $PR_BRANCH_NAME --auto --rebase --delete-branch
-
-      - name: Create Draft Release
-        env:
-          GH_TOKEN: ${{ github.token }}
-          TAG_NAME: ${{ steps.createTagName.outputs.TAG_NAME }}
-        run: gh release create $TAG_NAME --title $TAG_NAME --verify-tag --draft
+          git rev-parse --abbrev-ref HEAD
+          gh pr create --title "Release $RELEASE_VERSION" --body "" --base main
+          gh pr merge test-branch --auto --rebase --delete-branch
