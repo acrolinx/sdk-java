@@ -5,7 +5,6 @@ import com.acrolinx.client.sdk.http.HttpMethod;
 import com.acrolinx.client.sdk.internal.ErrorResponse;
 import java.io.Serializable;
 import java.net.URI;
-import javax.annotation.Nullable;
 
 /** An exception that is thrown by the Acrolinx web service. */
 public class AcrolinxServiceException extends AcrolinxException {
@@ -40,7 +39,6 @@ public class AcrolinxServiceException extends AcrolinxException {
     return error.getStatus();
   }
 
-  @Nullable
   public String getReference() {
     return error.getReference();
   }

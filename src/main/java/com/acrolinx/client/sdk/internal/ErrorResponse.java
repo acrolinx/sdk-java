@@ -2,7 +2,6 @@
 package com.acrolinx.client.sdk.internal;
 
 import java.io.Serializable;
-import javax.annotation.Nullable;
 
 public class ErrorResponse {
   public final AcrolinxServiceError error;
@@ -18,11 +17,10 @@ public class ErrorResponse {
     private final String title;
     private final String detail;
     private final int status;
-
-    @Nullable private final String reference;
+    private final String reference;
 
     public AcrolinxServiceError(
-        String type, String title, String detail, int status, @Nullable String reference) {
+        String type, String title, String detail, int status, String reference) {
       this.type = type;
       this.title = title;
       this.detail = detail;
@@ -46,7 +44,6 @@ public class ErrorResponse {
       return status;
     }
 
-    @Nullable
     public String getReference() {
       return reference;
     }

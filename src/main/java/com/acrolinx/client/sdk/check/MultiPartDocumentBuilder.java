@@ -6,7 +6,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Map;
-import javax.annotation.Nullable;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -33,8 +32,7 @@ public class MultiPartDocumentBuilder {
   private final org.w3c.dom.Document document;
   private final Element root;
 
-  public MultiPartDocumentBuilder(
-      String rootElement, @Nullable String publicId, @Nullable String systemId)
+  public MultiPartDocumentBuilder(String rootElement, String publicId, String systemId)
       throws AcrolinxException {
     DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
     documentFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
@@ -68,7 +66,7 @@ public class MultiPartDocumentBuilder {
   }
 
   public MultiPartDocumentBuilder addDocumentPart(
-      String partName, String content, @Nullable Map<String, String> attributes) {
+      String partName, String content, Map<String, String> attributes) {
     Element element = this.document.createElement(partName);
 
     if (attributes != null) {
@@ -88,7 +86,7 @@ public class MultiPartDocumentBuilder {
     return this;
   }
 
-  public MultiPartDocumentBuilder addDocumentNode(String xml, @Nullable String encoding)
+  public MultiPartDocumentBuilder addDocumentNode(String xml, String encoding)
       throws AcrolinxException {
     Element node;
     try {

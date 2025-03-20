@@ -2,14 +2,13 @@
 package com.acrolinx.client.sdk.check;
 
 import com.acrolinx.client.sdk.exceptions.AcrolinxException;
-import javax.annotation.Nullable;
 
 public class CheckRequest {
   CheckRequest(
       String content,
-      @Nullable ContentEncoding contentEncoding,
-      @Nullable CheckOptions checkOptions,
-      @Nullable DocumentDescriptorRequest document,
+      ContentEncoding contentEncoding,
+      CheckOptions checkOptions,
+      DocumentDescriptorRequest document,
       ExternalContent externalContent) {
     this.content = content;
     this.contentEncoding = contentEncoding;
@@ -31,30 +30,23 @@ public class CheckRequest {
   }
 
   private final String content;
-
-  @Nullable private final ContentEncoding contentEncoding;
-
-  @Nullable private final CheckOptions checkOptions;
-
-  @Nullable private final DocumentDescriptorRequest document;
-
-  @Nullable private final ExternalContent externalContent;
+  private final ContentEncoding contentEncoding;
+  private final CheckOptions checkOptions;
+  private final DocumentDescriptorRequest document;
+  private final ExternalContent externalContent;
 
   public String getContent() {
     return content;
   }
 
-  @Nullable
   public ContentEncoding getContentEncoding() {
     return contentEncoding;
   }
 
-  @Nullable
   public CheckOptions getCheckOptions() {
     return checkOptions;
   }
 
-  @Nullable
   public DocumentDescriptorRequest getDocument() {
     return document;
   }
