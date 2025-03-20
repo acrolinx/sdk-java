@@ -34,7 +34,6 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
-import javax.annotation.Nullable;
 import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -363,9 +362,7 @@ public class AcrolinxEndpoint implements Closeable {
   }
 
   private CheckResult pollForResultWithCancelHandling(
-      AccessToken accessToken,
-      @Nullable ProgressListener progressListener,
-      CheckResponse checkResponse)
+      AccessToken accessToken, ProgressListener progressListener, CheckResponse checkResponse)
       throws AcrolinxException, URISyntaxException, IOException {
     try {
       return pollForCheckResult(accessToken, checkResponse, progressListener);
@@ -377,9 +374,7 @@ public class AcrolinxEndpoint implements Closeable {
   }
 
   private CheckResult pollForCheckResult(
-      AccessToken accessToken,
-      CheckResponse checkResponse,
-      @Nullable ProgressListener progressListener)
+      AccessToken accessToken, CheckResponse checkResponse, ProgressListener progressListener)
       throws AcrolinxException, URISyntaxException, IOException, InterruptedException {
     URI pollUri = new URI(checkResponse.getLinks().getResult());
 
@@ -481,7 +476,7 @@ public class AcrolinxEndpoint implements Closeable {
       final HttpMethod httpMethod,
       AccessToken accessToken,
       String body,
-      @Nullable Map<String, String> extraHeaders)
+      Map<String, String> extraHeaders)
       throws IOException, AcrolinxException {
     Map<String, String> headers = getCommonHeaders(accessToken);
 

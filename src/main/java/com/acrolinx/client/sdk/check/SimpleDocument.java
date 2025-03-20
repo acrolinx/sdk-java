@@ -1,8 +1,6 @@
 /* Copyright (c) 2018 Acrolinx GmbH */
 package com.acrolinx.client.sdk.check;
 
-import javax.annotation.Nullable;
-
 public class SimpleDocument implements Document {
   private final String content;
   private final ExternalContent externalContent;
@@ -11,7 +9,7 @@ public class SimpleDocument implements Document {
     this(content, null);
   }
 
-  public SimpleDocument(String content, @Nullable ExternalContent externalContent) {
+  public SimpleDocument(String content, ExternalContent externalContent) {
     this.content = content;
     this.externalContent =
         externalContent == null ? new ExternalContentBuilder().build() : externalContent;

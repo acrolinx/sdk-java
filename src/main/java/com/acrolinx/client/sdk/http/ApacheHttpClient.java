@@ -5,7 +5,6 @@ import com.acrolinx.client.sdk.exceptions.AcrolinxException;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
-import javax.annotation.Nullable;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.ParseException;
@@ -80,8 +79,7 @@ public class ApacheHttpClient implements AcrolinxHttpClient {
     this.httpClient.close();
   }
 
-  private static HttpRequestBase createRequests(
-      URI uri, HttpMethod httpMethod, @Nullable String jsonBody) {
+  private static HttpRequestBase createRequests(URI uri, HttpMethod httpMethod, String jsonBody) {
     switch (httpMethod) {
       case GET:
         return new HttpGet(uri);
