@@ -201,6 +201,36 @@ class CheckTest extends IntegrationTestBase {
   }
 
   @Test
+  void checkDitaTopic() throws AcrolinxException, IOException {
+    final String documentName = "test.topic";
+    String xmlContent = TestUtils.readResource(documentName);
+
+    CheckResult checkResult =
+        acrolinxEndpoint.check(
+            ACROLINX_API_TOKEN,
+            CheckRequest.ofDocument(
+                    new SimpleDocument(xmlContent, new ExternalContentBuilder().build()))
+                .withContentReference(documentName)
+                .withCheckOptions(
+                    CheckOptions.getBuilder()
+                        .withGuidanceProfileId(guidanceProfileEn.getId())
+                        .build())
+                .build());
+
+    for (Issue issue : checkResult.getIssues()) {
+      for (Match match : issue.getPositionalInformation().getMatches()) {
+        if ("tesst".equals(match.getOriginalPart())) {
+          return;
+        }
+      }
+    }
+
+    fail(
+        "Issues don't contain an expected issue with surface 'tesst'. Issues: "
+            + checkResult.getIssues());
+  }
+
+  @Test
   void checkAndGetResult() throws AcrolinxException {
     CheckResult checkResult = checkEnglishText("This textt has ann erroor.");
 
