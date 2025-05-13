@@ -184,12 +184,32 @@ class CheckTest extends IntegrationTestBase {
     String xmlContent = TestUtils.readResource("test.ditamap");
 
     ExternalContentBuilder externalContentBuilder = new ExternalContentBuilder();
-    externalContentBuilder.addDitaReference("some.dita", TestUtils.readResource("test.topic"));
+    externalContentBuilder.addDitaReference("some.dita", TestUtils.readResource("test.dita"));
 
     CheckResult checkResult =
         acrolinxEndpoint.check(
             ACROLINX_API_TOKEN,
             CheckRequest.ofDocument(new SimpleDocument(xmlContent, externalContentBuilder.build()))
+                .withContentReference(documentName)
+                .withCheckOptions(
+                    CheckOptions.getBuilder()
+                        .withGuidanceProfileId(guidanceProfileEn.getId())
+                        .build())
+                .build());
+
+    assertEquals(0, checkResult.getIssues().size());
+  }
+
+  @Test
+  void checkDitaTopic() throws AcrolinxException, IOException {
+    final String documentName = "test.dita";
+    String xmlContent = TestUtils.readResource(documentName);
+
+    CheckResult checkResult =
+        acrolinxEndpoint.check(
+            ACROLINX_API_TOKEN,
+            CheckRequest.ofDocument(
+                    new SimpleDocument(xmlContent, new ExternalContentBuilder().build()))
                 .withContentReference(documentName)
                 .withCheckOptions(
                     CheckOptions.getBuilder()
@@ -206,7 +226,7 @@ class CheckTest extends IntegrationTestBase {
     }
 
     fail(
-        "Issues don't contain an expected referenced issue with surface 'tesst'. Issues: "
+        "Issues don't contain an expected issue with surface 'tesst'. Issues: "
             + checkResult.getIssues());
   }
 
