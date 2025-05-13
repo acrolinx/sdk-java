@@ -184,7 +184,7 @@ class CheckTest extends IntegrationTestBase {
     String xmlContent = TestUtils.readResource("test.ditamap");
 
     ExternalContentBuilder externalContentBuilder = new ExternalContentBuilder();
-    externalContentBuilder.addDitaReference("some.dita", TestUtils.readResource("test.topic"));
+    externalContentBuilder.addDitaReference("some.dita", TestUtils.readResource("test.dita"));
 
     CheckResult checkResult =
         acrolinxEndpoint.check(
@@ -202,7 +202,7 @@ class CheckTest extends IntegrationTestBase {
 
   @Test
   void checkDitaTopic() throws AcrolinxException, IOException {
-    final String documentName = "test.topic";
+    final String documentName = "test.dita";
     String xmlContent = TestUtils.readResource(documentName);
 
     CheckResult checkResult =
