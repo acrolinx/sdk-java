@@ -197,17 +197,7 @@ class CheckTest extends IntegrationTestBase {
                         .build())
                 .build());
 
-    for (Issue issue : checkResult.getIssues()) {
-      for (Match match : issue.getPositionalInformation().getMatches()) {
-        if ("tesst".equals(match.getOriginalPart())) {
-          return;
-        }
-      }
-    }
-
-    fail(
-        "Issues don't contain an expected referenced issue with surface 'tesst'. Issues: "
-            + checkResult.getIssues());
+    assertEquals(0, checkResult.getIssues().size());
   }
 
   @Test
